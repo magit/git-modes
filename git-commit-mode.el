@@ -92,4 +92,7 @@
   (run-hooks 'git-commit-mode-hook)
   (setq mode-name "Git-Commit"))
 
+(add-to-list 'auto-mode-alist
+             '("COMMIT_EDITMSG" . git-commit-mode))
+
 (provide 'git-commit-mode)
