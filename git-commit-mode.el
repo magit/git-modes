@@ -73,13 +73,29 @@
   "Face used to highlight comments in git commit messages"
   :group 'git-commit-faces)
 
+(defface git-commit-pseudo-header-face
+  '((((class grayscale) (background light)) (:foreground "LightGray" :weight bold))
+    (((class grayscale) (background dark)) (:foreground "DimGray" :weight bold))
+    (((class color) (min-colors 88) (background light)) (:foreground "Purple"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "Cyan1"))
+    (((class color) (min-colors 16) (background light)) (:foreground "Purple"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "Cyan"))
+    (((class color) (min-colors 8)) (:foreground "cyan" :weight bold))
+    (t (:weight bold)))
+  "Font used to hightlight pseudo headers in git commit messages"
+  :group 'git-commit-faces)
+
 (defconst git-commit-font-lock-keywords-1
-  '(("^#.*$" . 'git-commit-comment-face)
+  '(("^#.*$"
+     (0 'git-commit-comment-face))
     ("\\`\\(.\\{,50\\}\\)\\(.*?\\)\n\\(.*\\)$"
      (1 'git-commit-summary-face)
      (2 'git-commit-overlong-summary-face)
      (3 'git-commit-nonempty-second-line-face))
-    (".*" (0 'git-commit-text-face keep))))
+    ("^\\w[^\s\n]+:.*$"
+     (0 'git-commit-pseudo-header-face))
+    (".*"
+     (0 'git-commit-text-face keep))))
 
 (defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
