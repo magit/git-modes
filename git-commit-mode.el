@@ -1,5 +1,3 @@
-(defvar git-commit-mode-hook)
-
 (defgroup git-commit '((jit-lock custom-group))
   "Mode for editing git commit messages"
   :group 'faces)
@@ -122,9 +120,23 @@
 
 (defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
+(defvar git-commit-mode-hook)
+(defvar git-commit-commit-hook)
+
+(defun git-commit-commit ()
+  (interactive)
+  (save-buffer)
+  (run-hooks 'git-commit-commit-hook))
+
+(defvar git-commit-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-c") 'git-commit-commit)
+    map))
+
 (defun git-commit-mode ()
   (interactive)
   (kill-all-local-variables)
+  (use-local-map git-commit-map)
   (setq font-lock-multiline t)
   (setq font-lock-defaults `(git-commit-font-lock-keywords ,t))
   (setq major-mode 'git-commit-mode)
