@@ -85,17 +85,40 @@
   "Font used to hightlight pseudo headers in git commit messages"
   :group 'git-commit-faces)
 
+(defvar git-commit-known-pseudo-headers
+  '("Signed-off-by"
+    "Acked-by"
+    "Cc"
+    "Reported-by"
+    "Tested-by"
+    "Reviewed-by"))
+
+(defface git-commit-known-pseudo-header-face
+  '((((class grayscale) (background light)) (:foreground "Gray90" :weight bold))
+    (((class grayscale) (background dark)) (:foreground "DimGray" :weight bold))
+    (((class color) (min-colors 88) (background light)) (:foreground "ForestGreen"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "PaleGreen"))
+    (((class color) (min-colors 16) (background light)) (:foreground "ForestGreen"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "PaleGreen"))
+    (((class color) (min-colors 8)) (:foreground "green"))
+    (t (:weight bold :underline t)))
+  "Font used to hightlight common pseudo headers in git commit messages"
+  :group 'git-commit-faces)
+
 (defconst git-commit-font-lock-keywords-1
-  '(("^#.*$"
+  `(("^#.*$"
      (0 'git-commit-comment-face))
     ("\\`\\(.\\{,50\\}\\)\\(.*?\\)\n\\(.*\\)$"
      (1 'git-commit-summary-face)
      (2 'git-commit-overlong-summary-face)
      (3 'git-commit-nonempty-second-line-face))
-    ("^\\w[^\s\n]+:.*$"
+    (,(concat "^\\(" (regexp-opt git-commit-known-pseudo-headers) ":\\)\\(\s.*\\)$")
+     (1 'git-commit-known-pseudo-header-face)
+     (2 'git-commit-pseudo-header-face))
+    ("^\\w[^\s\n]+:\s.*$"
      (0 'git-commit-pseudo-header-face))
     (".*"
-     (0 'git-commit-text-face keep))))
+     (0 'git-commit-text-face))))
 
 (defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
