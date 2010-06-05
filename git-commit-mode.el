@@ -100,7 +100,22 @@
     (((class color) (min-colors 16) (background dark)) (:foreground "PaleGreen"))
     (((class color) (min-colors 8)) (:foreground "green"))
     (t (:weight bold :underline t)))
-  "Font used to hightlight common pseudo headers in git commit messages"
+  "Face used to hightlight common pseudo headers in git commit messages"
+  :group 'git-commit-faces)
+
+(defface git-commit-note-brace-face
+  '()
+  "Face used to highlight braces within notes in git commit messages"
+  :group 'git-commit-faces)
+
+(defface git-commit-note-address-face
+  '()
+  "Face used to highlight email addresses within notes in git commit messages"
+  :group 'git-commit-faces)
+
+(defface git-commit-note-face
+  '()
+  "Face used to highlight notes within git commit messages"
   :group 'git-commit-faces)
 
 (defconst git-commit-font-lock-keywords-1
@@ -115,6 +130,11 @@
      (2 'git-commit-pseudo-header-face))
     ("^\\w[^\s\n]+:\s.*$"
      (0 'git-commit-pseudo-header-face))
+    ("^\\(\\[\\)\\([^\s@]+@[^\s@]+:\\)\\(.*\\)\\(\\]\\)$"
+     (1 'git-commit-note-brace-face)
+     (2 'git-commit-note-address-face)
+     (3 'git-commit-note-face)
+     (4 'git-commit-note-brace-face))
     (".*"
      (0 'git-commit-text-face))))
 
