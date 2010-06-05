@@ -121,6 +121,11 @@
 (defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
 (defvar git-commit-mode-hook)
+
+;; when using emacs as the editor invoked by git commit, something
+;; like (lambda () (save-buffers-kill-terminal)) will be a good value
+;; for this. Tools like magit or vcs will probably want to do
+;; something different here.
 (defvar git-commit-commit-hook)
 
 (defun git-commit-commit ()
