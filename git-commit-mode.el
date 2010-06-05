@@ -128,9 +128,22 @@
   (save-buffer)
   (run-hooks 'git-commit-commit-hook))
 
+(defun git-commit-signoff ()
+  (interactive)
+  (let ((comitter-name "foo")
+        (comitter-email "bar"))
+    (save-excursion
+      (end-of-buffer)
+      (if (not (re-search-backward "^[^#]" nil t))
+          (beginning-of-buffer)
+        (end-of-line)
+        )
+      (insert (format "\nSigned-off-by: %s <%s>\n" comitter-name comitter-email)))))
+
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
+    (define-key map (kbd "C-c C-s") 'git-commit-signoff)
     map))
 
 (defun git-commit-mode ()
