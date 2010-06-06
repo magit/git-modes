@@ -129,7 +129,6 @@
   (run-hooks 'git-commit-commit-hook))
 
 (defun git-commit-git-config-var (var)
-  ; git config --get $var
   (let* ((exit)
         (output
          (with-output-to-string
@@ -162,8 +161,8 @@
 
 (defun git-commit-comitter-email ()
   (let ((env-email (git-commit-first-env-var "GIT_AUTHOR_EMAIL"
-                                         "GIT_COMMITTER_EMAIL"
-                                         "EMAIL"))
+                                             "GIT_COMMITTER_EMAIL"
+                                             "EMAIL"))
         (config-email (git-commit-git-config-var "user.email")))
     (if env-email
         env-email
@@ -198,9 +197,18 @@
         (comitter-email (git-commit-comitter-email))
         (signoff-at (git-commit-find-pseudo-header-position)))
     (save-excursion
-      (goto-char signoff-at)
-      ;; figure outwhat sort of pre- and post-newlines we need.
-      (insert (format "Signed-off-by: %s <%s>\n" comitter-name comitter-email)))))
+      (goto-char (- signoff-at 1))
+      ;; figure out if we need a leading newline to separate the
+      ;; headers from the rest of the commit message
+      (let* ((prev-line (thing-at-point 'line))
+             (pre (if (or
+                       (string-match "^[^\s:]+:.+$" prev-line)
+                       (string-match "\\`\s*$" prev-line))
+                      ""
+                    "\n")))
+        (goto-char signoff-at)
+        (insert (format "%sSigned-off-by: %s <%s>\n"
+                        pre comitter-name comitter-email))))))
 
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
