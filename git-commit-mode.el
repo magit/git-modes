@@ -128,6 +128,16 @@
   (save-buffer)
   (run-hooks 'git-commit-commit-hook))
 
+(defun git-commit-first-env-var (&rest vars)
+  ;; this is horrible. i should figure out enough elisp to make it
+  ;; slightly less horrible.
+  (let ((res)
+        (i vars))
+    (while (and (not res))
+      (setq res (getenv (car i)))
+      (setq i (cdr i)))
+    res))
+
 (defun git-commit-find-pseudo-header-position ()
   (save-excursion
     (goto-char (point-max))
