@@ -209,16 +209,34 @@
         (goto-char signoff-at)
         (insert (format "%s%s: %s <%s>\n" pre type name email))))))
 
-(defun git-commit-signoff ()
-  (interactive)
+(defun git-commit-insert-header-as-self (type)
   (let ((comitter-name (git-commit-comitter-name))
         (comitter-email (git-commit-comitter-email)))
-    (git-commit-insert-header "Signed-off-by" comitter-name comitter-email)))
+    (git-commit-insert-header type comitter-name comitter-email)))
+
+(defun git-commit-signoff ()
+  (interactive)
+  (git-commit-insert-header-as-self "Signed-off-by"))
+
+(defun git-commit-ack ()
+  (interactive)
+  (git-commit-insert-header-as-self "Acked-by"))
+
+(defun git-commit-test ()
+  (interactive)
+  (git-commit-insert-header-as-self "Tested-by"))
+
+(defun git-commit-review ()
+  (interactive)
+  (git-commit-insert-header-as-self "Reviewed-by"))
 
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
     (define-key map (kbd "C-c C-s") 'git-commit-signoff)
+    (define-key map (kbd "C-c C-a") 'git-commit-ack)
+    (define-key map (kbd "C-c C-t") 'git-commit-test)
+    (define-key map (kbd "C-c C-r") 'git-commit-review)
     ;; TODO: other known headers, and signoff-with-comment
     map))
 
