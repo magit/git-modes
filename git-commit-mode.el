@@ -133,9 +133,93 @@
   (save-buffer)
   (run-hooks 'git-commit-commit-hook))
 
+(defun git-commit-git-config-var (var)
+  (let* ((exit)
+        (output
+         (with-output-to-string
+           (with-current-buffer
+               standard-output
+             (setq exit
+                   (call-process "git" nil (list t nil) nil "config" "--get" var))))))
+    (if (not (= 0 exit))
+        nil
+      (substring output 0 (- (length output) 1)))))
+
+(defun git-commit-first-env-var (&rest vars)
+  ;; this is horrible. i should figure out enough elisp to make it
+  ;; slightly less horrible.
+  (let ((res)
+        (i vars))
+    (while (and (not res) i)
+      (setq res (getenv (car i)))
+      (setq i (cdr i)))
+    res))
+
+(defun git-commit-comitter-name ()
+  (let ((env-name (git-commit-first-env-var "GIT_AUTHOR_NAME" "GIT_COMMITTER_NAME"))
+        (config-name (git-commit-git-config-var "user.name")))
+    (if env-name
+        env-name
+      (if config-name
+          config-name
+        user-full-name))))
+
+(defun git-commit-comitter-email ()
+  (let ((env-email (git-commit-first-env-var "GIT_AUTHOR_EMAIL"
+                                             "GIT_COMMITTER_EMAIL"
+                                             "EMAIL"))
+        (config-email (git-commit-git-config-var "user.email")))
+    (if env-email
+        env-email
+      (if config-email
+          config-email
+        user-email-address))))
+
+(defun git-commit-find-pseudo-header-position ()
+  (save-excursion
+    (goto-char (point-max))
+    (if (not (re-search-backward "^[^#][^\s:]+:.*$" nil t))
+        ;; no headers yet, so we'll search backwards for a good place
+        ;; to insert them
+        (if (not (re-search-backward "^[^#].*?.*$" nil t))
+            ;; no comment lines anywhere before end-of-buffer, so we
+            ;; want to insert right there
+            (point-max)
+          ;; there's some comments at the end, so we want to insert
+          ;; before those
+          (beginning-of-line)
+          (forward-line 1)
+          (point))
+      ;; we're at the last header, and we want the line right after
+      ;; that to insert further headers
+      (beginning-of-line)
+      (forward-line 1)
+      (point))))
+
+(defun git-commit-insert-header (type name email)
+  (let ((signoff-at (git-commit-find-pseudo-header-position)))
+    (save-excursion
+      (goto-char (- signoff-at 1))
+      (let* ((prev-line (thing-at-point 'line))
+             (pre (if (or
+                       (string-match "^[^\s:]+:.+$" prev-line)
+                       (string-match "\\`\s*$" prev-line))
+                      ""
+                    "\n")))
+        (goto-char signoff-at)
+        (insert (format "%s%s: %s <%s>\n" pre type name email))))))
+
+(defun git-commit-signoff ()
+  (interactive)
+  (let ((comitter-name (git-commit-comitter-name))
+        (comitter-email (git-commit-comitter-email)))
+    (git-commit-insert-header "Signed-off-by" comitter-name comitter-email)))
+
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
+    (define-key map (kbd "C-c C-s") 'git-commit-signoff)
+    ;; TODO: other known headers, and signoff-with-comment
     map))
 
 (defun git-commit-mode ()
