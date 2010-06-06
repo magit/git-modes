@@ -130,11 +130,11 @@
 
 (defun git-commit-find-pseudo-header-position ()
   (save-excursion
-    (end-of-buffer)
-    (if (not (re-search-backward "^[^\s:]+:.*$" nil t))
+    (goto-char (point-max))
+    (if (not (re-search-backward "^[^#][^\s:]+:.*$" nil t))
         ;; no headers yet, so we'll search backwards for a good place
         ;; to insert them
-        (if (not (re-search-backward "^[^#].*?[^\s].*$" nil t))
+        (if (not (re-search-backward "^[^#].*?.*$" nil t))
             ;; no comment lines anywhere before end-of-buffer, so we
             ;; want to insert right there
             (point-max)
@@ -155,14 +155,15 @@
         (comitter-email "bar")
         (signoff-at (git-commit-find-pseudo-header-position)))
     (save-excursion
-      ;; move point to signoff-at.
+      (goto-char signoff-at)
       ;; figure outwhat sort of pre- and post-newlines we need.
-      (insert (format "\nSigned-off-by: %s <%s>\n" comitter-name comitter-email)))))
+      (insert (format "Signed-off-by: %s <%s>\n" comitter-name comitter-email)))))
 
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
     (define-key map (kbd "C-c C-s") 'git-commit-signoff)
+    ;; TODO: other known headers, and signoff-with-comment
     map))
 
 (defun git-commit-mode ()
