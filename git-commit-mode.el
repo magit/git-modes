@@ -191,15 +191,10 @@
       (forward-line 1)
       (point))))
 
-(defun git-commit-signoff ()
-  (interactive)
-  (let ((comitter-name (git-commit-comitter-name))
-        (comitter-email (git-commit-comitter-email))
-        (signoff-at (git-commit-find-pseudo-header-position)))
+(defun git-commit-insert-header (type name email)
+  (let ((signoff-at (git-commit-find-pseudo-header-position)))
     (save-excursion
       (goto-char (- signoff-at 1))
-      ;; figure out if we need a leading newline to separate the
-      ;; headers from the rest of the commit message
       (let* ((prev-line (thing-at-point 'line))
              (pre (if (or
                        (string-match "^[^\s:]+:.+$" prev-line)
@@ -207,8 +202,13 @@
                       ""
                     "\n")))
         (goto-char signoff-at)
-        (insert (format "%sSigned-off-by: %s <%s>\n"
-                        pre comitter-name comitter-email))))))
+        (insert (format "%s%s: %s <%s>\n" pre type name email))))))
+
+(defun git-commit-signoff ()
+  (interactive)
+  (let ((comitter-name (git-commit-comitter-name))
+        (comitter-email (git-commit-comitter-email)))
+    (git-commit-insert-header "Signed-off-by" comitter-name comitter-email)))
 
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
