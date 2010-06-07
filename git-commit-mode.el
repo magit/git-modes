@@ -211,8 +211,9 @@
 (defun git-commit-insert-header (type name email &optional note)
   (let* ((signoff-at (git-commit-find-pseudo-header-position))
          (prev-line  (progn
-                       (goto-char (- signoff-at 1))
-                       (thing-at-point 'line)))
+                       (save-excursion
+                         (goto-char (- signoff-at 1))
+                         (thing-at-point 'line))))
          (pre        (if (or (string-match "^[^\s:]+:.+$" prev-line)
                              (string-match "\\`\s*$" prev-line))
                          "" "\n"))
