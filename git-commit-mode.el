@@ -153,6 +153,9 @@
   "Face used to highlight the branch name in comments in git commit messages"
   :group 'git-commit-faces)
 
+;; TODO:
+;;  * "Not currently on any branch"
+;;  * modified/untracked/staged/etc files
 (defconst git-commit-font-lock-keywords-1
   `(("^\\(#\s+On branch \\)\\(.*\\)$"
      (1 'git-commit-comment-face)
@@ -248,10 +251,9 @@
 
 (defun git-commit-insert-header (type name email &optional note)
   (let* ((signoff-at (git-commit-find-pseudo-header-position))
-         (prev-line  (progn
-                       (save-excursion
-                         (goto-char (- signoff-at 1))
-                         (thing-at-point 'line))))
+         (prev-line  (save-excursion
+                       (goto-char (- signoff-at 1))
+                       (thing-at-point 'line)))
          (pre        (if (or (string-match "^[^\s:]+:.+$" prev-line)
                              (string-match "\\`\s*$" prev-line))
                          "" "\n"))
