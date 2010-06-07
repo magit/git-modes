@@ -251,38 +251,44 @@
     (when note-at
       (goto-char note-at))))
 
-(defun git-commit-insert-header-as-self (type)
+(defun git-commit-insert-header-as-self (type &optional note)
   (let ((comitter-name (git-commit-comitter-name))
         (comitter-email (git-commit-comitter-email)))
-    (git-commit-insert-header type comitter-name comitter-email)))
+    (git-commit-insert-header type comitter-name comitter-email note)))
 
-(defun git-commit-signoff ()
-  (interactive)
-  (git-commit-insert-header-as-self "Signed-off-by"))
+(defun git-commit-signoff (&optional note)
+  (interactive
+   (list (when current-prefix-arg t)))
+  (git-commit-insert-header-as-self "Signed-off-by" note))
 
-(defun git-commit-ack ()
-  (interactive)
-  (git-commit-insert-header-as-self "Acked-by"))
+(defun git-commit-ack (&optional note)
+  (interactive
+   (list (when current-prefix-arg t)))
+  (git-commit-insert-header-as-self "Acked-by" note))
 
-(defun git-commit-test ()
-  (interactive)
-  (git-commit-insert-header-as-self "Tested-by"))
+(defun git-commit-test (&optional note)
+  (interactive
+   (list (when current-prefix-arg t)))
+  (git-commit-insert-header-as-self "Tested-by" note))
 
-(defun git-commit-review ()
-  (interactive)
-  (git-commit-insert-header-as-self "Reviewed-by"))
+(defun git-commit-review (&optional note)
+  (interactive
+   (list (when current-prefix-arg t)))
+  (git-commit-insert-header-as-self "Reviewed-by" note))
 
-(defun git-commit-cc (name email)
+(defun git-commit-cc (name email &optional note)
   (interactive
    (list (read-string "Name: ")
-         (read-string "Email: ")))
-  (git-commit-insert-header "Cc" name email))
+         (read-string "Email: ")
+         (when current-prefix-arg t)))
+  (git-commit-insert-header "Cc" name email note))
 
-(defun git-commit-reported (name email)
+(defun git-commit-reported (name email &optional note)
   (interactive
    (list (read-string "Name: ")
-         (read-string "Email: ")))
-  (git-commit-insert-header "Reported-by" name email))
+         (read-string "Email: ")
+         (when current-prefix-arg t)))
+  (git-commit-insert-header "Reported-by" name email note))
 
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
