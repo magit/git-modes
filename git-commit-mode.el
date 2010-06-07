@@ -141,8 +141,23 @@
   "Face used to highlight notes within git commit messages"
   :group 'git-commit-faces)
 
+(defface git-commit-branch-face
+  '((((class grayscale) (background light)) (:foreground "DimGray" :slant italic))
+    (((class grayscale) (background dark)) (:foreground "LightGray" :slant italic))
+    (((class color) (min-colors 88) (background light)) (:foreground "VioletRed4"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "LightSalmon"))
+    (((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+    (((class color) (min-colors 8)) (:foreground "green"))
+    (t (:slant italic)))
+  "Face used to highlight the branch name in comments in git commit messages"
+  :group 'git-commit-faces)
+
 (defconst git-commit-font-lock-keywords-1
-  `(("^#.*$"
+  `(("^\\(#\s+On branch \\)\\(.*\\)$"
+     (1 'git-commit-comment-face)
+     (2 'git-commit-branch-face))
+    ("^#.*$"
      (0 'git-commit-comment-face))
     ("\\`\\(.\\{,50\\}\\)\\(.*?\\)\n\\(.*\\)$"
      (1 'git-commit-summary-face)
