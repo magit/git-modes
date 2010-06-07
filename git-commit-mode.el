@@ -229,12 +229,10 @@
                       (goto-char signoff-at)
                       (insert (format "%s%s: %s <%s>\n" pre type name email))
                       (when note
-                        (insert (format "[%s: %s]\n"
-                                        email
-                                        (if (stringp note)
-                                            note
-                                         "")))
-                        (- (point) 2))))))
+                        (let ((note-text (if (stringp note) note "")))
+                          (insert (format "[%s: %s]\n" email note-text))
+                          (when (not (stringp note))
+                            (- (point) 2))))))))
     (when note-at
       (goto-char note-at))))
 
