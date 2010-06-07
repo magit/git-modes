@@ -176,24 +176,16 @@
     res))
 
 (defun git-commit-comitter-name ()
-  (let ((env-name (git-commit-first-env-var "GIT_AUTHOR_NAME" "GIT_COMMITTER_NAME"))
-        (config-name (git-commit-git-config-var "user.name")))
-    (if env-name
-        env-name
-      (if config-name
-          config-name
-        user-full-name))))
+  (or
+   (git-commit-first-env-var "GIT_AUTHOR_NAME" "GIT_COMMITTER_NAME")
+   (git-commit-git-config-var "user.name")
+   user-full-name))
 
 (defun git-commit-comitter-email ()
-  (let ((env-email (git-commit-first-env-var "GIT_AUTHOR_EMAIL"
-                                             "GIT_COMMITTER_EMAIL"
-                                             "EMAIL"))
-        (config-email (git-commit-git-config-var "user.email")))
-    (if env-email
-        env-email
-      (if config-email
-          config-email
-        user-email-address))))
+  (or
+   (git-commit-first-env-var "GIT_AUTHOR_EMAIL" "GIT_COMMITTER_EMAIL" "EMAIL")
+   (git-commit-git-config-var "user.email")
+   user-email-address))
 
 (defun git-commit-find-pseudo-header-position ()
   (save-excursion
@@ -225,7 +217,7 @@
                                      (string-match "^[^\s:]+:.+$" prev-line)
                                      (string-match "\\`\s*$" prev-line))
                                     ""
-                                 "\n")))
+                                  "\n")))
                       (goto-char signoff-at)
                       (insert (format "%s%s: %s <%s>\n" pre type name email))
                       (when note
