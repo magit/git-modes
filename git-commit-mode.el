@@ -104,17 +104,40 @@
   :group 'git-commit-faces)
 
 (defface git-commit-note-brace-face
-  '()
+  '((((class grayscale) (background light))
+     (:foreground "LightGray" :weight bold :underline t))
+    (((class grayscale) (background dark))
+     (:foreground "Gray50" :weight bold :underline t))
+    (((class color) (min-colors 88) (background light)) (:foreground "dark cyan"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "Aquamarine"))
+    (((class color) (min-colors 16) (background light)) (:foreground "CadetBlue"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "Aquamarine"))
+    (((class color) (min-colors 8)) (:foreground "magenta"))
+    (t (:weight bold :underline t)))
   "Face used to highlight braces within notes in git commit messages"
   :group 'git-commit-faces)
 
 (defface git-commit-note-address-face
-  '()
+  '((((class grayscale) (background light)) (:foreground "LightGray" :weight bold))
+    (((class grayscale) (background dark)) (:foreground "DimGray" :weight bold))
+    (((class color) (min-colors 88) (background light)) (:foreground "Purple"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "Cyan1"))
+    (((class color) (min-colors 16) (background light)) (:foreground "Purple"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "Cyan"))
+    (((class color) (min-colors 8)) (:foreground "cyan" :weight bold))
+    (t (:weight bold)))
   "Face used to highlight email addresses within notes in git commit messages"
   :group 'git-commit-faces)
 
 (defface git-commit-note-face
-  '()
+  '((((class grayscale) (background light)) (:foreground "DimGray" :slant italic))
+    (((class grayscale) (background dark)) (:foreground "LightGray" :slant italic))
+    (((class color) (min-colors 88) (background light)) (:foreground "VioletRed4"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "LightSalmon"))
+    (((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "LightSalmon"))
+    (((class color) (min-colors 8)) (:foreground "green"))
+    (t (:slant italic)))
   "Face used to highlight notes within git commit messages"
   :group 'git-commit-faces)
 
