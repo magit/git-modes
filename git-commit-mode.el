@@ -210,21 +210,20 @@
 
 (defun git-commit-insert-header (type name email &optional note)
   (let* ((signoff-at (git-commit-find-pseudo-header-position))
-         (note-at (save-excursion
-                    (goto-char (- signoff-at 1))
-                    (let* ((prev-line (thing-at-point 'line))
-                           (pre (if (or
-                                     (string-match "^[^\s:]+:.+$" prev-line)
-                                     (string-match "\\`\s*$" prev-line))
-                                    ""
-                                  "\n")))
-                      (goto-char signoff-at)
-                      (insert (format "%s%s: %s <%s>\n" pre type name email))
-                      (when note
-                        (let ((note-text (if (stringp note) note "")))
-                          (insert (format "[%s: %s]\n" email note-text))
-                          (when (not (stringp note))
-                            (- (point) 2))))))))
+         (prev-line  (progn
+                       (goto-char (- signoff-at 1))
+                       (thing-at-point 'line)))
+         (pre        (if (or (string-match "^[^\s:]+:.+$" prev-line)
+                             (string-match "\\`\s*$" prev-line))
+                         "" "\n"))
+         (note-at    (save-excursion
+                       (goto-char signoff-at)
+                       (insert (format "%s%s: %s <%s>\n" pre type name email))
+                       (when note
+                         (let ((note-text (if (stringp note) note "")))
+                           (insert (format "[%s: %s]\n" email note-text))
+                           (when (not (stringp note))
+                             (- (point) 2)))))))
     (when note-at
       (goto-char note-at))))
 
