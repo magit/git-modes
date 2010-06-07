@@ -230,6 +230,18 @@
   (interactive)
   (git-commit-insert-header-as-self "Reviewed-by"))
 
+(defun git-commit-cc (name email)
+  (interactive
+   (list (read-string "Name: ")
+         (read-string "Email: ")))
+  (git-commit-insert-header "Cc" name email))
+
+(defun git-commit-reported (name email)
+  (interactive
+   (list (read-string "Name: ")
+         (read-string "Email: ")))
+  (git-commit-insert-header "Reported-by" name email))
+
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
@@ -237,6 +249,8 @@
     (define-key map (kbd "C-c C-a") 'git-commit-ack)
     (define-key map (kbd "C-c C-t") 'git-commit-test)
     (define-key map (kbd "C-c C-r") 'git-commit-review)
+    (define-key map (kbd "C-c C-o") 'git-commit-cc)
+    (define-key map (kbd "C-c C-p") 'git-commit-reported)
     ;; TODO: other known headers, and signoff-with-comment
     map))
 
