@@ -257,16 +257,16 @@
          (pre        (if (or (string-match "^[^\s:]+:.+$" prev-line)
                              (string-match "\\`\s*$" prev-line))
                          "" "\n"))
-         (note-at    (save-excursion
+         (insert     (lambda ()
                        (goto-char signoff-at)
                        (insert (format "%s%s: %s <%s>\n" pre type name email))
                        (when note
                          (let ((note-text (if (stringp note) note "")))
                            (insert (format "[%s: %s]\n" email note-text))
-                           (when (not (stringp note))
-                             (- (point) 2)))))))
-    (when note-at
-      (goto-char note-at))))
+                           (backward-char 2))))))
+    (if (eq t note)
+        (funcall insert)
+      (save-excursion (funcall insert)))))
 
 (defun git-commit-insert-header-as-self (type &optional note)
   (let ((comitter-name (git-commit-comitter-name))
