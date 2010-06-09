@@ -316,7 +316,6 @@
     (define-key map (kbd "C-c C-r") 'git-commit-review)
     (define-key map (kbd "C-c C-o") 'git-commit-cc)
     (define-key map (kbd "C-c C-p") 'git-commit-reported)
-    ;; TODO: other known headers, and signoff-with-comment
     map))
 
 (defun git-commit-mode ()
@@ -324,7 +323,7 @@
   (kill-all-local-variables)
   (use-local-map git-commit-map)
   (setq font-lock-multiline t)
-  (setq font-lock-defaults `(git-commit-font-lock-keywords ,t))
+  (setq font-lock-defaults '(git-commit-font-lock-keywords t))
   (setq major-mode 'git-commit-mode)
   (run-hooks 'git-commit-mode-hook)
   (setq mode-name "Git-Commit"))
