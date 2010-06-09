@@ -275,13 +275,13 @@ message, you might want to this:
 (defun git-commit-insert-header (type name email &optional note)
   (let* ((header-at (git-commit-find-pseudo-header-position))
          (prev-line (save-excursion
-                      (goto-char (- signoff-at 1))
+                      (goto-char (- header-at 1))
                       (thing-at-point 'line)))
          (pre       (if (or (string-match "^[^\s:]+:.+$" prev-line)
                             (string-match "\\`\s*$" prev-line))
                         "" "\n"))
          (insert    (lambda ()
-                      (goto-char signoff-at)
+                      (goto-char header-at)
                       (insert (format "%s%s: %s <%s>\n" pre type name email))
                       (when note
                         (insert (format "[%s: %s]\n"
