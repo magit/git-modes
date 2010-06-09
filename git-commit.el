@@ -207,8 +207,8 @@ way to actually trigger git to commit whatever the commit message
 was intended for.
 
 After calling `save-buffer', the hooks in
-`git-commit-commit-hook' will be run. If you have configured git
-in a way that simply invokes emacs for editing the commit
+`git-commit-commit-hook' will be run.  If you have configured git
+in a way that simply invokes Emacs for editing the commit
 message, you might want to this:
 
   (add-hook 'git-commit-commit-hook
@@ -306,27 +306,94 @@ as the content of the note.
 If NOTE is not nil and doesn't satisfy `stringp', the
 surroundings of an additional note will be inserted, and the
 point will be left where the content of the note needs to be
-inserted."
+inserted.
+
+NOTE defaults to `current-prefix-arg'.
+
+The author name and email address used for the header are
+retrieved automatically with the same mechanism git uses."
   (interactive
    (list (when current-prefix-arg t)))
   (git-commit-insert-header-as-self "Signed-off-by" note))
 
 (defun git-commit-ack (&optional note)
+  "Insert an 'Acked-by' header at the end of the commit message.
+If NOTE is given, an additional note will be inserted.
+
+If NOTE satisfies `stringp', the value of NOTE will be inserted
+as the content of the note.
+
+If NOTE is not nil and doesn't satisfy `stringp', the
+surroundings of an additional note will be inserted, and the
+point will be left where the content of the note needs to be
+inserted.
+
+NOTE defaults to `current-prefix-arg'.
+
+The author name and email address used for the header are
+retrieved automatically with the same mechanism git uses."
   (interactive
    (list (when current-prefix-arg t)))
   (git-commit-insert-header-as-self "Acked-by" note))
 
 (defun git-commit-test (&optional note)
+  "Insert a 'Tested-by' header at the end of the commit message.
+If NOTE is given, an additional note will be inserted.
+
+If NOTE satisfies `stringp', the value of NOTE will be inserted
+as the content of the note.
+
+If NOTE is not nil and doesn't satisfy `stringp', the
+surroundings of an additional note will be inserted, and the
+point will be left where the content of the note needs to be
+inserted.
+
+NOTE defaults to `current-prefix-arg'.
+
+The author name and email address used for the header are
+retrieved automatically with the same mechanism git uses."
   (interactive
    (list (when current-prefix-arg t)))
   (git-commit-insert-header-as-self "Tested-by" note))
 
 (defun git-commit-review (&optional note)
+  "Insert a 'Reviewed-by' header at the end of the commit message.
+If NOTE is given, an additional note will be inserted.
+
+If NOTE satisfies `stringp', the value of NOTE will be inserted
+as the content of the note.
+
+If NOTE is not nil and doesn't satisfy `stringp', the
+surroundings of an additional note will be inserted, and the
+point will be left where the content of the note needs to be
+inserted.
+
+NOTE defaults to `current-prefix-arg'.
+
+The author name and email address used for the header are
+retrieved automatically with the same mechanism git uses."
   (interactive
    (list (when current-prefix-arg t)))
   (git-commit-insert-header-as-self "Reviewed-by" note))
 
 (defun git-commit-cc (name email &optional note)
+  "Insert a 'Cc' header at the end of the commit message.
+The value of the header is determined by NAME and EMAIL.
+
+When called interactively, both NAME and EMAIL are read from the
+minibuffer.
+
+If NOTE is given, an additional note will be inserted.
+
+If NOTE satisfies `stringp', the value of NOTE will be inserted
+as the content of the note.
+
+If NOTE is not nil and doesn't satisfy `stringp', the
+surroundings of an additional note will be inserted, and the
+point will be left where the content of the note needs to be
+inserted.
+
+NOTE defaults to `current-prefix-arg'."
   (interactive
    (list (read-string "Name: ")
          (read-string "Email: ")
@@ -334,6 +401,23 @@ inserted."
   (git-commit-insert-header "Cc" name email note))
 
 (defun git-commit-reported (name email &optional note)
+  "Insert a 'Reported-by' header at the end of the commit message.
+The value of the header is determined by NAME and EMAIL.
+
+When called interactively, both NAME and EMAIL are read from the
+minibuffer.
+
+If NOTE is given, an additional note will be inserted.
+
+If NOTE satisfies `stringp', the value of NOTE will be inserted
+as the content of the note.
+
+If NOTE is not nil and doesn't satisfy `stringp', the
+surroundings of an additional note will be inserted, and the
+point will be left where the content of the note needs to be
+inserted.
+
+NOTE defaults to `current-prefix-arg'."
   (interactive
    (list (read-string "Name: ")
          (read-string "Email: ")
