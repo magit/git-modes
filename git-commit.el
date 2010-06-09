@@ -1,3 +1,16 @@
+;;; git-commit.el --- Major mode for editing git commit messages
+
+;; Copyright (C) 2010 Florian Ragwitz
+
+;; Author: Florian Ragwitz <rafl@debian.org>
+;; Version: 0.0
+;; Keywords: git
+
+;;; Commentary:
+;;
+
+;;; Code:
+
 (defgroup git-commit '((jit-lock custom-group))
   "Mode for editing git commit messages"
   :group 'faces)
@@ -181,15 +194,25 @@
 
 (defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
-(defvar git-commit-mode-hook)
+(defvar git-commit-mode-hook nil
+  "List of functions to be called when activating `git-commit-mode'.")
 
-;; when using emacs as the editor invoked by git commit, something
-;; like (lambda () (save-buffers-kill-terminal)) will be a good value
-;; for this. Tools like magit or vcs will probably want to do
-;; something different here.
-(defvar git-commit-commit-hook)
+(defvar git-commit-commit-hook nil
+  "List of functions to be called on `git-commit-commit'.")
 
 (defun git-commit-commit ()
+  "Finish editing the commit message and commit.
+By default this only calls `save-buffer', as there is no general
+way to actually trigger git to commit whatever the commit message
+was intended for.
+
+After calling `save-buffer', the hooks in
+`git-commit-commit-hook' will be run. If you have configured git
+in a way that simply invokes emacs for editing the commit
+message, you might want to this:
+
+  (add-hook 'git-commit-commit-hook
+          (lambda () (save-buffers-kill-terminal)))"
   (interactive)
   (save-buffer)
   (run-hooks 'git-commit-commit-hook))
@@ -274,6 +297,16 @@
     (git-commit-insert-header type comitter-name comitter-email note)))
 
 (defun git-commit-signoff (&optional note)
+  "Insert a 'Signed-off-by' header at the end of the commit message.
+If NOTE is given, an additional note will be inserted.
+
+If NOTE satisfies `stringp', the value of NOTE will be inserted
+as the content of the note.
+
+If NOTE is not nil and doesn't satisfy `stringp', the
+surroundings of an additional note will be inserted, and the
+point will be left where the content of the note needs to be
+inserted."
   (interactive
    (list (when current-prefix-arg t)))
   (git-commit-insert-header-as-self "Signed-off-by" note))
@@ -319,6 +352,7 @@
     map))
 
 (defun git-commit-mode ()
+  "Major mode for editing git commit messages."
   (interactive)
   (kill-all-local-variables)
   (use-local-map git-commit-map)
@@ -332,3 +366,5 @@
              '("COMMIT_EDITMSG" . git-commit-mode))
 
 (provide 'git-commit)
+
+;;; git-commit.el ends here
