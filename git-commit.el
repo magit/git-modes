@@ -271,7 +271,7 @@ If the above mechanism fails, the value of the variable
   (or
    (git-commit-first-env-var "GIT_AUTHOR_EMAIL" "GIT_COMMITTER_EMAIL" "EMAIL")
    (git-commit-git-config-var "user.email")
-   user-email-address))
+   user-mail-address))
 
 (defun git-commit-find-pseudo-header-position ()
   "Find the position at which commit pseudo headers should be inserted.
