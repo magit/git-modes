@@ -1,6 +1,9 @@
 ;;; git-commit.el --- Major mode for editing git commit messages
 
-;; Copyright (C) 2010 Florian Ragwitz
+;; This software is Copyright (c) 2010 by Florian Ragwitz.
+;;
+;; This is free software, licensed under:
+;;   The GNU General Public License, Version 2, June 1991
 
 ;; Author: Florian Ragwitz <rafl@debian.org>
 ;; Version: 0.0
