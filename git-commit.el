@@ -217,21 +217,27 @@ message, you might want to this:
   (save-buffer)
   (run-hooks 'git-commit-commit-hook))
 
-(defun git-commit-git-config-var (var)
+(defun git-commit-git-config-var (key)
+  "Retrieve a git configuration value.
+Invokes 'git config --get' to retrieve the value for the
+configuration key KEY."
   (let* ((exit)
         (output
          (with-output-to-string
            (with-current-buffer
                standard-output
              (setq exit
-                   (call-process "git" nil (list t nil) nil "config" "--get" var))))))
+                   (call-process "git" nil (list t nil) nil "config" "--get" key))))))
     (if (not (= 0 exit))
         nil
       (substring output 0 (- (length output) 1)))))
 
+;; this is horrible. i should figure out enough elisp to make it
+;; slightly less horrible.
 (defun git-commit-first-env-var (&rest vars)
-  ;; this is horrible. i should figure out enough elisp to make it
-  ;; slightly less horrible.
+  "Get the value of the first defined environment variable.
+Walk VARS, call `getenv' on each element and return the first
+non-nil return value of `getenv'."
   (let ((res)
         (i vars))
     (while (and (not res) i)
@@ -239,19 +245,38 @@ message, you might want to this:
       (setq i (cdr i)))
     res))
 
-(defun git-commit-comitter-name ()
+(defun git-commit-committer-name ()
+  "Get the git committer name of the current user.
+This uses the same mechanism git itself uses.  That is, using the
+value of the 'GIT_AUTHOR_NAME' or 'GIT_COMMITTER_NAME'
+environment variables, or the 'user.name' git configuration
+variable.
+
+If the above mechanism fails, the value of the variable
+`user-full-name' is used."
   (or
    (git-commit-first-env-var "GIT_AUTHOR_NAME" "GIT_COMMITTER_NAME")
    (git-commit-git-config-var "user.name")
    user-full-name))
 
-(defun git-commit-comitter-email ()
+(defun git-commit-committer-email ()
+  "Get the git committer email address of the current user.
+This uses the same mechanism git itself uses.  That is, using the
+value of the 'GIT_AUTHOR_EMAIL', 'GIT_COMMITTER_EMAIL', or
+'EMAIL' environment variables, or the 'user.email' git
+configuration variable.
+
+If the above mechanism fails, the value of the variable
+`user-email-address' is used."
   (or
    (git-commit-first-env-var "GIT_AUTHOR_EMAIL" "GIT_COMMITTER_EMAIL" "EMAIL")
    (git-commit-git-config-var "user.email")
    user-email-address))
 
 (defun git-commit-find-pseudo-header-position ()
+  "Find the position at which commit pseudo headers should be inserted.
+Those headers usually live at the end of a commit message, but
+before any trailing comments git or the user might have inserted."
   (save-excursion
     (goto-char (point-max))
     (if (not (re-search-backward "^[^#][^\s:]+:.*$" nil t))
@@ -273,6 +298,21 @@ message, you might want to this:
       (point))))
 
 (defun git-commit-insert-header (type name email &optional note)
+  "Insert a header into the commit message.
+The inserted headers have the format 'TYPE: NAME <EMAIL>'.
+
+If NOTE satisfies `stringp', an additional note of the format
+'[EMAIL: NOTE]' is inserted after the header.
+
+If NOTE is not nil and doesn't satisfy `stringp', the
+surroundings of an additional note will be inserted, and the
+point will be left where the content of the note needs to be
+inserted.
+
+The header is inserted at the position returned by
+`git-commit-find-pseudo-header-position'.  When this position
+isn't after an existing header or a newline, an extra newline is
+inserted before the header."
   (let* ((header-at (git-commit-find-pseudo-header-position))
          (prev-line (save-excursion
                       (goto-char (- header-at 1))
@@ -292,9 +332,15 @@ message, you might want to this:
       (save-excursion (funcall insert)))))
 
 (defun git-commit-insert-header-as-self (type &optional note)
-  (let ((comitter-name (git-commit-comitter-name))
-        (comitter-email (git-commit-comitter-email)))
-    (git-commit-insert-header type comitter-name comitter-email note)))
+  "Insert a header with the name and email address of the current user.
+Call `git-commit-insert-header' with the user name and email
+address provided by `git-commit-committer-name' and
+`git-commit-committer-email'.
+
+TYPE and NOTE are passed along unmodified."
+  (let ((committer-name (git-commit-committer-name))
+        (committer-email (git-commit-committer-email)))
+    (git-commit-insert-header type committer-name committer-email note)))
 
 (defun git-commit-signoff (&optional note)
   "Insert a 'Signed-off-by' header at the end of the commit message.
