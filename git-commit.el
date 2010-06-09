@@ -324,11 +324,11 @@
   (use-local-map git-commit-map)
   (setq font-lock-multiline t)
   (setq font-lock-defaults '(git-commit-font-lock-keywords t))
-  (setq major-mode 'git-commit-mode)
+  (setq major-mode 'git-commit)
   (run-hooks 'git-commit-mode-hook)
   (setq mode-name "Git-Commit"))
 
 (add-to-list 'auto-mode-alist
              '("COMMIT_EDITMSG" . git-commit-mode))
 
-(provide 'git-commit-mode)
+(provide 'git-commit)
