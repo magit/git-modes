@@ -169,13 +169,20 @@
   "Face used to highlight the branch name in comments in git commit messages"
   :group 'git-commit-faces)
 
+(defface git-commit-no-branch-face
+  '((t :inherit git-commit-branch-face))
+  "Face used when a commit is going to be made outside of any branches"
+  :group 'git-commit-faces)
+
 ;; TODO:
-;;  * "Not currently on any branch"
 ;;  * modified/untracked/staged/etc files
 (defconst git-commit-font-lock-keywords-1
   `(("^\\(#\s+On branch \\)\\(.*\\)$"
      (1 'git-commit-comment-face)
      (2 'git-commit-branch-face))
+    ("^\\(#\s+\\)\\(Not currently on any branch.\\)"
+     (1 'git-commit-comment-face)
+     (2 'git-commit-no-branch-face))
     ("^#.*$"
      (0 'git-commit-comment-face))
     ("\\`\\(.\\{,50\\}\\)\\(.*?\\)\n\\(.*\\)$"
