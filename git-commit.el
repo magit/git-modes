@@ -120,13 +120,16 @@
   "Font used to hightlight pseudo headers in git commit messages"
   :group 'git-commit-faces)
 
-(defvar git-commit-known-pseudo-headers
+(defcustom git-commit-known-pseudo-headers
   '("Signed-off-by"
     "Acked-by"
     "Cc"
     "Reported-by"
     "Tested-by"
-    "Reviewed-by"))
+    "Reviewed-by")
+  "A list of git pseudo headers to be highlighted."
+  :group 'git-commit
+  :type '(repeat string))
 
 (defface git-commit-known-pseudo-header-face
   '((((class grayscale) (background light)) (:foreground "Gray90" :weight bold))
