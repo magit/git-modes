@@ -287,18 +287,13 @@ configuration key KEY."
         nil
       (substring output 0 (- (length output) 1)))))
 
-;; this is horrible. i should figure out enough elisp to make it
-;; slightly less horrible.
 (defun git-commit-first-env-var (&rest vars)
   "Get the value of the first defined environment variable.
 Walk VARS, call `getenv' on each element and return the first
 non-nil return value of `getenv'."
-  (let ((res)
-        (i vars))
-    (while (and (not res) i)
-      (setq res (getenv (car i)))
-      (setq i (cdr i)))
-    res))
+  (loop for var in vars
+        do (let ((val (getenv var)))
+             (when val (return val)))))
 
 (defun git-commit-committer-name ()
   "Get the git committer name of the current user.
