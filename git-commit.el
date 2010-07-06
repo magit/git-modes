@@ -24,7 +24,8 @@
   :group 'git-commit)
 
 (defface git-commit-summary-face
-  '((((class grayscale) (background light))
+  '((default (:weight bold))
+    (((class grayscale) (background light))
      (:foreground "DimGray" :slant italic))
     (((class grayscale) (background dark))
      (:foreground "LightGray" :slant italic))
@@ -70,20 +71,7 @@
   :group 'git-commit-faces)
 
 (defface git-commit-text-face
-  '((((class grayscale) (background light))
-     (:foreground "DimGray" :slant italic))
-    (((class grayscale) (background dark))
-     (:foreground "LightGray" :slant italic))
-    (((class color) (min-colors 88) (background light))
-     (:foreground "VioletRed4"))
-    (((class color) (min-colors 88) (background dark))
-     (:foreground "LightSalmon"))
-    (((class color) (min-colors 16) (background light))
-     (:foreground "RosyBrown"))
-    (((class color) (min-colors 16) (background dark))
-     (:foreground "LightSalmon"))
-    (((class color) (min-colors 8)) (:foreground "green"))
-    (t (:slant italic)))
+  '((t (:inherit default)))
   "Face used to highlight text in git commit messages"
   :group 'git-commit-faces)
 
@@ -202,7 +190,7 @@
     (((class grayscale) (background dark))
      (:foreground "LightGray" :slant italic))
     (((class color) (min-colors 88) (background light))
-     (:foreground "VioletRed4"))
+     (:foreground "VioletRed2"))
     (((class color) (min-colors 88) (background dark))
      (:foreground "LightSalmon"))
     (((class color) (min-colors 16) (background light))
@@ -219,35 +207,66 @@
   "Face used when a commit is going to be made outside of any branches"
   :group 'git-commit-faces)
 
-;; TODO:
-;;  * modified/untracked/staged/etc files
+(defface git-commit-comment-heading-face
+  '((t (:inherit git-commit-known-pseudo-header-face)))
+  "Face used to highlight section headings in the default
+comments in git commit messages"
+  :group 'git-commit-faces)
+
+(defface git-commit-comment-file-face
+  '((t (:inherit git-commit-pseudo-header-face)))
+  "Face used to highlight file names in the default comments in
+git commit messages"
+  :group 'git-commit-faces)
+
+(defface git-commit-comment-action-face
+  '((t (:inherit git-commit-branch-face)))
+  "Face used to highlight what has happened to files in the
+default comments in git commit messages"
+  :group 'git-commit-faces)
+
 (defconst git-commit-font-lock-keywords-1
-  `(("^\\(#\s+On branch \\)\\(.*\\)$"
-     (1 'git-commit-comment-face)
-     (2 'git-commit-branch-face))
-    ("^\\(#\s+\\)\\(Not currently on any branch.\\)"
-     (1 'git-commit-comment-face)
-     (2 'git-commit-no-branch-face))
-    ("^#.*$"
-     (0 'git-commit-comment-face))
-    ("\\`\\(.\\{,50\\}\\)\\(.*?\\)\n\\(.*\\)$"
-     (1 'git-commit-summary-face)
-     (2 'git-commit-overlong-summary-face)
-     (3 'git-commit-nonempty-second-line-face))
-    (,(concat "^\\("
-              (regexp-opt git-commit-known-pseudo-headers)
-              ":\\)\\(\s.*\\)$")
-     (1 'git-commit-known-pseudo-header-face)
-     (2 'git-commit-pseudo-header-face))
-    ("^\\w[^\s\n]+:\s.*$"
-     (0 'git-commit-pseudo-header-face))
-    ("^\\(\\[\\)\\([^\s@]+@[^\s@]+:\\)\\(.*\\)\\(\\]\\)$"
-     (1 'git-commit-note-brace-face)
-     (2 'git-commit-note-address-face)
-     (3 'git-commit-note-face)
-     (4 'git-commit-note-brace-face))
-    (".*"
-     (0 'git-commit-text-face))))
+  (append
+   '(("^\\(#\s+On branch \\)\\(.*\\)$"
+      (1 'git-commit-comment-face)
+      (2 'git-commit-branch-face)))
+   (loop for exp in
+         '(("Not currently on any branch." . git-commit-no-branch-face)
+           ("Changes to be committed:"     . git-commit-comment-heading-face)
+           ("Untracked files:"             . git-commit-comment-heading-face)
+           ("Changed but not updated:"     . git-commit-comment-heading-face)
+           ("Unmerged paths:"              . git-commit-comment-heading-face))
+         collect `(,(concat "^\\(#\s+\\)\\(" (car exp) "\\)$")
+                   (1 'git-commit-comment-face)
+                   (2 ',(cdr exp))))
+   `(("^\\(#\t\\)\\([^:]+\\)\\(:\s+\\)\\(.*\\)$"
+      (1 'git-commit-comment-face)
+      (2 'git-commit-comment-action-face)
+      (3 'git-commit-comment-face)
+      (4 'git-commit-comment-file-face))
+     ("^\\(#\t\\)\\(.*\\)$"
+      (1 'git-commit-comment-face)
+      (2 'git-commit-comment-file-face))
+     ("^#.*$"
+      (0 'git-commit-comment-face))
+     ("\\`\\(.\\{,50\\}\\)\\(.*?\\)\n\\(.*\\)$"
+      (1 'git-commit-summary-face)
+      (2 'git-commit-overlong-summary-face)
+      (3 'git-commit-nonempty-second-line-face))
+     (,(concat "^\\("
+               (regexp-opt git-commit-known-pseudo-headers)
+               ":\\)\\(\s.*\\)$")
+      (1 'git-commit-known-pseudo-header-face)
+      (2 'git-commit-pseudo-header-face))
+     ("^\\w[^\s\n]+:\s.*$"
+      (0 'git-commit-pseudo-header-face))
+     ("^\\(\\[\\)\\([^\s@]+@[^\s@]+:\\)\\(.*\\)\\(\\]\\)$"
+      (1 'git-commit-note-brace-face)
+      (2 'git-commit-note-address-face)
+      (3 'git-commit-note-face)
+      (4 'git-commit-note-brace-face))
+     (".*"
+      (0 'git-commit-text-face)))))
 
 (defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
