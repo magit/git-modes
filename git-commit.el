@@ -534,6 +534,7 @@ NOTE defaults to `current-prefix-arg'."
     (define-key map (kbd "C-c C-p") 'git-commit-reported)
     map))
 
+;;;###autoload
 (defun git-commit-mode ()
   "Major mode for editing git commit messages.
 This mode helps with editing git commit messages both by
@@ -559,6 +560,7 @@ Turning on git commit calls the hooks in `git-commit-mode-hook'."
   (run-hooks 'git-commit-mode-hook)
   (setq mode-name "Git-Commit"))
 
+;;;###autoload
 (add-to-list 'auto-mode-alist
              '("COMMIT_EDITMSG" . git-commit-mode))
 
