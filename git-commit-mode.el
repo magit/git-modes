@@ -310,17 +310,9 @@ Used by `git-commit-commit'."
 
 (defun git-commit-commit ()
   "Finish editing the commit message and commit.
-By default this only calls `save-buffer', as there is no general
-way to actually trigger git to commit whatever the commit message
-was intended for.
 
-After calling `save-buffer', the hooks in
-`git-commit-commit-hook' will be run.  If you have configured git
-in a way that simply invokes Emacs for editing the commit
-message, you might want to this:
-
-  (add-hook 'git-commit-commit-hook
-          (lambda () (save-buffers-kill-terminal)))"
+Saves the buffer, and calls `git-commit-commit-function' to
+continue.  Customize this variable as needed. "
   (interactive)
   (save-buffer)
   (funcall git-commit-commit-function))
