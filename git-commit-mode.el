@@ -1,22 +1,31 @@
 ;;; git-commit-mode.el --- Major mode for editing git commit messages
+;;; -*- coding: utf-8 -*-
 
-;; This software is Copyright (c) 2010 by Florian Ragwitz.
+;; Copyright (c) 2010 Florian Ragwitz.
 ;;
-;; This is free software, licensed under:
-;;   The GNU General Public License, Version 2, June 1991
-
 ;; Author: Florian Ragwitz <rafl@debian.org>
 ;; Version: 0.1
-;; Keywords: convenience git
+;; Keywords: convenience vc git
 
-;;; History:
-;;
-;;  0.1   Tue, 06 Jul 2010 18:54:35 +0200
-;;    * Initial version
-;;
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free Software
+;; Foundation; either version 2 of the License, or (at your option) any later
+;; version.
+
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+
+;; You should have received a copy of the GNU General Public License along with
+;; this program; if not, write to the Free Software Foundation, Inc., 51
+;; Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-;;
+
+;; A major mode for editing Git commit messages.
 
 ;;; Code:
 
