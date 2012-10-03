@@ -4,6 +4,7 @@
 ;; Copyright (c) 2010 Florian Ragwitz.
 ;;
 ;; Author: Florian Ragwitz <rafl@debian.org>
+;; Maintainer: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; Version: 0.1
 ;; Keywords: convenience vc git
 
