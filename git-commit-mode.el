@@ -103,7 +103,7 @@
   :group 'git-commit-faces)
 
 (defface git-commit-pseudo-header-face
-  '((t (:inherit font-lock-function-name-face)))
+  '((t (:inherit font-lock-string-face)))
   "Font used to hightlight pseudo headers in git commit messages"
   :group 'git-commit-faces)
 
