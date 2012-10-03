@@ -355,13 +355,13 @@ continue.  Customize this variable as needed. "
 Invokes 'git config --get' to retrieve the value for the
 configuration key KEY."
   (let* ((exit)
-        (output
-         (with-output-to-string
-           (with-current-buffer
-               standard-output
-             (setq exit
-                   (call-process "git" nil (list t nil) nil
-                                 "config" "--get" key))))))
+         (output
+          (with-output-to-string
+            (with-current-buffer
+                standard-output
+              (setq exit
+                    (call-process "git" nil (list t nil) nil
+                                  "config" "--get" key))))))
     (if (not (= 0 exit))
         nil
       (substring output 0 (- (length output) 1)))))
