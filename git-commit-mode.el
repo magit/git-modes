@@ -40,6 +40,9 @@
 ;;
 ;; Highlight the first line (aka "summary") specially if it exceeds 54
 ;; characters.
+;;
+;; Enable `auto-fill-mode' and set the `fill-column' to 72 according to the
+;; aforementioned guidelines.
 
 ;; Headers
 ;; -------
@@ -599,7 +602,10 @@ Turning on git commit calls the hooks in `git-commit-mode-hook'."
         comment-end "")
   (git-commit-font-lock-diff)
   (when (fboundp 'toggle-save-place)
-    (toggle-save-place 0)))
+    (toggle-save-place 0))
+  ;; Configure filling
+  (turn-on-auto-fill)
+  (setq fill-column 72))
 
 ;;;###autoload
 (when (boundp 'session-mode-disable-list)
