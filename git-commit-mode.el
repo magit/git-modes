@@ -560,6 +560,7 @@ Commands:\\<git-commit-map>
 
 Turning on git commit calls the hooks in `git-commit-mode-hook'."
   (use-local-map git-commit-map)
+  (make-local-variable 'font-lock-multiline)
   (setq font-lock-multiline t)
   (setq font-lock-defaults '(git-commit-font-lock-keywords t))
   (make-local-variable 'comment-start-skip)
