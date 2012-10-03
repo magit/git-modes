@@ -5,6 +5,7 @@
 ;;
 ;; Author: Florian Ragwitz <rafl@debian.org>
 ;; Maintainer: Sebastian Wiesner <lunaryorn@gmail.com>
+;; URL: https://github.com/lunaryorn/git-commit-mode
 ;; Version: 0.1
 ;; Keywords: convenience vc git
 
