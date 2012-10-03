@@ -78,49 +78,17 @@
   :group 'faces)
 
 (defface git-commit-summary-face
-  '((default (:weight bold))
-    (((class grayscale) (background light))
-     (:foreground "DimGray" :slant italic))
-    (((class grayscale) (background dark))
-     (:foreground "LightGray" :slant italic))
-    (((class color) (min-colors 88) (background light))
-     (:foreground "VioletRed4"))
-    (((class color) (min-colors 88) (background dark))
-     (:foreground "LightSalmon"))
-    (((class color) (min-colors 16) (background light))
-     (:foreground "RosyBrown"))
-    (((class color) (min-colors 16) (background dark))
-     (:foreground "LightSalmon"))
-    (((class color) (min-colors 8)) (:foreground "green"))
-    (t (:slant italic)))
+  '((t (:inherit font-lock-type-face)))
   "Face used to highlight the summary in git commit messages"
   :group 'git-commit-faces)
 
 (defface git-commit-overlong-summary-face
-  '((((class color) (min-colors 88) (background light))
-     (:foreground "Red1" :weight bold))
-    (((class color) (min-colors 88) (background dark))
-     (:foreground "Pink" :weight bold))
-    (((class color) (min-colors 16) (background light))
-     (:foreground "Red1" :weight bold))
-    (((class color) (min-colors 16) (background dark))
-     (:foreground "Pink" :weight bold))
-    (((class color) (min-colors 8)) (:foreground "red"))
-    (t (:inverse-video t :weight bold)))
+  '((t (:inherit font-lock-warning-face)))
   "Face used to highlight overlong parts of git commit message summaries"
   :group 'git-commit-faces)
 
 (defface git-commit-nonempty-second-line-face
-  '((((class color) (min-colors 88) (background light))
-     (:foreground "Red1" :weight bold))
-    (((class color) (min-colors 88) (background dark))
-     (:foreground "Pink" :weight bold))
-    (((class color) (min-colors 16) (background light))
-     (:foreground "Red1" :weight bold))
-    (((class color) (min-colors 16) (background dark))
-     (:foreground "Pink" :weight bold))
-    (((class color) (min-colors 8)) (:foreground "red"))
-    (t (:inverse-video t :weight bold)))
+  '((t (:inherit font-lock-warning-face)))
   "Face used to highlight text on the second line of git commit messages"
   :group 'git-commit-faces)
 
@@ -130,35 +98,12 @@
   :group 'git-commit-faces)
 
 (defface git-commit-comment-face
-  '((((class grayscale) (background light))
-     (:foreground "DimGray" :weight bold :slant italic))
-    (((class grayscale) (background dark))
-     (:foreground "LightGray" :weight bold :slant italic))
-    (((class color) (min-colors 88) (background light))
-     (:foreground "Firebrick"))
-    (((class color) (min-colors 88) (background dark))
-     (:foreground "chocolate1"))
-    (((class color) (min-colors 16) (background light))
-     (:foreground "red"))
-    (((class color) (min-colors 16) (background dark))
-     (:foreground "red1"))
-    (((class color) (min-colors 8) (background light))
-     (:foreground "red"))
-    (((class color) (min-colors 8) (background dark)))
-    (t (:weight bold :slant italic)))
+  '((t (:inherit font-lock-comment-face)))
   "Face used to highlight comments in git commit messages"
   :group 'git-commit-faces)
 
 (defface git-commit-pseudo-header-face
-  '((((class grayscale) (background light))
-     (:foreground "LightGray" :weight bold))
-    (((class grayscale) (background dark)) (:foreground "DimGray" :weight bold))
-    (((class color) (min-colors 88) (background light)) (:foreground "Purple"))
-    (((class color) (min-colors 88) (background dark)) (:foreground "Cyan1"))
-    (((class color) (min-colors 16) (background light)) (:foreground "Purple"))
-    (((class color) (min-colors 16) (background dark)) (:foreground "Cyan"))
-    (((class color) (min-colors 8)) (:foreground "cyan" :weight bold))
-    (t (:weight bold)))
+  '((t (:inherit font-lock-function-name-face)))
   "Font used to hightlight pseudo headers in git commit messages"
   :group 'git-commit-faces)
 
@@ -174,42 +119,17 @@
   :type '(repeat string))
 
 (defface git-commit-known-pseudo-header-face
-  '((((class grayscale) (background light)) (:foreground "Gray90" :weight bold))
-    (((class grayscale) (background dark)) (:foreground "DimGray" :weight bold))
-    (((class color) (min-colors 88) (background light))
-     (:foreground "ForestGreen"))
-    (((class color) (min-colors 88) (background dark))
-     (:foreground "PaleGreen"))
-    (((class color) (min-colors 16) (background light))
-     (:foreground "ForestGreen"))
-    (((class color) (min-colors 16) (background dark))
-     (:foreground "PaleGreen"))
-    (((class color) (min-colors 8)) (:foreground "green"))
-    (t (:weight bold :underline t)))
+  '((t (:inherit font-lock-keyword-face)))
   "Face used to hightlight common pseudo headers in git commit messages"
   :group 'git-commit-faces)
 
-
 (defface git-commit-branch-face
-  '((((class grayscale) (background light))
-     (:foreground "DimGray" :slant italic))
-    (((class grayscale) (background dark))
-     (:foreground "LightGray" :slant italic))
-    (((class color) (min-colors 88) (background light))
-     (:foreground "VioletRed2"))
-    (((class color) (min-colors 88) (background dark))
-     (:foreground "LightSalmon"))
-    (((class color) (min-colors 16) (background light))
-     (:foreground "RosyBrown"))
-    (((class color) (min-colors 16) (background dark))
-     (:foreground "LightSalmon"))
-    (((class color) (min-colors 8)) (:foreground "green"))
-    (t (:slant italic)))
+  '((t (:inherit font-lock-variable-name-face)))
   "Face used to highlight the branch name in comments in git commit messages"
   :group 'git-commit-faces)
 
 (defface git-commit-no-branch-face
-  '((t :inherit git-commit-branch-face))
+  '((t (:inherit git-commit-branch-face)))
   "Face used when a commit is going to be made outside of any branches"
   :group 'git-commit-faces)
 
