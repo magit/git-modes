@@ -549,7 +549,7 @@ NOTE defaults to `current-prefix-arg'."
           (insert text))))))
 
 ;;;###autoload
-(defun git-commit-mode ()
+(define-derived-mode git-commit-mode text-mode "Git Commit"
   "Major mode for editing git commit messages.
 This mode helps with editing git commit messages both by
 providing commands to do common tasks, and by highlighting the
@@ -565,8 +565,6 @@ Commands:\\<git-commit-map>
 \\[git-commit-reported]   `git-commit-reported'   Insert a Reported-by header
 
 Turning on git commit calls the hooks in `git-commit-mode-hook'."
-  (interactive)
-  (kill-all-local-variables)
   (use-local-map git-commit-map)
   (setq font-lock-multiline t)
   (setq font-lock-defaults '(git-commit-font-lock-keywords t))
@@ -576,12 +574,9 @@ Turning on git commit calls the hooks in `git-commit-mode-hook'."
   (setq comment-start-skip "^#\s"
         comment-start "# "
         comment-end "")
-  (setq major-mode 'git-commit-mode)
   (git-commit-font-lock-diff)
   (when (fboundp 'toggle-save-place)
-    (toggle-save-place 0))
-  (run-mode-hooks 'git-commit-mode-hook)
-  (setq mode-name "Git-Commit"))
+    (toggle-save-place 0)))
 
 ;;;###autoload
 (when (boundp 'session-mode-disable-list)
