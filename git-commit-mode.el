@@ -328,7 +328,9 @@ default comments in git commit messages"
 
 (defun git-commit--save-and-exit ()
   (save-buffer)
-  (kill-buffer))
+  (if server-buffer-clients
+      (server-edit) ; The message buffer comes from emacsclient
+    (kill-buffer)))
 
 (defcustom git-commit-commit-function
   #'git-commit--save-and-exit
