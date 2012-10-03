@@ -1,9 +1,11 @@
 ;;; git-commit-mode.el --- Major mode for editing git commit messages
 ;;; -*- coding: utf-8 -*-
 
+;; Copyright (c) 2012 Sebastian Wiesner <lunaryorn@gmail.com>
 ;; Copyright (c) 2010 Florian Ragwitz.
 ;;
 ;; Author: Florian Ragwitz <rafl@debian.org>
+;;      Sebastian Wiesner <lunaryorn@gmail.com>
 ;; Maintainer: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; URL: https://github.com/lunaryorn/git-commit-mode
 ;; Version: 0.1
