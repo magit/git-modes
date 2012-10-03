@@ -67,14 +67,15 @@
 (eval-when-compile
   (require 'cl))
 
-(defgroup git-commit '((jit-lock custom-group))
+(defgroup git-commit nil
   "Mode for editing git commit messages"
-  :group 'faces)
+  :group 'tools)
 
 (defgroup git-commit-faces nil
   "Faces for highlighting git commit messages"
   :prefix "git-commit-"
-  :group 'git-commit)
+  :group 'git-commit
+  :group 'faces)
 
 (defface git-commit-summary-face
   '((default (:weight bold))
