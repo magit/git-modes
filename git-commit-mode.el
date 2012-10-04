@@ -162,7 +162,7 @@ git commit messages"
 default comments in git commit messages"
   :group 'git-commit-faces)
 
-(defconst git-commit-font-lock-keywords-1
+(defvar git-commit-font-lock-keywords
   (append
    '(("^\\(#\s+On branch \\)\\(.*\\)$"
       (1 'git-commit-comment-face)
@@ -195,8 +195,6 @@ default comments in git commit messages"
       (2 'git-commit-pseudo-header-face))
      ("^\\w[^\s\n]+:\s.*$" . 'git-commit-pseudo-header-face)
      (".*" . 'git-commit-text-face))))
-
-(defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
 (defvar git-commit-mode-hook nil
   "List of functions to be called when activating `git-commit-mode'.")
