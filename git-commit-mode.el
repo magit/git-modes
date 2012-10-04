@@ -74,6 +74,12 @@
 ;; `magit-log-edit-mode', too.  However, the key bindings are not, because Magit
 ;; has it's own way of committing and dealing with headers.
 
+;; Movement
+;; --------
+;;
+;; `beginning-of-defun' (C-M-a) and `end-of-defun' (C-M-e) move to the beginning
+;; and the end respectively of the valid, i.e. non overlong, summary line.
+
 ;;; Code:
 
 (require 'server)
@@ -461,6 +467,23 @@ NOTE defaults to `current-prefix-arg'."
 (git-define-git-commit "cc" "Cc")
 (git-define-git-commit "reported" "Reported-by")
 
+(defun git-commit-beginning-of-summary-line ()
+  "Move point to the beginning of the summary line."
+  (interactive)
+  (goto-char (point-min))
+  (git-commit-find-beginning-of-summary-line))
+
+(defun git-commit-end-of-summary-line ()
+  "Move point to the end of the valid summary line.
+
+If the summary line is overly long, i.e. exceeds 50 characters,
+the point is moved to the 50th character, i.e. the end of the
+valid summary line."
+  (interactive)
+  (goto-char (point-min))
+  (when (git-commit-find-end-of-summary-line)
+    (goto-char (match-end))))
+
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
@@ -515,14 +538,22 @@ This mode helps with editing git commit messages both by
 providing commands to do common tasks, and by highlighting the
 basic structure of and errors in git commit messages.
 
-Commands:\\<git-commit-map>
+\\<git-commit-map>
+
+Committing:
 \\[git-commit-commit]   `git-commit-commit'  Finish editing and commit
+
+Header insertion:
 \\[git-commit-signoff]   `git-commit-signoff'   Insert a Signed-off-by header
 \\[git-commit-ack]   `git-commit-ack'   Insert an Acked-by header
 \\[git-commit-test]   `git-commit-test'   Insert a Tested-by header
 \\[git-commit-review]   `git-commit-review'   Insert a Reviewed-by header
 \\[git-commit-cc]   `git-commit-cc'   Insert a Cc header
 \\[git-commit-reported]   `git-commit-reported'   Insert a Reported-by header
+
+Movements:
+\\[git-commit-beginning-of-defun]   `git-commit-beginning-of-summary-line'
+\\[git-commit-end-of-defun]   `git-commit-end-of-summary-line'
 
 Turning on git commit calls the hooks in `git-commit-mode-hook'."
   (use-local-map git-commit-map)
@@ -536,6 +567,12 @@ Turning on git commit calls the hooks in `git-commit-mode-hook'."
   (setq comment-start-skip "^#\s"
         comment-start "# "
         comment-end "")
+  (make-local-variable 'beginning-of-defun-function)
+  (make-local-variable 'end-of-defun-function)
+  (setq beginning-of-defun-function
+        (lambda (&optional arg) (git-commit-beginning-of-summary-line))
+        end-of-defun-function
+        (lambda (&optional arg) (git-commit-end-of-summary-line)))
   (when (fboundp 'toggle-save-place)
     (toggle-save-place 0)))
 
