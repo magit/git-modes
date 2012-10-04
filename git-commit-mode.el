@@ -76,6 +76,7 @@
 
 ;;; Code:
 
+(require 'server)
 (eval-when-compile
   (require 'cl))
 
