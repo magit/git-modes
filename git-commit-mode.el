@@ -8,7 +8,7 @@
 ;;      Sebastian Wiesner <lunaryorn@gmail.com>
 ;; Maintainer: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; URL: https://github.com/lunaryorn/git-commit-mode
-;; Version: 0.2
+;; Version: 0.3
 ;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
