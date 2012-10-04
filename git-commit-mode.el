@@ -214,19 +214,19 @@ default comments in git commit messages"
 (defvar git-commit-mode-hook nil
   "List of functions to be called when activating `git-commit-mode'.")
 
-(defun git-commit--save-and-exit ()
+(defun git-commit-end-session ()
   (save-buffer)
   (if server-buffer-clients
       (server-edit) ; The message buffer comes from emacsclient
     (kill-buffer)))
 
 (defcustom git-commit-commit-function
-  #'git-commit--save-and-exit
+  #'git-commit-end-session
   "Function to actually perform a commit.
 Used by `git-commit-commit'."
   :group 'git-commit
-  :type '(radio (function-item :doc "Call `save-buffers-kill-terminal'."
-                               git-commit--save-and-exit)
+  :type '(radio (function-item :doc "Save the buffer and end the session."
+                               git-commit-end-session)
                 (function)))
 
 (defun git-commit-commit ()
