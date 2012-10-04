@@ -443,6 +443,17 @@ NOTE defaults to `current-prefix-arg'."
           (delete-region beg (point-max))
           (insert text))))))
 
+(defun git-commit-mode-setup-filling ()
+  "Setup filling for git commit modes."
+  (turn-on-auto-fill)
+  (setq fill-column 72))
+
+;;;###autoload
+(defun git-commit-mode-magit-setup ()
+  "Setup common things for all git commit modes."
+  (git-commit-mode-setup-filling)
+  (font-lock-add-keywords nil git-commit-font-lock-keywords))
+
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
   "Major mode for editing git commit messages.
@@ -461,21 +472,18 @@ Commands:\\<git-commit-map>
 
 Turning on git commit calls the hooks in `git-commit-mode-hook'."
   (use-local-map git-commit-map)
-  (make-local-variable 'font-lock-multiline)
-  (setq font-lock-multiline t)
+  (set (make-local-variable 'font-lock-multiline) t)
   (setq font-lock-defaults '(git-commit-font-lock-keywords t))
+  (git-commit-font-lock-diff)
+  (git-commit-mode-setup-filling)
   (make-local-variable 'comment-start-skip)
   (make-local-variable 'comment-start)
   (make-local-variable 'comment-end)
   (setq comment-start-skip "^#\s"
         comment-start "# "
         comment-end "")
-  (git-commit-font-lock-diff)
   (when (fboundp 'toggle-save-place)
-    (toggle-save-place 0))
-  ;; Configure filling
-  (turn-on-auto-fill)
-  (setq fill-column 72))
+    (toggle-save-place 0)))
 
 ;;;###autoload
 (when (boundp 'session-mode-disable-list)
