@@ -62,6 +62,18 @@
 ;; C-c C-c finishes a commit.  By default this means to save and kill the
 ;; buffer.  Customize `git-commit-commit-function' to change this behaviour.
 
+;; Magit integration
+;; -----------------
+;;
+;; Provide optional magit integration.  To enable, add the following to our init
+;; file:
+;;
+;; (add-hook 'magit-log-edit-mode-hook 'git-commit-mode-magit-setup)
+;;
+;; If enabled font lock and fill settings of `git-commit-mode' are available in
+;; `magit-log-edit-mode', too.  However, the key bindings are not, because Magit
+;; has it's own way of committing and dealing with headers.
+
 ;;; Code:
 
 (eval-when-compile

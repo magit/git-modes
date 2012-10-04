@@ -10,6 +10,7 @@ Features
 - Syntax highlighting for commit messages
 - Correct filling
 - Insertion of common headers like `Signed-of-by`
+- Optional [Magit][] integration
 
 Installation
 ------------
@@ -56,3 +57,4 @@ See `COPYING` for details.
 
 [1]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 [2]: https://github.com/lunaryorn/git-commit-mode/tags
+[magit]: http://magit.github.com/magit/
