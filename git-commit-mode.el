@@ -238,7 +238,7 @@ Used by `git-commit-commit'."
   "Finish editing the commit message and commit.
 
 Saves the buffer, and calls `git-commit-commit-function' to
-continue.  Customize this variable as needed. "
+continue.  Customize this variable as needed."
   (interactive)
   (save-buffer)
   (funcall git-commit-commit-function))
@@ -303,7 +303,7 @@ If the above mechanism fails, the value of the variable
 
 Search starting at the current point up to LIMIT.  If successful,
 return t and set match data to contain the whole summary
-line. Otherwise return nil."
+line.  Otherwise return nil."
   (re-search-forward "\\`\\(?:\\(?:\s*\\|#.*\\)\n\\)*" limit t))
 
 (defun git-commit-find-end-of-summary-line (&optional limit)
@@ -311,7 +311,7 @@ line. Otherwise return nil."
 
 Search starting at the current point up to LIMIT.  If successful,
 return t and set match data to contain the whole summary
-line. Otherwise return nil."
+line.  Otherwise return nil."
   (when (git-commit-find-beginning-of-summary-line limit)
     (re-search-forward "\\(.\\{,50\\}\\)" limit t)))
 
@@ -329,7 +329,7 @@ line.  Otherwise return nil."
 
 Search starting at the current point up to LIMIT.  If successful,
 return t and set match data to contain the whole summary
-line. Otherwise return nil."
+line.  Otherwise return nil."
   (when (git-commit-find-beginning-of-summary-line limit)
     (forward-line)
     (when (or (not limit) (< (point) limit))
