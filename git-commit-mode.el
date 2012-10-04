@@ -189,11 +189,14 @@ default comments in git commit messages"
       (1 'git-commit-comment-face)
       (2 'git-commit-comment-file-face))
      ("^#.*$" . 'git-commit-comment-face)
-     ("\\`\\(?:\\(?:[[:space:]]*\\|#.*\\)\n\\)*\\(.\\{,50\\}\\)\\(.*?\\)\\(?:\n\\(.*\\)\\)?$"
-      (1 'git-commit-summary-face)
-      (2 'git-commit-overlong-summary-face)
-      (3 'git-commit-nonempty-second-line-face))
-     ("\\[[^\n]+?\\]" (0 'git-commit-note-face t))
+     (git-commit-find-end-of-summary-line . 'git-commit-summary-face)
+     ("\\[[^\n]+?\\]" (0 'git-commit-note-face t)) ; Notes override summary line
+     ;; Warnings from overlong lines and nonempty second line override
+     ;; everything
+     (git-commit-find-overlong-summary-line
+      (0 'git-commit-overlong-summary-face t))
+     (git-commit-find-nonempty-second-line
+      (0 'git-commit-nonempty-second-line-face t))
      (,(concat "^\\("
                (regexp-opt git-commit-known-pseudo-headers)
                ":\\)\\(\s.*\\)$")
@@ -283,6 +286,43 @@ If the above mechanism fails, the value of the variable
    (git-commit-first-env-var "GIT_AUTHOR_EMAIL" "GIT_COMMITTER_EMAIL" "EMAIL")
    (git-commit-git-config-var "user.email")
    user-mail-address))
+
+(defun git-commit-find-beginning-of-summary-line (&optional limit)
+  "Find the beginning of the summary line.
+
+Search starting at the current point up to LIMIT.  If successful,
+return t and set match data to contain the whole summary
+line. Otherwise return nil."
+  (re-search-forward "\\`\\(?:\\(?:\s*\\|#.*\\)\n\\)*" limit t))
+
+(defun git-commit-find-end-of-summary-line (&optional limit)
+  "Find the end of the summary line.
+
+Search starting at the current point up to LIMIT.  If successful,
+return t and set match data to contain the whole summary
+line. Otherwise return nil."
+  (when (git-commit-find-beginning-of-summary-line limit)
+    (re-search-forward "\\(.\\{,50\\}\\)" limit t)))
+
+(defun git-commit-find-overlong-summary-line (&optional limit)
+  "Find an overlong part in the summary line.
+
+Search starting at the current point up to LIMIT.  If successful,
+return t and set match data to contain the whole summary
+line.  Otherwise return nil."
+  (when (git-commit-find-end-of-summary-line limit)
+    (re-search-forward "\\(.*\\)$")))
+
+(defun git-commit-find-nonempty-second-line (&optional limit)
+  "Find an nonempty line immediately following the summary line.
+
+Search starting at the current point up to LIMIT.  If successful,
+return t and set match data to contain the whole summary
+line. Otherwise return nil."
+  (when (git-commit-find-beginning-of-summary-line limit)
+    (forward-line)
+    (when (or (not limit) (< (point) limit))
+      (re-search-forward "^\\([^\n]*\\)$" limit t))))
 
 (defun git-commit-find-pseudo-header-position ()
   "Find the position at which commit pseudo headers should be inserted.
