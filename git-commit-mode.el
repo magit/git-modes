@@ -215,6 +215,11 @@ default comments in git commit messages"
   "List of functions to be called when activating `git-commit-mode'.")
 
 (defun git-commit-end-session ()
+  "Save the buffer and end the session.
+
+If the current buffer has clients from the Emacs server, call
+`server-edit' to mark the buffer as done and let the clients
+continue, otherwise kill the buffer via `kill-buffer'."
   (save-buffer)
   (if server-buffer-clients
       (server-edit) ; The message buffer comes from emacsclient
