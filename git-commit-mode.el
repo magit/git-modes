@@ -484,10 +484,10 @@ Turning on git commit calls the hooks in `git-commit-mode-hook'."
 ;;;###autoload
 (setq auto-mode-alist
       (append auto-mode-alist
-              '(("COMMIT_EDITMSG" . git-commit-mode)
-                ("NOTES_EDITMSG" . git-commit-mode)
-                ("MERGE_MSG" . git-commit-mode)
-                ("TAG_EDITMSG" . git-commit-mode))))
+              '(("/COMMIT_EDITMSG\\'" . git-commit-mode)
+                ("/NOTES_EDITMSG\\'" . git-commit-mode)
+                ("/MERGE_MSG\\'" . git-commit-mode)
+                ("/TAG_EDITMSG\\'" . git-commit-mode))))
 
 (provide 'git-commit-mode)
 
