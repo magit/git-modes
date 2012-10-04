@@ -113,6 +113,11 @@
   "Face used to highlight comments in git commit messages"
   :group 'git-commit-faces)
 
+(defface git-commit-note-face
+  '((t (:inherit font-lock-preprocessor-face)))
+  "Face used to highlight notes in git commit messages"
+  :group 'git-commit-faces)
+
 (defface git-commit-pseudo-header-face
   '((t (:inherit font-lock-string-face)))
   "Font used to hightlight pseudo headers in git commit messages"
@@ -188,6 +193,7 @@ default comments in git commit messages"
       (1 'git-commit-summary-face)
       (2 'git-commit-overlong-summary-face)
       (3 'git-commit-nonempty-second-line-face))
+     ("\\[[^]\n]+\\]" (0 'git-commit-note-face t))
      (,(concat "^\\("
                (regexp-opt git-commit-known-pseudo-headers)
                ":\\)\\(\s.*\\)$")
