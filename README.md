@@ -2,7 +2,7 @@ git-commit-mode
 ===============
 
 A GNU Emacs major mode for editing Git commit messages according to the
-[guidelines for commit messages][1].
+[guidelines for commit messages][guidelines].
 
 Features
 --------
@@ -15,7 +15,7 @@ Features
 Installation
 ------------
 
-[Download][2] the latest release, and install `git-commit-mode.el` with
+[Download][] the latest release, and install `git-commit-mode.el` with
 `package-install-file`.
 
 Or just drop `git-commit-mode.el` somewhere into your `load-path`.
@@ -55,6 +55,6 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA.
 See `COPYING` for details.
 
 
-[1]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-[2]: https://github.com/lunaryorn/git-commit-mode/tags
+[guidelines]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[download]: https://github.com/lunaryorn/git-commit-mode/tags
 [magit]: http://magit.github.com/magit/
