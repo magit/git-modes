@@ -183,8 +183,7 @@ default comments in git commit messages"
      ("^\\(#\t\\)\\(.*\\)$"
       (1 'git-commit-comment-face)
       (2 'git-commit-comment-file-face))
-     ("^#.*$"
-      (0 'git-commit-comment-face))
+     ("^#.*$" . 'git-commit-comment-face)
      ("\\`\\(?:\\(?:[[:space:]]*\\|#.*\\)\n\\)*\\(.\\{,50\\}\\)\\(.*?\\)\\(?:\n\\(.*\\)\\)?$"
       (1 'git-commit-summary-face)
       (2 'git-commit-overlong-summary-face)
@@ -194,10 +193,8 @@ default comments in git commit messages"
                ":\\)\\(\s.*\\)$")
       (1 'git-commit-known-pseudo-header-face)
       (2 'git-commit-pseudo-header-face))
-     ("^\\w[^\s\n]+:\s.*$"
-      (0 'git-commit-pseudo-header-face))
-     (".*"
-      (0 'git-commit-text-face)))))
+     ("^\\w[^\s\n]+:\s.*$" . 'git-commit-pseudo-header-face)
+     (".*" . 'git-commit-text-face))))
 
 (defvar git-commit-font-lock-keywords git-commit-font-lock-keywords-1)
 
