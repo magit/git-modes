@@ -30,6 +30,16 @@
 
 ;;; Code:
 
+;;;###autoload
+(define-derived-mode gitconfig-mode prog-mode "Gitconfig"
+  "A major mode for editing .gitconfig files."
+  ;; Configure commenting syntax
+  (make-local-variable 'comment-start-skip)
+  (make-local-variable 'comment-start)
+  (make-local-variable 'comment-end)
+  (setq comment-start-skip "^#\s"
+        comment-start "# "
+        comment-end ""))
 
 (provide 'gitconfig-mode)
 
