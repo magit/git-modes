@@ -487,7 +487,7 @@ valid summary line."
   (interactive)
   (goto-char (point-min))
   (when (git-commit-find-end-of-summary-line)
-    (goto-char (match-end))))
+    (goto-char (match-end 0))))
 
 (defvar git-commit-map
   (let ((map (make-sparse-keymap)))
