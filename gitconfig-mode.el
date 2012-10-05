@@ -87,6 +87,14 @@ Return t if the movement was successful, or nil otherwise."
       (goto-char (match-end 1))
       t)))
 
+(defun gitconfig-indent-line ()
+  "Indent the current line."
+  (interactive)
+  (beginning-of-line)
+  (delete-horizontal-space)
+  (unless (looking-at "^\\[.*\\]\s*$")
+    (insert-tab)))
+
 ;;;###autoload
 (define-derived-mode gitconfig-mode prog-mode "Gitconfig"
   "A major mode for editing .gitconfig files."
@@ -105,7 +113,10 @@ Return t if the movement was successful, or nil otherwise."
   (set (make-local-variable 'beginning-of-defun-function)
        'gitconfig-beginning-of-section)
   (set (make-local-variable 'end-of-defun-function)
-       'gitconfig-end-of-section))
+       'gitconfig-end-of-section)
+  ;; Indentation
+  (set (make-local-variable 'indent-line-function)
+       'gitconfig-indent-line))
 
 (modify-syntax-entry ?# "<" gitconfig-mode-syntax-table)
 (modify-syntax-entry ?\n ">" gitconfig-mode-syntax-table)
