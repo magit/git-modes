@@ -28,6 +28,8 @@
 
 ;; A major mode for editing Git config files.
 
+;;; Code:
+
 
 (provide 'gitconfig-mode)
 
