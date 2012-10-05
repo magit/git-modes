@@ -351,7 +351,10 @@ line.  Otherwise return nil."
   (when (git-commit-find-beginning-of-summary-line limit)
     (forward-line)
     (when (or (not limit) (<= (point) limit))
-      (re-search-forward "^\\([^\n]*\\)$" limit t))))
+      (when (re-search-forward "^\\([^\n]*\\)$" limit t)
+        (put-text-property (match-beginning 0) (match-end 0)
+                           'font-lock-multiline t)
+        t))))
 
 (defun git-commit-find-pseudo-header-position ()
   "Find the position at which commit pseudo headers should be inserted.
