@@ -1,4 +1,4 @@
-;;; gitconfig-mode.el --- Major mode for editing git config files
+;;; gitconfig-mode.el --- Major mode for editing .gitconfig files
 ;;; -*- coding: utf-8; lexical-binding: t -*-
 
 ;; Copyright (c) 2012 Sebastian Wiesner <lunaryorn@gmail.com>
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 
-;; A major mode for editing Git config files.
+;; A major mode for editing .gitconfig files.
 
 ;;; Code:
 
