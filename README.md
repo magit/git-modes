@@ -36,6 +36,13 @@ Further help
 
 `C-h f git-commit-mode`
 
+Credits
+-------
+
+This project is forked of the
+[original work](https://github.com/rafl/git-commit-mode) by
+[Florian Ragwitz](https://github.com/rafl).  Thanks for his work.
+
 License
 -------
 
