@@ -15,8 +15,9 @@ Features
 Installation
 ------------
 
-[Download][] the latest release, and install `git-commit-mode.el` with
-`package-install-file`.
+Install the bleeding-edge package from [MELPA][] with `M-x package-install
+git-config-mode` or [download][] the latest release, and install
+`git-commit-mode.el` with `package-install-file`.
 
 Or just drop `git-commit-mode.el` somewhere into your `load-path`.
 
@@ -61,7 +62,7 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 See `COPYING` for details.
 
-
 [guidelines]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[melpa]: http://melpa.milkbox.net/
 [download]: https://github.com/lunaryorn/git-commit-mode/tags
 [magit]: http://magit.github.com/magit/
