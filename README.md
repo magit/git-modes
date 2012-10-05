@@ -16,7 +16,7 @@ Installation
 ------------
 
 Install the bleeding-edge package from [MELPA][] with `M-x package-install
-git-config-mode` or [download][] the latest release, and install
+git-config-mode``, or [download][] the latest release and install
 `git-commit-mode.el` with `package-install-file`.
 
 Or just drop `git-commit-mode.el` somewhere into your `load-path`.
