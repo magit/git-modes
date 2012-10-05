@@ -577,26 +577,7 @@ keywords via `font-lock-add-keywords'."
 
 This mode helps with editing git commit messages both by
 providing commands to do common tasks, and by highlighting the
-basic structure of and errors in git commit messages.
-
-\\<git-commit-map>
-
-Committing:
-\\[git-commit-commit]   `git-commit-commit'  Finish editing and commit
-
-Header insertion:
-\\[git-commit-signoff]   `git-commit-signoff'   Insert a Signed-off-by header
-\\[git-commit-ack]   `git-commit-ack'   Insert an Acked-by header
-\\[git-commit-test]   `git-commit-test'   Insert a Tested-by header
-\\[git-commit-review]   `git-commit-review'   Insert a Reviewed-by header
-\\[git-commit-cc]   `git-commit-cc'   Insert a Cc header
-\\[git-commit-reported]   `git-commit-reported'   Insert a Reported-by header
-
-Movements:
-\\[git-commit-beginning-of-defun]   `git-commit-beginning-of-summary-line'
-\\[git-commit-end-of-defun]   `git-commit-end-of-summary-line'
-
-Turning on git commit calls the hooks in `git-commit-mode-hook'."
+basic structure of and errors in git commit messages."
   (git-commit-mode-setup-font-lock t)
   (git-commit-mode-setup-filling)
   (git-commit-mode-setup-movements)
