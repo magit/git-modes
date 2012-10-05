@@ -596,7 +596,6 @@ Movements:
 \\[git-commit-end-of-defun]   `git-commit-end-of-summary-line'
 
 Turning on git commit calls the hooks in `git-commit-mode-hook'."
-  (use-local-map git-commit-map)
   (git-commit-mode-setup-font-lock t)
   (git-commit-mode-setup-filling)
   (git-commit-mode-setup-movements)
