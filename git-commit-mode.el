@@ -123,7 +123,7 @@
   :group 'git-commit-faces)
 
 (defface git-commit-note-face
-  '((t (:inherit font-lock-preprocessor-face)))
+  '((t (:inherit font-lock-string-face)))
   "Face used to highlight notes in git commit messages"
   :group 'git-commit-faces)
 
