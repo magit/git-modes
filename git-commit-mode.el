@@ -574,6 +574,7 @@ keywords via `font-lock-add-keywords'."
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
   "Major mode for editing git commit messages.
+
 This mode helps with editing git commit messages both by
 providing commands to do common tasks, and by highlighting the
 basic structure of and errors in git commit messages.
