@@ -350,7 +350,7 @@ return t and set match data to contain the whole summary
 line.  Otherwise return nil."
   (when (git-commit-find-beginning-of-summary-line limit)
     (forward-line)
-    (when (or (not limit) (< (point) limit))
+    (when (or (not limit) (<= (point) limit))
       (re-search-forward "^\\([^\n]*\\)$" limit t))))
 
 (defun git-commit-find-pseudo-header-position ()
