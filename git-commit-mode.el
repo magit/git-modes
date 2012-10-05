@@ -362,14 +362,12 @@ Those headers usually live at the end of a commit message, but
 before any trailing comments git or the user might have inserted."
   (save-excursion
     ;; skip the summary line, limit the search to comment region
-    (goto-char (point-min))
-    (forward-line 2)
     (let ((comment-start (point)))
       (goto-char (point-max))
-      (if (not (re-search-backward "^[^#][^\s:]+:.*$" comment-start t))
+      (if (not (re-search-backward "^[^#][^\s:]+:.*$" nil t))
           ;; no headers yet, so we'll search backwards for a good place
           ;; to insert them
-          (if (not (re-search-backward "^[^#].*?.*$" comment-start t))
+          (if (not (re-search-backward "^[^#].*?.*$" nil t))
               ;; no comment lines anywhere before end-of-buffer, so we
               ;; want to insert right there
               (point-max)
