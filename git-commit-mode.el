@@ -214,9 +214,6 @@ default comments in git commit messages"
      ("^\\w[^\s\n]+:\s.*$" . 'git-commit-pseudo-header-face)
      (".*" . 'git-commit-text-face))))
 
-(defvar git-commit-mode-hook nil
-  "List of functions to be called when activating `git-commit-mode'.")
-
 (defun git-commit-end-session ()
   "Save the buffer and end the session.
 
