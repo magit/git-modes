@@ -66,6 +66,8 @@
   "A major mode for editing .gitconfig files."
   ;; Setup font lock
   (setq font-lock-defaults '(gitconfig-font-lock-keywords))
+  ;; Configure indentation
+  (setq indent-tabs-mode t)
   ;; Configure commenting syntax
   (make-local-variable 'comment-start-skip)
   (make-local-variable 'comment-start)
