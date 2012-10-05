@@ -74,6 +74,9 @@
         comment-start "# "
         comment-end ""))
 
+(modify-syntax-entry ?# "<" gitconfig-mode-syntax-table)
+(modify-syntax-entry ?\n ">" gitconfig-mode-syntax-table)
+
 ;;;###autoload
 (setq auto-mode-alist
       (append '(("/\\.gitconfig\\'" . gitconfig-mode)
