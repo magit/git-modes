@@ -61,6 +61,32 @@
      (1 'gitconfig-key-face)
      (2 'gitconfig-value-face))))
 
+(defun gitconfig-beginning-of-section (&optional arg)
+  "Move point backwards to the beginning of a section.
+
+With ARG, do it that many times.  Negative ARG means move forward
+to the ARGth following beginning of a section.
+
+Return t if the movement was successful, or nil otherwise."
+  (interactive "^p")
+  (let ((repeat (or arg 1)))
+    (when (re-search-backward "^\s*\\(\\[.*\\]\\)\s*$" nil t repeat)
+      (goto-char (match-beginning 1))
+      t)))
+
+(defun gitconfig-end-of-section (&optional arg)
+  "Move point forward to next end of a section.
+
+With ARG, to it that many times.  Negative ARG means move
+backwards to the ARGth preceding end of a section.
+
+Return t if the movement was successful, or nil otherwise."
+  (interactive "^p")
+  (let ((repeat (or arg 1)))
+    (when (re-search-forward "\\(.\\)\n\s*\\[.*\\]\s*$" nil t repeat)
+      (goto-char (match-end 1))
+      t)))
+
 ;;;###autoload
 (define-derived-mode gitconfig-mode prog-mode "Gitconfig"
   "A major mode for editing .gitconfig files."
@@ -74,7 +100,12 @@
   (make-local-variable 'comment-end)
   (setq comment-start-skip "^#\s"
         comment-start "# "
-        comment-end ""))
+        comment-end "")
+  ;; Section movement
+  (set (make-local-variable 'beginning-of-defun-function)
+       'gitconfig-beginning-of-section)
+  (set (make-local-variable 'end-of-defun-function)
+       'gitconfig-end-of-section))
 
 (modify-syntax-entry ?# "<" gitconfig-mode-syntax-table)
 (modify-syntax-entry ?\n ">" gitconfig-mode-syntax-table)
