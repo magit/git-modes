@@ -74,6 +74,12 @@
         comment-start "# "
         comment-end ""))
 
+;;;###autoload
+(setq auto-mode-alist
+      (append '(("/\\.gitconfig\\'" . gitconfig-mode)
+                ("/\\.git/config\\'" . gitconfig-mode))
+              auto-mode-alist))
+
 (provide 'gitconfig-mode)
 
 ;;; gitconfig-mode.el ends here
