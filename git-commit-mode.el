@@ -505,7 +505,7 @@ valid summary line."
   (when (git-commit-find-end-of-summary-line)
     (goto-char (match-end 0))))
 
-(defvar git-commit-map
+(defvar git-commit-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
     (define-key map (kbd "C-c C-s") 'git-commit-signoff)
