@@ -305,9 +305,18 @@ If the above mechanism fails, the value of the variable
   "Find the beginning of the summary line.
 
 Search starting at the current point up to LIMIT.  If successful,
-return t and set match data to contain the whole summary
-line.  Otherwise return nil."
-  (re-search-forward "\\`\\(?:\\(?:\s*\\|#.*\\)\n\\)*" limit t))
+return t and set match data to contain the whole summary line.
+Otherwise return nil."
+  (when
+      (if (eq major-mode 'magit-log-edit-mode)
+          (re-search-forward
+           (format "\\`\\(?:\\(?:[A-Za-z0-9-_]+: *\\(?:.+\\)?\n\\)*%s\\)\
+?\\(?:\\(?:\s*\\|#.*\\)\n\\)*"
+                   (regexp-quote magit-log-header-end)) limit t)
+        (re-search-forward "\\`\\(?:\\(?:\s*\\|#.*\\)\n\\)*" limit t))
+    (put-text-property (match-beginning 0) (match-end 0)
+                       'font-lock-multiline t)
+    t))
 
 (defun git-commit-find-end-of-summary-line (&optional limit)
   "Find the end of the summary line.
@@ -316,7 +325,10 @@ Search starting at the current point up to LIMIT.  If successful,
 return t and set match data to contain the whole summary
 line.  Otherwise return nil."
   (when (git-commit-find-beginning-of-summary-line limit)
-    (re-search-forward "\\(.\\{,50\\}\\)" limit t)))
+    (when (re-search-forward "\\(.\\{,50\\}\\)" limit t)
+      (put-text-property (match-beginning 0) (match-end 0)
+                         'font-lock-multiline t)
+      t)))
 
 (defun git-commit-find-overlong-summary-line (&optional limit)
   "Find an overlong part in the summary line.
@@ -325,7 +337,10 @@ Search starting at the current point up to LIMIT.  If successful,
 return t and set match data to contain the whole summary
 line.  Otherwise return nil."
   (when (git-commit-find-end-of-summary-line limit)
-    (re-search-forward "\\(.*\\)$")))
+    (when (re-search-forward "\\(.*\\)$")
+      (put-text-property (match-beginning 0) (match-end 0)
+                         'font-lock-multiline t)
+      t)))
 
 (defun git-commit-find-nonempty-second-line (&optional limit)
   "Find an nonempty line immediately following the summary line.
@@ -549,7 +564,6 @@ keywords via `font-lock-add-keywords'."
   (if default
       (setq font-lock-defaults '(git-commit-font-lock-keywords t))
     (font-lock-add-keywords nil git-commit-font-lock-keywords))
-  (set (make-local-variable 'font-lock-multiline) t)
   (git-commit-font-lock-diff))
 
 ;;;###autoload
