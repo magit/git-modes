@@ -79,6 +79,9 @@
 ;;
 ;; `beginning-of-defun' (C-M-a) and `end-of-defun' (C-M-e) move to the beginning
 ;; and the end respectively of the valid, i.e. non overlong, summary line.
+;;
+;; These bindings are available in `magit-log-edit-mode', too, if integration is
+;; configured.
 
 ;;; Code:
 
@@ -530,11 +533,31 @@ valid summary line."
   (turn-on-auto-fill)
   (setq fill-column 72))
 
+(defun git-commit-mode-setup-movements ()
+  "Configure beginning/end of summary line movements, if possible."
+  (set (make-local-variable 'beginning-of-defun-function)
+       (lambda (&optional arg) (git-commit-beginning-of-summary-line)))
+  (set (make-local-variable 'end-of-defun-function)
+       (lambda (&optional arg) (git-commit-end-of-summary-line))))
+
+(defun git-commit-mode-setup-font-lock (&optional default)
+  "Setup font locking for git commit modes.
+
+If DEFAULT is t, set font lock keywords as default (see
+`font-lock-defaults'), otherwise just add them to the list of
+keywords via `font-lock-add-keywords'."
+  (if default
+      (setq font-lock-defaults '(git-commit-font-lock-keywords t))
+    (font-lock-add-keywords nil git-commit-font-lock-keywords))
+  (set (make-local-variable 'font-lock-multiline) t)
+  (git-commit-font-lock-diff))
+
 ;;;###autoload
 (defun git-commit-mode-magit-setup ()
   "Setup common things for all git commit modes."
   (git-commit-mode-setup-filling)
-  (font-lock-add-keywords nil git-commit-font-lock-keywords))
+  (git-commit-mode-setup-font-lock)
+  (git-commit-mode-setup-movements))
 
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
@@ -562,22 +585,15 @@ Movements:
 
 Turning on git commit calls the hooks in `git-commit-mode-hook'."
   (use-local-map git-commit-map)
-  (set (make-local-variable 'font-lock-multiline) t)
-  (setq font-lock-defaults '(git-commit-font-lock-keywords t))
-  (git-commit-font-lock-diff)
+  (git-commit-mode-setup-font-lock t)
   (git-commit-mode-setup-filling)
+  (git-commit-mode-setup-movements)
   (make-local-variable 'comment-start-skip)
   (make-local-variable 'comment-start)
   (make-local-variable 'comment-end)
   (setq comment-start-skip "^#\s"
         comment-start "# "
         comment-end "")
-  (make-local-variable 'beginning-of-defun-function)
-  (make-local-variable 'end-of-defun-function)
-  (setq beginning-of-defun-function
-        (lambda (&optional arg) (git-commit-beginning-of-summary-line))
-        end-of-defun-function
-        (lambda (&optional arg) (git-commit-end-of-summary-line)))
   (when (fboundp 'toggle-save-place)
     (toggle-save-place 0)))
 
