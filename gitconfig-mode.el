@@ -56,7 +56,7 @@
   :group 'gitconfig-faces)
 
 (defvar gitconfig-font-lock-keywords
-  '(("^\s*\\[\\(.*\\)\\]\s*$" (1 'gitconfig-section-name-face))
+  '(("^\s*\\[\\(.*\\)\\]\s*$" (1 'gitconfig-section-name-face t))
     ("^\s*\\(.+?\\)\s*=\s*\\(.+\\)\s*$"
      (1 'gitconfig-key-face)
      (2 'gitconfig-value-face))))
