@@ -28,6 +28,7 @@
 
 ;; A major mode for editing Git config files.
 
-(provide 'git-commit-mode)
 
-;;; git-commit-mode.el ends here
+(provide 'gitconfig-mode)
+
+;;; gitconfig-mode.el ends here
