@@ -52,10 +52,10 @@
   `(
     ;; Highlight section and subsection gitconfig headers, and override
     ;; syntactic fontification in these.
-    ("^\\s-*\\[\\<\\(\\sw+\\)\\>\\(?:\\s-+\\(\\s\".+?\\s\"\\)\\)?\\]\\s-*"
+    ("^\\s-*\\[\\_<\\(\\(?:\\sw\\|\\s_\\)+\\)\\_>\\(?:\\s-+\\(\\s\".+?\\s\"\\)\\)?\\]\\s-*"
      (1 'font-lock-type-face t nil)
      (2 'font-lock-function-name-face t t))
-    ("^\\s-*\\<\\(\\sw+\\)\\>\\s-*\\(?:=.*\\)?$"
+    ("^\\s-*\\_<\\(\\(?:\\sw\\|\\s_\\)+\\)\\_>\\s-*\\(?:=.*\\)?$"
      (1 'font-lock-variable-name-face))
     ;; Highlight booleans and numbers
     (,(format "=\\s-*%s\\s-*$"
