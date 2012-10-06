@@ -48,10 +48,21 @@
     table)
   "Syntax table to use in .gitconfig buffers.")
 
+(defvar gitconfig-font-lock-keywords
+  '(
+    ;; Highlight section and subsection gitconfig headers, and override
+    ;; syntactic fontification in these.
+    ("^\\s-*\\[\\(\\sw+\\)\\(?:\\s-+\\(\\s\".+?\\s\"\\)\\)?\\]\\s-*"
+     (1 'font-lock-type-face t nil)
+     (2 'font-lock-function-name-face t t))
+    ("\\s-*\\(.+?\\)\\s-*="
+     (1 'font-lock-variable-name-face))))
+
 ;;;###autoload
 (define-derived-mode gitconfig-mode conf-unix-mode "Gitconfig"
   "A major mode for editing .gitconfig files."
   ;; .gitconfig is indented with tabs only
+  (conf-mode-initialize "#" gitconfig-font-lock-keywords)
   (setq indent-tabs-mode t)
   (set (make-local-variable 'indent-line-function)
        'gitconfig-indent-line))
