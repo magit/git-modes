@@ -5,7 +5,7 @@
 ;;
 ;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; URL: https://github.com/lunaryorn/gitconfig-mode
-;; Version: 0.1
+;; Version: 0.2
 ;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
