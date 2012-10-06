@@ -20,8 +20,9 @@ package-install-file`.
 Usage
 -----
 
-``.gitconfig`` and ``.git/config`` files will automatically use
-`gitconfig-mode`.
+`gitconfig-mode` is automatically enabled for ``.gitconfig`` and ``.git/config``
+files.  The mode is derived from `conf-unix-mode`, and all commands provided by
+`conf-mode` will work as expected.
 
 Customization
 -------------
