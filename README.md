@@ -8,15 +8,12 @@ Features
 
 - Syntax highlighting
 - Indentation
-- Section movements with `C-M-a` and `C-M-b`
 
 Installation
 ------------
 
 [Download][] the latest release and install `gitconfig-mode.el` with `M-x
 package-install-file`.
-
-Or just drop `gitconfig-mode.el` somewhere into your `load-path`.
 
 `gitconfig-mode` needs at least GNU Emacs 24.
 
