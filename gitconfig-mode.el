@@ -41,22 +41,28 @@ Return t if so, or nil otherwise."
     (or (looking-at "^\\[\\_<.*?\\]")
         (looking-at "^\t\\_<\\(?:\\sw|\\s_\\)"))))
 
+(defun gitconfig-point-in-indentation-p ()
+  "Determine whether the point is in the indentation of the current line.
+
+Return t if so, or nil otherwise."
+  (save-excursion
+    (let ((pos (point)))
+      (back-to-indentation)
+      (< pos (point)))))
+
 (defun gitconfig-indent-line ()
   "Indent the current line."
   (interactive)
   (unless (gitconfig-line-indented-p)
-    (let ((point-in-line (point)))
-      (back-to-indentation)
-      (setq point-in-line (- point-in-line
-                             (- (point) (line-beginning-position))))
+    (let ((old-point (point-marker))
+          (was-in-indent (gitconfig-point-in-indentation-p)))
       (beginning-of-line)
       (delete-horizontal-space)
       (unless (= (char-after) ?\[)
-        (insert-tab)
-        (setq point-in-line (+ point-in-line 1)))
-      (if (>= point-in-line (line-beginning-position))
-          (goto-char point-in-line)
-        (back-to-indentation)))))
+        (insert-char ?\t 1))
+      (if was-in-indent
+          (back-to-indentation)
+        (goto-char (marker-position old-point))))))
 
 (defvar gitconfig-mode-syntax-table
   (let ((table (make-syntax-table conf-unix-mode-syntax-table)))
