@@ -32,14 +32,31 @@
 
 (require 'conf-mode)
 
+(defun gitconfig-line-indented-p ()
+  "Determine whether the current line is intended correctly.
+
+Return t if so, or nil otherwise."
+  (save-excursion
+    (beginning-of-line)
+    (or (looking-at "^\\[\\_<.*?\\]")
+        (looking-at "^\t\\_<\\(?:\\sw|\\s_\\)"))))
+
 (defun gitconfig-indent-line ()
   "Indent the current line."
   (interactive)
-  (beginning-of-line)
-  (delete-horizontal-space)
-  (unless (looking-at "^\\[.*\\]\s*$")
-    (insert-tab)
-    (back-to-indentation)))
+  (unless (gitconfig-line-indented-p)
+    (let ((point-in-line (point)))
+      (back-to-indentation)
+      (setq point-in-line (- point-in-line
+                             (- (point) (line-beginning-position))))
+      (beginning-of-line)
+      (delete-horizontal-space)
+      (unless (= (char-after) ?\[)
+        (insert-tab)
+        (setq point-in-line (+ point-in-line 1)))
+      (if (>= point-in-line (line-beginning-position))
+          (goto-char point-in-line)
+        (back-to-indentation)))))
 
 (defvar gitconfig-mode-syntax-table
   (let ((table (make-syntax-table conf-unix-mode-syntax-table)))
