@@ -55,7 +55,7 @@
     ("^\\s-*\\[\\(\\sw+\\)\\(?:\\s-+\\(\\s\".+?\\s\"\\)\\)?\\]\\s-*"
      (1 'font-lock-type-face t nil)
      (2 'font-lock-function-name-face t t))
-    ("\\s-*\\(.+?\\)\\s-*="
+    ("^\\s-*\\(.+?\\)\\s-*="
      (1 'font-lock-variable-name-face))
     ;; Highlight booleans and numbers
     (,(format "=\\s-*%s\\s-*$"
