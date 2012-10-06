@@ -12,8 +12,9 @@ Features
 Installation
 ------------
 
-[Download][] the latest release and install `gitconfig-mode.el` with `M-x
-package-install-file`.
+Install the ELPA package from [MELPA][] or [Marmalade][] with `M-x
+package-install gitconfig-mode`, or [download][] the latest release and install
+`gitconfig-mode.el` with `M-x package-install-file`.
 
 `gitconfig-mode` needs at least GNU Emacs 24.
 
@@ -52,4 +53,6 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 See `COPYING` for details.
 
+[melpa]: http://melpa.milkbox.net/
+[marmalade]: http://marmalade-repo.org/packages/gitconfig-mode/
 [download]: https://github.com/lunaryorn/gitconfig-mode/tags
