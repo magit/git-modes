@@ -18,6 +18,8 @@ package-install-file`.
 
 Or just drop `gitconfig-mode.el` somewhere into your `load-path`.
 
+`gitconfig-mode` needs at least GNU Emacs 24.
+
 Usage
 -----
 
