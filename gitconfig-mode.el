@@ -61,8 +61,7 @@
     (,(format "=\\s-*%s\\s-*$"
               (regexp-opt '("yes" "no" "true" "false" "on" "off") 'words))
      (1 'font-lock-keyword-face))
-    ("=\\s-*\\<\\([0-9]+\\)\\>\\s-*$" (1 'font-lock-constant-face)))
-  )
+    ("=\\s-*\\<\\([0-9]+\\)\\>\\s-*$" (1 'font-lock-constant-face))))
 
 ;;;###autoload
 (define-derived-mode gitconfig-mode conf-unix-mode "Gitconfig"
