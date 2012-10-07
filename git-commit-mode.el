@@ -107,16 +107,6 @@
   "Face used to highlight text on the second line of git commit messages"
   :group 'git-commit-faces)
 
-(defface git-commit-text-face
-  '((t (:inherit default)))
-  "Face used to highlight text in git commit messages"
-  :group 'git-commit-faces)
-
-(defface git-commit-comment-face
-  '((t (:inherit font-lock-comment-face)))
-  "Face used to highlight comments in git commit messages"
-  :group 'git-commit-faces)
-
 (defface git-commit-note-face
   '((t (:inherit font-lock-string-face)))
   "Face used to highlight notes in git commit messages"
@@ -173,27 +163,19 @@ default comments in git commit messages"
 
 (defvar git-commit-font-lock-keywords
   (append
-   '(("^\\(#\s+On branch \\)\\(.*\\)$"
-      (1 'git-commit-comment-face)
-      (2 'git-commit-branch-face)))
-   (mapcar (lambda (exp) `(,(concat "^\\(#\s+\\)\\(" (car exp) "\\)$")
-                           (1 'git-commit-comment-face)
-                           (2 ',(cdr exp))))
+   '(("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
+   (mapcar (lambda (exp) `(,(concat "^\\s<\\s-+\\(" (car exp) "\\)$")
+                           (1 ',(cdr exp) t)))
            '(("Not currently on any branch." . git-commit-no-branch-face)
              ("Changes to be committed:"     . git-commit-comment-heading-face)
              ("Untracked files:"             . git-commit-comment-heading-face)
              ("Changed but not updated:"     . git-commit-comment-heading-face)
              ("Unmerged paths:"              . git-commit-comment-heading-face)))
-   `(("^\\(#\t\\)\\([^:]+\\)\\(:\s+\\)\\(.*\\)$"
-      (1 'git-commit-comment-face)
-      (2 'git-commit-comment-action-face)
-      (3 'git-commit-comment-face)
-      (4 'git-commit-comment-file-face))
-     ("^\\(#\t\\)\\(.*\\)$"
-      (1 'git-commit-comment-face)
-      (2 'git-commit-comment-file-face))
-     ("^#.*$" . 'git-commit-comment-face)
-     (git-commit-find-end-of-summary-line . 'git-commit-summary-face)
+   `(("^\\s<\t\\([^:]+\\):\\s-+\\(.*\\)$"
+      (1 'git-commit-comment-action-face t)
+      (2 'git-commit-comment-file-face t))
+     ("^\\s<\t\\(.*\\)$" (1 'git-commit-comment-file-face t))
+     (git-commit-find-end-of-summary-line (0 'git-commit-summary-face t))
      ("\\[[^\n]+?\\]" (0 'git-commit-note-face t)) ; Notes override summary line
      ;; Warnings from overlong lines and nonempty second line override
      ;; everything
@@ -206,8 +188,7 @@ default comments in git commit messages"
                ":\\)\\(\s.*\\)$")
       (1 'git-commit-known-pseudo-header-face)
       (2 'git-commit-pseudo-header-face))
-     ("^\\w[^\s\n]+:\s.*$" . 'git-commit-pseudo-header-face)
-     (".*" . 'git-commit-text-face))))
+     ("^\\<\\S-+:\\s-.*$" . 'git-commit-pseudo-header-face))))
 
 (defun git-commit-end-session ()
   "Save the buffer and end the session.
@@ -511,6 +492,14 @@ valid summary line."
     (define-key map (kbd "C-c C-p") 'git-commit-reported)
     map))
 
+(defvar git-commit-mode-syntax-table
+  (let ((table (make-syntax-table text-mode-syntax-table)))
+    (modify-syntax-entry ?# "<" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?\r ">" table)
+    table)
+  "Syntax table used by `git-commit-mode'.")
+
 (defun git-commit-font-lock-diff ()
   "Add font lock on diff."
   (save-excursion
@@ -555,7 +544,7 @@ If DEFAULT is t, set font lock keywords as default (see
 `font-lock-defaults'), otherwise just add them to the list of
 keywords via `font-lock-add-keywords'."
   (if default
-      (setq font-lock-defaults '(git-commit-font-lock-keywords t))
+      (setq font-lock-defaults '(git-commit-font-lock-keywords))
     (font-lock-add-keywords nil git-commit-font-lock-keywords))
   (git-commit-font-lock-diff))
 
@@ -576,12 +565,10 @@ basic structure of and errors in git commit messages."
   (git-commit-mode-setup-font-lock t)
   (git-commit-mode-setup-filling)
   (git-commit-mode-setup-movements)
-  (make-local-variable 'comment-start-skip)
-  (make-local-variable 'comment-start)
-  (make-local-variable 'comment-end)
-  (setq comment-start-skip "^#\s"
-        comment-start "# "
-        comment-end "")
+  (set (make-local-variable 'comment-start) "#")
+  (set (make-local-variable 'comment-start-skip)
+       (concat (regexp-quote comment-start) "+\\s-*"))
+  (set (make-local-variable 'comment-end) "")
   (when (fboundp 'toggle-save-place)
     (toggle-save-place 0)))
 
