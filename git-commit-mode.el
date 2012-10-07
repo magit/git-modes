@@ -31,8 +31,7 @@
 
 ;; A major mode for editing Git commit messages.
 
-;; Formatting
-;; ----------
+;; * Formatting
 ;;
 ;; Highlight the formatting of git commit messages and indicate errors according
 ;; to the guidelines for commit messages (see
@@ -44,8 +43,7 @@
 ;; Enable `auto-fill-mode' and set the `fill-column' to 72 according to the
 ;; aforementioned guidelines.
 
-;; Headers
-;; -------
+;; * Headers
 ;;
 ;; Provide commands to insert standard headers into commit messages.
 ;;
@@ -56,14 +54,12 @@
 ;; C-c C-o inserts Cc (`git-commit-cc').
 ;; C-c C-p inserts Reported-by (`git-commit-reported').
 
-;; Committing
-;; ----------
+;; * Committing
 ;;
 ;; C-c C-c finishes a commit.  By default this means to save and kill the
 ;; buffer.  Customize `git-commit-commit-function' to change this behaviour.
 
-;; Magit integration
-;; -----------------
+;; * Magit integration
 ;;
 ;; Provide optional magit integration.  To enable, add the following to our init
 ;; file:
