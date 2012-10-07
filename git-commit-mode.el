@@ -70,14 +70,6 @@
 ;; `magit-log-edit-mode', too.  However, the key bindings are not, because Magit
 ;; has it's own way of committing and dealing with headers.
 
-;; * Movement
-;;
-;; `beginning-of-defun' (C-M-a) and `end-of-defun' (C-M-e) move to the beginning
-;; and the end respectively of the valid, i.e. non overlong, summary line.
-;;
-;; These bindings are available in `magit-log-edit-mode', too, if integration is
-;; configured.
-
 ;;; Code:
 
 (require 'server)
@@ -435,23 +427,6 @@ NOTE defaults to `current-prefix-arg'."
 (git-define-git-commit "cc" "Cc")
 (git-define-git-commit "reported" "Reported-by")
 
-(defun git-commit-beginning-of-summary-line ()
-  "Move point to the beginning of the summary line."
-  (interactive)
-  (goto-char (point-min))
-  (git-commit-find-beginning-of-summary-line))
-
-(defun git-commit-end-of-summary-line ()
-  "Move point to the end of the valid summary line.
-
-If the summary line is overly long, i.e. exceeds 50 characters,
-the point is moved to the 50th character, i.e. the end of the
-valid summary line."
-  (interactive)
-  (goto-char (point-min))
-  (when (git-commit-find-end-of-summary-line)
-    (goto-char (match-end 0))))
-
 (defvar git-commit-font-lock-keywords
   (append
    '(("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
@@ -531,13 +506,6 @@ valid summary line."
   (turn-on-auto-fill)
   (setq fill-column 72))
 
-(defun git-commit-mode-setup-movements ()
-  "Configure beginning/end of summary line movements, if possible."
-  (set (make-local-variable 'beginning-of-defun-function)
-       (lambda (&optional arg) (git-commit-beginning-of-summary-line)))
-  (set (make-local-variable 'end-of-defun-function)
-       (lambda (&optional arg) (git-commit-end-of-summary-line))))
-
 (defun git-commit-mode-setup-font-lock (&optional default)
   "Setup font locking for git commit modes.
 
@@ -553,8 +521,7 @@ keywords via `font-lock-add-keywords'."
 (defun git-commit-mode-magit-setup ()
   "Setup common things for all git commit modes."
   (git-commit-mode-setup-filling)
-  (git-commit-mode-setup-font-lock)
-  (git-commit-mode-setup-movements))
+  (git-commit-mode-setup-font-lock))
 
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
@@ -565,7 +532,6 @@ providing commands to do common tasks, and by highlighting the
 basic structure of and errors in git commit messages."
   (git-commit-mode-setup-font-lock t)
   (git-commit-mode-setup-filling)
-  (git-commit-mode-setup-movements)
   (set (make-local-variable 'comment-start) "#")
   (set (make-local-variable 'comment-start-skip)
        (concat (regexp-quote comment-start) "+\\s-*"))
