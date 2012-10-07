@@ -1,0 +1,60 @@
+* =git-commit-mode=
+
+A GNU Emacs major mode for editing Git commit messages according to the
+[[http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html][guidelines by Tim Pope]].
+
+
+** Features
+
+- Syntax highlighting for commit messages
+- Correct filling
+- Insertion of common headers like `Signed-of-by`
+- Optional [[http://magit.github.com/magit/][Magit]] integration
+
+
+** Installation
+
+Install the ELPA package from [[http://melpa.milkbox.net][MELPA]] (bleeding edge) or [[http://marmalade-repo.org/packages/git-commit-mode][Marmalade]] (stable) with
+~M-x package-install git-commit--mode~, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the latest release and install
+~git-commit-mode.el~ with =M-x package-install-file=.
+
+=git-commit-mode= is written and tested against GNU Emacs 24, earlier releases
+may or may not work.
+
+
+** Customization
+
+#+BEGIN_EXAMPLE
+M-x customize-group git-commit
+#+END_EXAMPLE
+
+
+** Further help
+
+#+BEGIN_EXAMPLE
+C-h f git-commit-mode
+#+END_EXAMPLE
+
+
+** Credits
+
+This project is forked of the [[https://github.com/rafl/git-commit-mode][original work]] by [[https://github.com/rafl][Florian Ragwitz]].  Much thanks for
+his work.
+
+
+** License
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+See [[file:COPYING][COPYING]] for details.
