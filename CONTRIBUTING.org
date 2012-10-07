@@ -5,7 +5,7 @@ want to contribute a new module, please report to the [[https://github.com/lunar
 repository and send a pull request, but respect the following guidelines.
 
 
-* Issue reporting
+** Issue reporting
 
 - Check that the issue has not already been reported.
 - Check that the issue has not already been fixed in the latest code.
@@ -13,7 +13,7 @@ repository and send a pull request, but respect the following guidelines.
   complete sentences.
 
 
-* Pull requests
+** Pull requests
 
 + Read [[http://gun.io/blog/how-to-github-fork-branch-and-pull-request][how to properly contribute to open source projects on Github]].
 + Use a topic branch to easily amend a pull request later, if necessary.
