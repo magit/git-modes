@@ -1,0 +1,48 @@
+* =gitconfig-mode=
+
+A major mode for editing .gitconfig files.
+
+** Features
+
+- Syntax highlighting
+- Indentation
+
+** Installation
+
+Install the ELPA package from [[http://melpa.milkbox.net][MELPA]] (bleeding edge) or [[http://marmalade-repo.org/packages/gitconfig-mode/][Marmalade]] (stable) with
+=M-x package-install=, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the latest release and install
+~gitconfig-mode.el~ with =M-x package-install-file=.
+
+=gitconfig-mode= is written and tested against GNU Emacs 24, earlier releases
+may or may not work.
+
+** Usage
+
+=gitconfig-mode= is automatically enabled for ~.gitconfig~ and ~.git/config~
+files.  The mode is derived from =conf-unix-mode=, so all commands provided
+by =conf-mode= (e.g. =conf-align-assignments=) will work as expected.
+
+** Customization
+
+Currently no customization is provided.
+
+** Further help
+
+=C-h f gitconfig-mode=
+
+** License
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+See [[file:COPYING][COPYING]] for details.
