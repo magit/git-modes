@@ -22,6 +22,19 @@ Install the ELPA package from [[http://melpa.milkbox.net][MELPA]] (bleeding edge
 may or may not work.
 
 
+** Usage
+
+Just configure ~emacs~ or ~emacsclient~ as editor for Git. =git-commit-mode=
+will automatically be enabled for Git message buffers.
+
+To enable integration with [[http://magit.github.com/magit/][Magit]] to provide font locking and auto filling to
+=magit-log-edit-mode=, insert the following into your ~init.el~:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'magit-log-edit-mode-hook 'git-commit-mode-magit-setup)
+#+END_SRC
+
+
 ** Customization
 
 #+BEGIN_EXAMPLE
