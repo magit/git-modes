@@ -170,6 +170,7 @@ default comments in git commit messages"
              ("Changes to be committed:"     . git-commit-comment-heading-face)
              ("Untracked files:"             . git-commit-comment-heading-face)
              ("Changed but not updated:"     . git-commit-comment-heading-face)
+             ("Changes not staged for commit:" . git-commit-comment-heading-face)
              ("Unmerged paths:"              . git-commit-comment-heading-face)))
    `(("^\\s<\t\\([^:]+\\):\\s-+\\(.*\\)$"
       (1 'git-commit-comment-action-face t)
