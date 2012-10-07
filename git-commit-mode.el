@@ -237,60 +237,22 @@ If the above mechanism fails, the value of the variable
    (git-commit-git-config-var "user.email")
    user-mail-address))
 
-(defun git-commit-find-beginning-of-summary-line (&optional limit)
-  "Find the beginning of the summary line.
+(defun git-commit-skip-magit-header (&optional limit)
+  "Move point to the end of the magit header.
 
-Search starting at the current point up to LIMIT.  If successful,
-return t and set match data to contain the whole summary line.
-Otherwise return nil."
-  (when
-      (if (eq major-mode 'magit-log-edit-mode)
-          (re-search-forward
-           (format "\\`\\(?:\\(?:[A-Za-z0-9-_]+: *\\(?:.+\\)?\n\\)*%s\\)\
-?\\(?:\\(?:\s*\\|#.*\\)\n\\)*"
-                   (regexp-quote magit-log-header-end)) limit t)
-        (re-search-forward "\\`\\(?:\\(?:\s*\\|#.*\\)\n\\)*" limit t))
-    (put-text-property (match-beginning 0) (match-end 0)
-                       'font-lock-multiline t)
-    t))
+If `major-mode' is not `magit-log-edit-mode' this function does
+nothing."
+  (when (eq major-mode 'magit-log-edit-mode)
 
-(defun git-commit-find-end-of-summary-line (&optional limit)
-  "Find the end of the summary line.
-
-Search starting at the current point up to LIMIT.  If successful,
-return t and set match data to contain the whole summary
-line.  Otherwise return nil."
-  (when (git-commit-find-beginning-of-summary-line limit)
-    (when (re-search-forward "\\(.\\{,50\\}\\)" limit t)
-      (put-text-property (match-beginning 0) (match-end 0)
-                         'font-lock-multiline t)
-      t)))
-
-(defun git-commit-find-overlong-summary-line (&optional limit)
-  "Find an overlong part in the summary line.
-
-Search starting at the current point up to LIMIT.  If successful,
-return t and set match data to contain the whole summary
-line.  Otherwise return nil."
-  (when (git-commit-find-end-of-summary-line limit)
-    (when (re-search-forward "\\(.*\\)$")
-      (put-text-property (match-beginning 0) (match-end 0)
-                         'font-lock-multiline t)
-      t)))
-
-(defun git-commit-find-nonempty-second-line (&optional limit)
-  "Find an nonempty line immediately following the summary line.
-
-Search starting at the current point up to LIMIT.  If successful,
-return t and set match data to contain the whole summary
-line.  Otherwise return nil."
-  (when (git-commit-find-beginning-of-summary-line limit)
-    (forward-line)
-    (when (or (not limit) (<= (point) limit))
-      (when (re-search-forward "^\\([^\n]*\\)$" limit t)
-        (put-text-property (match-beginning 0) (match-end 0)
-                           'font-lock-multiline t)
-        t))))
+    (let ((old-point (point))
+          (limit (or limit (point-max))))
+      ;; Logic and regular expressions here are copied from
+      ;; `magit-log-edit-get-fields'
+      (while (and (<= (point) limit)
+                  (locking-at "^\\([A-Za-z0-9-_]+\\): *\\(.+\\)?$"))
+        (forward-line))
+      (unless (re-search-forward (regexp-quote magit-log-header-end) limit t)
+        (goto-char old-point)))))
 
 (defun git-commit-find-pseudo-header-position ()
   "Find the position at which commit pseudo headers should be inserted.
@@ -427,6 +389,45 @@ NOTE defaults to `current-prefix-arg'."
 (git-define-git-commit "cc" "Cc")
 (git-define-git-commit "reported" "Reported-by")
 
+
+(defconst git-commit-skip-before-summary-regexp
+  "\\(?:\\(?:\\s-*\\|\\s<.*\\)\n\\)*"
+  "Regexp to skip comments and empty lines before summary.")
+
+(defvar git-commit-skip-magit-header-regexp nil
+  "Regexp to skip magit header.")
+
+(eval-after-load 'magit
+  ;; Configure regexp to skip Magit header
+  (setq git-commit-skip-magit-header-regexp
+        (format
+         "\\(?:\\(?:[A-Za-z0-9-_]+: *.*\n\\)*%s\\)?"
+         (regexp-quote magit-log-header-end))))
+
+(defun git-commit-find-summary-regexp ()
+  "Create a regular expression to find the Git summary line."
+  (let ((skip-magit (if (eq major-mode 'magit-log-edit-mode)
+                        git-commit-skip-magit-header-regexp
+                      ""))
+        (skip-before-summary git-commit-skip-before-summary-regexp)
+        (summary "\\(?:^\\(.\\{,50\\}\\)\\(.*?\\)$\\)")
+        (nonempty-line "\\(?:\n\\(.*\\)\\)?$"))
+    (format "\\`%s%s%s%s"
+            skip-magit skip-before-summary
+            summary nonempty-line)))
+
+(defun git-commit-summary-font-lock-keywords (&optional errors)
+  "Create font lock keywords to fontify the Git summary.
+
+If ERRORS is non-nil create keywords that highlight errors in the
+summary line, not the summary line itself."
+  (let ((regexp (git-commit-find-summary-regexp)))
+    (if errors
+        `(,regexp
+          (2 'git-commit-overlong-summary-face t)
+          (3 'git-commit-nonempty-second-line-face t))
+      `(,regexp (1 'git-commit-summary-face t)))))
+
 (defvar git-commit-font-lock-keywords
   (append
    '(("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
@@ -442,14 +443,11 @@ NOTE defaults to `current-prefix-arg'."
       (1 'git-commit-comment-action-face t)
       (2 'git-commit-comment-file-face t))
      ("^\\s<\t\\(.*\\)$" (1 'git-commit-comment-file-face t))
-     (git-commit-find-end-of-summary-line (0 'git-commit-summary-face t))
+     (eval . (git-commit-summary-font-lock-keywords))
      ("\\[[^\n]+?\\]" (0 'git-commit-note-face t)) ; Notes override summary line
      ;; Warnings from overlong lines and nonempty second line override
      ;; everything
-     (git-commit-find-overlong-summary-line
-      (0 'git-commit-overlong-summary-face t))
-     (git-commit-find-nonempty-second-line
-      (0 'git-commit-nonempty-second-line-face t))
+     (eval . (git-commit-summary-font-lock-keywords t))
      (,(concat "^\\("
                (regexp-opt git-commit-known-pseudo-headers)
                ":\\)\\(\s.*\\)$")
@@ -515,6 +513,7 @@ keywords via `font-lock-add-keywords'."
   (if default
       (setq font-lock-defaults '(git-commit-font-lock-keywords))
     (font-lock-add-keywords nil git-commit-font-lock-keywords))
+  (set (make-local-variable 'font-lock-multiline) t)
   (git-commit-font-lock-diff))
 
 ;;;###autoload
