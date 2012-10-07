@@ -10,7 +10,7 @@ A major mode for editing .gitconfig files.
 ** Installation
 
 Install the ELPA package from [[http://melpa.milkbox.net][MELPA]] (bleeding edge) or [[http://marmalade-repo.org/packages/gitconfig-mode/][Marmalade]] (stable) with
-=M-x package-install=, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the latest release and install
+~M-x package-install gitconfig-mode~, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the latest release and install
 ~gitconfig-mode.el~ with =M-x package-install-file=.
 
 =gitconfig-mode= is written and tested against GNU Emacs 24, earlier releases
