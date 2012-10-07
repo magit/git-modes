@@ -71,7 +71,7 @@ Return t if so, or nil otherwise."
     table)
   "Syntax table to use in .gitconfig buffers.")
 
-(defvar gitconfig-font-lock-keywords
+(defvar gitconfig-mode-font-lock-keywords
   `(
     ;; Highlight section and subsection gitconfig headers, and override
     ;; syntactic fontification in these.
@@ -90,7 +90,7 @@ Return t if so, or nil otherwise."
 (define-derived-mode gitconfig-mode conf-unix-mode "Gitconfig"
   "A major mode for editing .gitconfig files."
   ;; .gitconfig is indented with tabs only
-  (conf-mode-initialize "#" gitconfig-font-lock-keywords)
+  (conf-mode-initialize "#" gitconfig-mode-font-lock-keywords)
   (setq indent-tabs-mode t)
   (set (make-local-variable 'indent-line-function)
        'gitconfig-indent-line))
