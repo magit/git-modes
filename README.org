@@ -28,7 +28,9 @@ Currently no customization is provided.
 
 ** Further help
 
-=C-h f gitconfig-mode=
+#+BEGIN_EXAMPLE
+C-h f gitconfig-mode
+#+END_EXAMPLE
 
 ** License
 
