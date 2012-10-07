@@ -70,8 +70,7 @@
 ;; `magit-log-edit-mode', too.  However, the key bindings are not, because Magit
 ;; has it's own way of committing and dealing with headers.
 
-;; Movement
-;; --------
+;; * Movement
 ;;
 ;; `beginning-of-defun' (C-M-a) and `end-of-defun' (C-M-e) move to the beginning
 ;; and the end respectively of the valid, i.e. non overlong, summary line.
