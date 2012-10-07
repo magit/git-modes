@@ -161,36 +161,6 @@ git commit messages"
 default comments in git commit messages"
   :group 'git-commit-faces)
 
-(defvar git-commit-font-lock-keywords
-  (append
-   '(("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
-   (mapcar (lambda (exp) `(,(concat "^\\s<\\s-+\\(" (car exp) "\\)$")
-                           (1 ',(cdr exp) t)))
-           '(("Not currently on any branch." . git-commit-no-branch-face)
-             ("Changes to be committed:"     . git-commit-comment-heading-face)
-             ("Untracked files:"             . git-commit-comment-heading-face)
-             ("Changed but not updated:"     . git-commit-comment-heading-face)
-             ("Changes not staged for commit:" . git-commit-comment-heading-face)
-             ("Unmerged paths:"              . git-commit-comment-heading-face)))
-   `(("^\\s<\t\\([^:]+\\):\\s-+\\(.*\\)$"
-      (1 'git-commit-comment-action-face t)
-      (2 'git-commit-comment-file-face t))
-     ("^\\s<\t\\(.*\\)$" (1 'git-commit-comment-file-face t))
-     (git-commit-find-end-of-summary-line (0 'git-commit-summary-face t))
-     ("\\[[^\n]+?\\]" (0 'git-commit-note-face t)) ; Notes override summary line
-     ;; Warnings from overlong lines and nonempty second line override
-     ;; everything
-     (git-commit-find-overlong-summary-line
-      (0 'git-commit-overlong-summary-face t))
-     (git-commit-find-nonempty-second-line
-      (0 'git-commit-nonempty-second-line-face t))
-     (,(concat "^\\("
-               (regexp-opt git-commit-known-pseudo-headers)
-               ":\\)\\(\s.*\\)$")
-      (1 'git-commit-known-pseudo-header-face)
-      (2 'git-commit-pseudo-header-face))
-     ("^\\<\\S-+:\\s-.*$" . 'git-commit-pseudo-header-face))))
-
 (defun git-commit-end-session ()
   "Save the buffer and end the session.
 
@@ -481,6 +451,36 @@ valid summary line."
   (goto-char (point-min))
   (when (git-commit-find-end-of-summary-line)
     (goto-char (match-end 0))))
+
+(defvar git-commit-font-lock-keywords
+  (append
+   '(("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
+   (mapcar (lambda (exp) `(,(concat "^\\s<\\s-+\\(" (car exp) "\\)$")
+                           (1 ',(cdr exp) t)))
+           '(("Not currently on any branch." . git-commit-no-branch-face)
+             ("Changes to be committed:"     . git-commit-comment-heading-face)
+             ("Untracked files:"             . git-commit-comment-heading-face)
+             ("Changed but not updated:"     . git-commit-comment-heading-face)
+             ("Changes not staged for commit:" . git-commit-comment-heading-face)
+             ("Unmerged paths:"              . git-commit-comment-heading-face)))
+   `(("^\\s<\t\\([^:]+\\):\\s-+\\(.*\\)$"
+      (1 'git-commit-comment-action-face t)
+      (2 'git-commit-comment-file-face t))
+     ("^\\s<\t\\(.*\\)$" (1 'git-commit-comment-file-face t))
+     (git-commit-find-end-of-summary-line (0 'git-commit-summary-face t))
+     ("\\[[^\n]+?\\]" (0 'git-commit-note-face t)) ; Notes override summary line
+     ;; Warnings from overlong lines and nonempty second line override
+     ;; everything
+     (git-commit-find-overlong-summary-line
+      (0 'git-commit-overlong-summary-face t))
+     (git-commit-find-nonempty-second-line
+      (0 'git-commit-nonempty-second-line-face t))
+     (,(concat "^\\("
+               (regexp-opt git-commit-known-pseudo-headers)
+               ":\\)\\(\s.*\\)$")
+      (1 'git-commit-known-pseudo-header-face)
+      (2 'git-commit-pseudo-header-face))
+     ("^\\<\\S-+:\\s-.*$" . 'git-commit-pseudo-header-face))))
 
 (defvar git-commit-mode-map
   (let ((map (make-sparse-keymap)))
