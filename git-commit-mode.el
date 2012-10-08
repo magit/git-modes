@@ -484,8 +484,8 @@ summary line, not the summary line itself."
   (let ((regexp (git-commit-find-summary-regexp)))
     (if errors
         `(,regexp
-          (2 'git-commit-overlong-summary-face t)
-          (3 'git-commit-nonempty-second-line-face t))
+          (2 'git-commit-overlong-summary-face t t)
+          (3 'git-commit-nonempty-second-line-face t t))
       `(,regexp (1 'git-commit-summary-face t)))))
 
 (defun git-commit-mode-heading-keywords ()
