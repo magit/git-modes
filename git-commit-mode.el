@@ -440,10 +440,9 @@ summary line, not the summary line itself."
              ("Changed but not updated:"     . git-commit-comment-heading-face)
              ("Changes not staged for commit:" . git-commit-comment-heading-face)
              ("Unmerged paths:"              . git-commit-comment-heading-face)))
-   `(("^\\s<\t\\([^:]+\\):\\s-+\\(.*\\)$"
-      (1 'git-commit-comment-action-face t)
+   `(("^\\s<\t\\(?:\\([^:]+\\):\\s-+\\)?\\(.*\\)$"
+      (1 'git-commit-comment-action-face t t)
       (2 'git-commit-comment-file-face t))
-     ("^\\s<\t\\(.*\\)$" (1 'git-commit-comment-file-face t))
      (eval . (git-commit-mode-summary-font-lock-keywords))
      ("\\[[^\n]+?\\]" (0 'git-commit-note-face t)) ; Notes override summary line
      ;; Warnings from overlong lines and nonempty second line override
