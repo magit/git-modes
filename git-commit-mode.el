@@ -47,12 +47,12 @@
 ;;
 ;; Provide commands to insert standard headers into commit messages.
 ;;
-;; C-c C-s inserts Signed-off-by (`git-commit-signoff').
-;; C-C C-a inserts Acked-by (`git-commit-ack').
-;; C-c C-t inserts Tested-by (`git-commit-test').
-;; C-c C-r inserts Reviewed-by (`git-commit-review').
-;; C-c C-o inserts Cc (`git-commit-cc').
-;; C-c C-p inserts Reported-by (`git-commit-reported').
+;; - C-c C-s inserts Signed-off-by (`git-commit-signoff').
+;; - C-C C-a inserts Acked-by (`git-commit-ack').
+;; - C-c C-t inserts Tested-by (`git-commit-test').
+;; - C-c C-r inserts Reviewed-by (`git-commit-review').
+;; - C-c C-o inserts Cc (`git-commit-cc').
+;; - C-c C-p inserts Reported-by (`git-commit-reported').
 
 ;; * Committing
 ;;
