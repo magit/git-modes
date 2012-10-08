@@ -416,7 +416,7 @@ NOTE defaults to `current-prefix-arg'."
             skip-magit skip-before-summary
             summary nonempty-line)))
 
-(defun git-commit-summary-font-lock-keywords (&optional errors)
+(defun git-commit-mode-summary-font-lock-keywords (&optional errors)
   "Create font lock keywords to fontify the Git summary.
 
 If ERRORS is non-nil create keywords that highlight errors in the
@@ -428,7 +428,7 @@ summary line, not the summary line itself."
           (3 'git-commit-nonempty-second-line-face t))
       `(,regexp (1 'git-commit-summary-face t)))))
 
-(defvar git-commit-font-lock-keywords
+(defvar git-commit-mode-font-lock-keywords
   (append
    '(("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
    (mapcar (lambda (exp) `(,(concat "^\\s<\\s-+\\(" (car exp) "\\)$")
@@ -443,11 +443,11 @@ summary line, not the summary line itself."
       (1 'git-commit-comment-action-face t)
       (2 'git-commit-comment-file-face t))
      ("^\\s<\t\\(.*\\)$" (1 'git-commit-comment-file-face t))
-     (eval . (git-commit-summary-font-lock-keywords))
+     (eval . (git-commit-mode-summary-font-lock-keywords))
      ("\\[[^\n]+?\\]" (0 'git-commit-note-face t)) ; Notes override summary line
      ;; Warnings from overlong lines and nonempty second line override
      ;; everything
-     (eval . (git-commit-summary-font-lock-keywords t))
+     (eval . (git-commit-mode-summary-font-lock-keywords t))
      (,(concat "^\\("
                (regexp-opt git-commit-known-pseudo-headers)
                ":\\)\\(\s.*\\)$")
@@ -511,8 +511,8 @@ If DEFAULT is t, set font lock keywords as default (see
 `font-lock-defaults'), otherwise just add them to the list of
 keywords via `font-lock-add-keywords'."
   (if default
-      (setq font-lock-defaults '(git-commit-font-lock-keywords))
-    (font-lock-add-keywords nil git-commit-font-lock-keywords))
+      (setq font-lock-defaults '(git-commit-mode-font-lock-keywords))
+    (font-lock-add-keywords nil git-commit-mode-font-lock-keywords))
   (set (make-local-variable 'font-lock-multiline) t)
   (git-commit-font-lock-diff))
 
