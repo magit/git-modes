@@ -446,7 +446,7 @@ use for fontification.")
 
 (eval-after-load 'magit
   ;; Configure regexp to skip Magit header
-  (setq git-commit-skip-magit-header-regexp
+  '(setq git-commit-skip-magit-header-regexp
         (format
          "\\(?:\\(?:[A-Za-z0-9-_]+: *.*\n\\)*%s\\)?"
          (regexp-quote magit-log-header-end))))
