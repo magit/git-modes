@@ -8,7 +8,7 @@
 ;;      Florian Ragwitz <rafl@debian.org>
 ;; Maintainer: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; URL: https://github.com/lunaryorn/git-modes
-;; Version: 0.8
+;; Version: 0.8.1
 ;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
