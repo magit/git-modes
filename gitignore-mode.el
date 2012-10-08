@@ -42,7 +42,7 @@
 
 ;;;###autoload
 (define-derived-mode gitignore-mode conf-unix-mode "Gitignore"
-  "A major mode for editing .gitconfig files."
+  "A major mode for editing .gitignore files."
   (conf-mode-initialize "#")
   ;; Disable syntactic font locking, because comments are only valid at
   ;; beginning of line.
