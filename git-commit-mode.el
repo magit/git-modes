@@ -171,17 +171,6 @@ commit was successful, or nil otherwise."
                                git-commit-end-session)
                 (function)))
 
-(defvar git-commit-magit-enabled nil
-  "Whether git-commit-mode is enabled in a magit buffer.
-
-`git-commit-mode' features will only be available in
-`magit-log-edit-mode' if this variable is t in the corresponding
-buffer.
-
-Do not set this variable manually, instead call
-`git-commit-mode-magit-setup' to enable Magit integration.")
-(make-variable-buffer-local 'git-commit-magit-enabled)
-
 (defun git-commit-has-style-errors-p ()
   "Check whether the current buffer has style errors.
 
@@ -211,13 +200,12 @@ Return t if the commit may be performed, or nil otherwise."
                                          compile activate)
   "Check for stylistic errors in the current commit message.
 
-If `git-commit-mode-magit-enabled' is t in the current
-`magit-log-edit-mode' buffer, check for stylistic errors, unless
-prefix argument IGNORE-STYLE-ERRORS is given.  If the message
-contains stylistic errors, ask for confirmation before
-committing."
+If `git-commit-style-minor-mode` is enabled in the current
+buffer, check for stylistic errors, unless prefix argument
+IGNORE-STYLE-ERRORS is given.  If the message contains stylistic
+errors, ask for confirmation before committing."
   (interactive "P")
-  (if (or (not git-commit-magit-enabled)
+  (if (or (not git-commit-style-minor-mode)
           (git-commit-may-do-commit ignore-style-errors))
       ad-do-it
     (message "Commit canceled due to stylistic errors.")))
@@ -572,17 +560,46 @@ If DEFAULT is t, set font lock keywords as default (see
 `font-lock-defaults'), otherwise just add them to the list of
 keywords via `font-lock-add-keywords'."
   (if default
-      (setq font-lock-defaults '(git-commit-mode-font-lock-keywords t))
-    (font-lock-add-keywords nil git-commit-mode-font-lock-keywords))
+
+   )
   (set (make-local-variable 'font-lock-multiline) t)
   (git-commit-font-lock-diff))
 
 ;;;###autoload
-(defun git-commit-mode-magit-setup ()
-  "Setup common things for all git commit modes."
-  (git-commit-mode-setup-filling)
-  (git-commit-mode-setup-font-lock)
-  (setq git-commit-magit-enabled t))
+(define-minor-mode git-commit-style-minor-mode
+  "Check style in Git commit messages.
+
+If enabled, add `git-commit-mode-font-lock-keywords' to the
+current buffer, and enable `auto-fill-mode' with proper fill
+column.
+
+Use together with `magit-log-edit-mode' to check commit messages
+in Magit."  nil " GC-Style" nil
+  (cond
+   (git-commit-style-minor-mode
+    (git-commit-mode-setup-filling)
+    (font-lock-add-keywords nil git-commit-mode-font-lock-keywords)
+    (set (make-local-variable 'font-lock-multiline) t))
+   (t
+    (turn-off-auto-fill)
+    (font-lock-remove-keywords nil git-commit-mode-font-lock-keywords)
+    (set (make-local-variable 'font-lock-multiline) nil))))
+
+;;;###autoload
+(defun git-commit-style-minor-mode-on ()
+  "Turn on variable `git-commit-style-minor-mode'.
+
+Use with `magit-log-edit-mode-hook' to check stylistic errors in Magit."
+  (git-commit-style-minor-mode 1))
+
+;;;###autoload
+(defun git-commit-style-minor-mode-off ()
+  "Turn off variable `git-commit-style-minor-mode'."
+  (git-commit-style-minor-mode -1))
+
+;;;###autoload
+(defalias 'git-commit-mode-magit-setup 'git-commit-style-minor-mode-on
+  "Obsolete alias for `git-commit-style-minor-mode-on'.")
 
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
@@ -591,7 +608,8 @@ keywords via `font-lock-add-keywords'."
 This mode helps with editing git commit messages both by
 providing commands to do common tasks, and by highlighting the
 basic structure of and errors in git commit messages."
-  (git-commit-mode-setup-font-lock t)
+  (setq font-lock-defaults '(git-commit-mode-font-lock-keywords t))
+  (set (make-local-variable 'font-lock-multiline) t)
   (git-commit-mode-setup-filling)
   (set (make-local-variable 'comment-start) "#")
   (set (make-local-variable 'comment-start-skip)
