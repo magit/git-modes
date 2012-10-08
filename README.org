@@ -1,28 +1,27 @@
-* =git-commit-mode=
+* Git modes
 
-A GNU Emacs major mode for editing Git commit messages according to the
-[[http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html][guidelines by Tim Pope]].
+GNU Emacs modes for Git-related files.
 
 
 ** Features
 
-- Syntax highlighting for commit messages
-- Correct filling
-- Insertion of common headers like `Signed-of-by`
-- Optional [[http://magit.github.com/magit/][Magit]] integration
+- =git-commit-mode= :: A GNU Emacs major mode for editing Git commit messages
+     according to the [[http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html][guidelines by Tim Pope]], with optional [[http://magit.github.com/magit/][Magit]] integration.
 
 
 ** Installation
 
-Install the ELPA package from [[http://melpa.milkbox.net][MELPA]] (bleeding edge) or [[http://marmalade-repo.org/packages/git-commit-mode][Marmalade]] (stable) with
-~M-x package-install git-commit--mode~, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the latest release and install
-~git-commit-mode.el~ with =M-x package-install-file=.
+Install the ELPA package from [[http://melpa.milkbox.net][MELPA]] (bleeding edge snapshots) or [[http://marmalade-repo.org/][Marmalade]]
+(stable releases) with ~M-x package-install git-commit--mode~, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the
+latest release and install ~git-commit-mode.el~ with =M-x package-install-file=.
 
 =git-commit-mode= is written and tested against GNU Emacs 24, earlier releases
 may or may not work.
 
 
 ** Usage
+
+*** =git-commit-mode=
 
 Just configure ~emacs~ or ~emacsclient~ as editor for Git. =git-commit-mode=
 will automatically be enabled for Git message buffers.
@@ -37,22 +36,18 @@ To enable integration with [[http://magit.github.com/magit/][Magit]] to provide 
 
 ** Customization
 
-#+BEGIN_EXAMPLE
-M-x customize-group git-commit
-#+END_EXAMPLE
+- =git-commit-mode= :: ~M-x customize-group git-commit~
 
 
 ** Further help
 
-#+BEGIN_EXAMPLE
-C-h f git-commit-mode
-#+END_EXAMPLE
+- ~C-h f git-commit-mode~
 
 
 ** Credits
 
-This project is forked of the [[https://github.com/rafl/git-commit-mode][original work]] by [[https://github.com/rafl][Florian Ragwitz]].  Much thanks for
-his work.
+=git-commit-mode= is forked of the [[https://github.com/rafl/git-commit-mode][original work]] by [[https://github.com/rafl][Florian Ragwitz]], improved by
+[[https://github.com/jwiegley][John Wiegley]].  Thanks for their work.
 
 
 ** License
