@@ -609,6 +609,9 @@ basic structure of and errors in git commit messages."
   (set (make-local-variable 'comment-start-skip)
        (concat (regexp-quote comment-start) "+\\s-*"))
   (set (make-local-variable 'comment-end) "")
+  ;; Recognize changelog-style paragraphs
+  (set (make-local-variable 'paragraph-start)
+       (concat paragraph-start "\\|*\\|("))
   (when (fboundp 'toggle-save-place)
     (toggle-save-place 0)))
 
