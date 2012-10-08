@@ -4,8 +4,8 @@
 ;; Copyright (c) 2012 Sebastian Wiesner <lunaryorn@gmail.com>
 ;; Copyright (c) 2010 Florian Ragwitz.
 ;;
-;; Author: Florian Ragwitz <rafl@debian.org>
-;;      Sebastian Wiesner <lunaryorn@gmail.com>
+;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
+;;      Florian Ragwitz <rafl@debian.org>
 ;; Maintainer: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; URL: https://github.com/lunaryorn/git-modes
 ;; Version: 0.7
