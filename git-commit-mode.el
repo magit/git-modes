@@ -58,6 +58,9 @@
 ;;
 ;; C-c C-c finishes a commit.  By default this means to save and kill the
 ;; buffer.  Customize `git-commit-commit-function' to change this behaviour.
+;;
+;; Check a buffer for stylistic errors before committing, and ask for
+;; confirmation before committing with style errors.
 
 ;; * Magit integration
 ;;
@@ -158,21 +161,83 @@ continue, otherwise kill the buffer via `kill-buffer'."
 
 (defcustom git-commit-commit-function
   #'git-commit-end-session
-  "Function to actually perform a commit.
-Used by `git-commit-commit'."
+  "Function called by `git-commit-commit' to actually perform a commit.
+
+The function is called without argument, with the current buffer
+being the commit message buffer.  It shall return t, if the
+commit was successful, or nil otherwise.
+"
   :group 'git-commit
   :type '(radio (function-item :doc "Save the buffer and end the session."
                                git-commit-end-session)
                 (function)))
 
-(defun git-commit-commit ()
+(defvar git-commit-magit-enabled nil
+  "Whether git-commit-mode is enabled in a magit buffer.
+
+`git-commit-mode' features will only be available in
+`magit-log-edit-mode' if this variable is t in the corresponding
+buffer.
+
+Do not set this variable manually, instead call
+`git-commit-mode-magit-setup' to enable Magit integration.")
+(make-variable-buffer-local 'git-commit-magit-enabled)
+
+(defun git-commit-has-style-errors-p ()
+  "Check whether the current buffer has style errors.
+
+Return t, if the current buffer has style errors, or nil
+otherwise."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward (git-commit-find-summary-regexp) nil t)
+      (or (string-match-p ".+" (or (match-string 2) ""))
+          (string-match-p "^.+$" (or (match-string 3) ""))))))
+
+(defun git-commit-may-do-commit (&optional force)
+  "Check whether a commit may be performed.
+
+Check for stylistic errors in the current message, unless FORCE
+is non-nil.  If stylistic errors are found, ask the user to
+confirm commit.
+
+Return t if the commit may be performed, or nil otherwise."
+  (if force t
+    (if (git-commit-has-style-errors-p)
+        (yes-or-no-p "Buffer has style errors. Commit anyway?")
+      t)))
+
+(defadvice magit-log-edit-commit (around magit-log-edit-commit-check-style
+                                         (&optional ignore-style-errors)
+                                         compile activate)
+  "Check for stylistic errors in the current commit message.
+
+If `git-commit-mode-magit-enabled' is t in the current
+`magit-log-edit-mode' buffer, check for stylistic errors, unless
+prefix argument IGNORE-STYLE-ERRORS is given.  If the message
+contains stylistic errors, ask for confirmation before
+committing."
+  (interactive "P")
+  (if (or (not git-commit-magit-enabled)
+          (git-commit-may-do-commit ignore-style-errors))
+      ad-do-it
+    (message "Commit canceled due to stylistic errors.")))
+
+(defun git-commit-commit (&optional force)
   "Finish editing the commit message and commit.
 
-Saves the buffer, and calls `git-commit-commit-function' to
-continue.  Customize this variable as needed."
-  (interactive)
+Saves the buffer and checks for style errors, unless prefix
+argument FORCE is given.
+
+Call `git-commit-commit-function` to actually perform the commit.
+Customize this variable as needed.
+
+Return t, if the commit was successful, or nil otherwise."
+  (interactive "P")
   (save-buffer)
-  (funcall git-commit-commit-function))
+  (if (git-commit-may-do-commit force)
+      (funcall git-commit-commit-function)
+    (message "Commit canceled due to stylistic errors.")))
 
 (defun git-commit-git-config-var (key)
   "Retrieve a git configuration value.
@@ -517,7 +582,8 @@ keywords via `font-lock-add-keywords'."
 (defun git-commit-mode-magit-setup ()
   "Setup common things for all git commit modes."
   (git-commit-mode-setup-filling)
-  (git-commit-mode-setup-font-lock))
+  (git-commit-mode-setup-font-lock)
+  (setq git-commit-magit-enabled t))
 
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
