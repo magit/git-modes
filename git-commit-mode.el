@@ -282,13 +282,14 @@ If the above mechanism fails, the value of the variable
 
 (defun git-commit-find-pseudo-header-position ()
   "Find the position at which commit pseudo headers should be inserted.
+
 Those headers usually live at the end of a commit message, but
-before any trailing comments git or the user might have inserted."
+before any trailing comments git or the user might have
+inserted."
   (save-excursion
-    ;; skip the summary line, limit the search to comment region
     (let ((comment-start (point)))
       (goto-char (point-max))
-      (if (not (re-search-backward "^[^#][^\s:]+:.*$" nil t))
+      (if (not (re-search-backward "^\\S<[^\s:]+:.*$" nil t))
           ;; no headers yet, so we'll search backwards for a good place
           ;; to insert them
           (if (not (re-search-backward "^[^#].*?.*$" nil t))
@@ -315,11 +316,11 @@ The header is inserted at the position returned by
 isn't after an existing header or a newline, an extra newline is
 inserted before the header."
   (let* ((header-at (git-commit-find-pseudo-header-position))
-         (prev-line (save-excursion
-                      (goto-char (- header-at 1))
-                      (thing-at-point 'line)))
+         (prev-line (or (save-excursion
+                          (goto-char (- header-at 1))
+                          (thing-at-point 'line)) ""))
          (pre       (if (or (string-match "^[^\s:]+:.+$" prev-line)
-                            (string-match "\\`\s*$" prev-line))
+                            (string-match "\\`\\s-*$" prev-line))
                         "" "\n")))
     (save-excursion
       (goto-char header-at)
