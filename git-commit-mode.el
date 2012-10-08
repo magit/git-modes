@@ -508,7 +508,8 @@ Known comment headings are provided by `git-commit-comment-headings'."
     (define-key map (kbd "C-c C-r") 'git-commit-review)
     (define-key map (kbd "C-c C-o") 'git-commit-cc)
     (define-key map (kbd "C-c C-p") 'git-commit-reported)
-    map))
+    map)
+  "Key map used by `git-commit-mode'.")
 
 (defvar git-commit-mode-syntax-table
   (let ((table (make-syntax-table text-mode-syntax-table)))
