@@ -389,6 +389,17 @@ NOTE defaults to `current-prefix-arg'."
 (git-define-git-commit "cc" "Cc")
 (git-define-git-commit "reported" "Reported-by")
 
+(defconst git-commit-comment-headings-alist
+  '(("Not currently on any branch." . git-commit-no-branch-face)
+    ("Changes to be committed:" . git-commit-comment-heading-face)
+    ("Untracked files:" . git-commit-comment-heading-face)
+    ("Changed but not updated:" . git-commit-comment-heading-face)
+    ("Changes not staged for commit:" . git-commit-comment-heading-face)
+    ("Unmerged paths:" . git-commit-comment-heading-face))
+  "Headings in message comments.
+
+The `car' of each cell is the heading text, the `cdr' the face to
+use for fontification.")
 
 (defconst git-commit-skip-before-summary-regexp
   "\\(?:\\(?:\\s-*\\|\\s<.*\\)\n\\)*"
@@ -428,6 +439,15 @@ summary line, not the summary line itself."
           (3 'git-commit-nonempty-second-line-face t))
       `(,regexp (1 'git-commit-summary-face t)))))
 
+(defun git-commit-mode-heading-keywords ()
+  "Create font lock keywords to fontify comment headings.
+
+Known comment headings are provided by `git-commit-comment-headings'."
+  (mapcar (lambda (cell) `(,(format "^\\s<\\s-+\\(%s\\)$"
+                                    (regexp-quote (car cell)))
+                           (1 ',(cdr cell) t)))
+          git-commit-comment-headings-alist))
+
 (defvar git-commit-mode-font-lock-keywords
   (append
    `(("^\\s<.*$" . 'font-lock-comment-face)
@@ -446,14 +466,7 @@ summary line, not the summary line itself."
      ;; Warnings from overlong lines and nonempty second line override
      ;; everything
      (eval . (git-commit-mode-summary-font-lock-keywords t)))
-   (mapcar (lambda (exp) `(,(concat "^\\s<\\s-+\\(" (car exp) "\\)$")
-                           (1 ',(cdr exp) t)))
-           '(("Not currently on any branch." . git-commit-no-branch-face)
-             ("Changes to be committed:"     . git-commit-comment-heading-face)
-             ("Untracked files:"             . git-commit-comment-heading-face)
-             ("Changed but not updated:"     . git-commit-comment-heading-face)
-             ("Changes not staged for commit:" . git-commit-comment-heading-face)
-             ("Unmerged paths:"              . git-commit-comment-heading-face)))))
+   (git-commit-mode-heading-keywords)))
 
 (defvar git-commit-mode-map
   (let ((map (make-sparse-keymap)))
