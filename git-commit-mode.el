@@ -553,18 +553,6 @@ Known comment headings are provided by `git-commit-comment-headings'."
   (turn-on-auto-fill)
   (setq fill-column 72))
 
-(defun git-commit-mode-setup-font-lock (&optional default)
-  "Setup font locking for git commit modes.
-
-If DEFAULT is t, set font lock keywords as default (see
-`font-lock-defaults'), otherwise just add them to the list of
-keywords via `font-lock-add-keywords'."
-  (if default
-
-   )
-  (set (make-local-variable 'font-lock-multiline) t)
-  (git-commit-font-lock-diff))
-
 ;;;###autoload
 (define-minor-mode git-commit-style-minor-mode
   "Check style in Git commit messages.
