@@ -226,22 +226,6 @@ If the above mechanism fails, the value of the variable
    (git-commit-git-config-var "user.email")
    user-mail-address))
 
-(defun git-commit-skip-magit-header (&optional limit)
-  "Move point to the end of the magit header.
-
-If `major-mode' is not `magit-log-edit-mode' this function does
-nothing."
-  (when (eq major-mode 'magit-log-edit-mode)
-    (let ((old-point (point))
-          (limit (or limit (point-max))))
-      ;; Logic and regular expressions here are copied from
-      ;; `magit-log-edit-get-fields'
-      (while (and (<= (point) limit)
-                  (locking-at "^\\([A-Za-z0-9-_]+\\): *\\(.+\\)?$"))
-        (forward-line))
-      (unless (re-search-forward (regexp-quote magit-log-header-end) limit t)
-        (goto-char old-point)))))
-
 (defun git-commit-find-pseudo-header-position ()
   "Find the position at which commit pseudo headers should be inserted.
 Those headers usually live at the end of a commit message, but
