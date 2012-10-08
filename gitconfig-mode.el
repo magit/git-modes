@@ -4,7 +4,7 @@
 ;; Copyright (c) 2012 Sebastian Wiesner <lunaryorn@gmail.com>
 ;;
 ;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
-;; URL: https://github.com/lunaryorn/gitconfig-mode
+;; URL: https://github.com/lunaryorn/git-modes
 ;; Version: 0.2
 ;; Keywords: convenience vc git
 
