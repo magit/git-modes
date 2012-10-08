@@ -430,7 +430,8 @@ summary line, not the summary line itself."
 
 (defvar git-commit-mode-font-lock-keywords
   (append
-   '(("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
+   '(("^\\s<.*$" . 'font-lock-comment-face)
+     ("^\\s<\\s-On branch \\(.*\\)$" (1 'git-commit-branch-face t)))
    (mapcar (lambda (exp) `(,(concat "^\\s<\\s-+\\(" (car exp) "\\)$")
                            (1 ',(cdr exp) t)))
            '(("Not currently on any branch." . git-commit-no-branch-face)
@@ -511,7 +512,7 @@ If DEFAULT is t, set font lock keywords as default (see
 `font-lock-defaults'), otherwise just add them to the list of
 keywords via `font-lock-add-keywords'."
   (if default
-      (setq font-lock-defaults '(git-commit-mode-font-lock-keywords))
+      (setq font-lock-defaults '(git-commit-mode-font-lock-keywords t))
     (font-lock-add-keywords nil git-commit-mode-font-lock-keywords))
   (set (make-local-variable 'font-lock-multiline) t)
   (git-commit-font-lock-diff))
