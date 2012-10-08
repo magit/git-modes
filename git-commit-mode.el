@@ -74,6 +74,9 @@
 
 (require 'server)
 
+(eval-when-compile
+  (defvar magit-log-header-end))
+
 (defgroup git-commit nil
   "Mode for editing git commit messages"
   :group 'tools)
