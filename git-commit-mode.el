@@ -109,17 +109,6 @@
   "Font used to hightlight pseudo headers in git commit messages"
   :group 'git-commit-faces)
 
-(defcustom git-commit-known-pseudo-headers
-  '("Signed-off-by"
-    "Acked-by"
-    "Cc"
-    "Reported-by"
-    "Tested-by"
-    "Reviewed-by")
-  "A list of git pseudo headers to be highlighted."
-  :group 'git-commit
-  :type '(repeat string))
-
 (defface git-commit-known-pseudo-header-face
   '((t (:inherit font-lock-keyword-face)))
   "Face used to hightlight common pseudo headers in git commit messages"
@@ -387,6 +376,15 @@ NOTE defaults to `current-prefix-arg'."
 
 (git-define-git-commit "cc" "Cc")
 (git-define-git-commit "reported" "Reported-by")
+
+(defconst git-commit-known-pseudo-headers
+  '("Signed-off-by"
+    "Acked-by"
+    "Cc"
+    "Reported-by"
+    "Tested-by"
+    "Reviewed-by")
+  "A list of git pseudo headers to be highlighted.")
 
 (defconst git-commit-comment-headings-alist
   '(("Not currently on any branch." . git-commit-no-branch-face)
