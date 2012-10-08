@@ -15,7 +15,7 @@ GNU Emacs modes for Git-related files.
 
 Install the ELPA packages from [[http://melpa.milkbox.net][MELPA]] (bleeding edge snapshots) or [[http://marmalade-repo.org/][Marmalade]]
 (stable releases) with ~M-x package-install git-commit-mode~ and/or ~M-x
-package-install gitconfig-mode~, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the latest release and install
+package-install gitconfig-mode~, or [[https://github.com/lunaryorn/git-modes/tags][download]] the latest release and install
 ~git-commit-mode.el~ and/or ~gitconfig-mode.el~ with =M-x package-install-file=.
 
 The modes are written and tested against GNU Emacs 24 and may or may not work in
