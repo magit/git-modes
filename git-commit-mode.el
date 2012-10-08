@@ -243,7 +243,6 @@ If the above mechanism fails, the value of the variable
 If `major-mode' is not `magit-log-edit-mode' this function does
 nothing."
   (when (eq major-mode 'magit-log-edit-mode)
-
     (let ((old-point (point))
           (limit (or limit (point-max))))
       ;; Logic and regular expressions here are copied from
