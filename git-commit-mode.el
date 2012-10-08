@@ -47,12 +47,12 @@
 ;;
 ;; Provide commands to insert standard headers into commit messages.
 ;;
-;; - C-c C-s inserts Signed-off-by (`git-commit-signoff').
-;; - C-C C-a inserts Acked-by (`git-commit-ack').
-;; - C-c C-t inserts Tested-by (`git-commit-test').
-;; - C-c C-r inserts Reviewed-by (`git-commit-review').
-;; - C-c C-o inserts Cc (`git-commit-cc').
-;; - C-c C-p inserts Reported-by (`git-commit-reported').
+;; - C-c C-h s or C-c C-s inserts Signed-off-by (`git-commit-signoff').
+;; - C-C C-h a inserts Acked-by (`git-commit-ack').
+;; - C-c C-h t inserts Tested-by (`git-commit-test').
+;; - C-c C-h r inserts Reviewed-by (`git-commit-review').
+;; - C-c C-h o inserts Cc (`git-commit-cc').
+;; - C-c C-h p inserts Reported-by (`git-commit-reported').
 
 ;; * Committing
 ;;
@@ -509,15 +509,23 @@ Known comment headings are provided by `git-commit-comment-headings'."
      (eval . (git-commit-mode-summary-font-lock-keywords t)))
    (git-commit-mode-heading-keywords)))
 
-(defvar git-commit-mode-map
+(defvar git-commit-minor-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-c") 'git-commit-commit)
+    ;; Short shortcut ;) for the frequently used signoff header
     (define-key map (kbd "C-c C-s") 'git-commit-signoff)
-    (define-key map (kbd "C-c C-a") 'git-commit-ack)
-    (define-key map (kbd "C-c C-t") 'git-commit-test)
-    (define-key map (kbd "C-c C-r") 'git-commit-review)
-    (define-key map (kbd "C-c C-o") 'git-commit-cc)
-    (define-key map (kbd "C-c C-p") 'git-commit-reported)
+    ;; Verbose shortcuts for all headers to avoid conflicts with magit bindings
+    (define-key map (kbd "C-c C-h s") 'git-commit-signoff)
+    (define-key map (kbd "C-c C-h a") 'git-commit-ack)
+    (define-key map (kbd "C-c C-h t") 'git-commit-test)
+    (define-key map (kbd "C-c C-h r") 'git-commit-review)
+    (define-key map (kbd "C-c C-h o") 'git-commit-cc)
+    (define-key map (kbd "C-c C-h p") 'git-commit-reported)
+    map)
+  "Key map used by `git-commit-minor-mode'.")
+
+(defvar git-commit-mode-map
+  (let ((map (copy-keymap git-commit-minor-mode-map)))
+    (define-key map (kbd "C-c C-c") 'git-commit-commit)
     map)
   "Key map used by `git-commit-mode'.")
 
@@ -568,7 +576,7 @@ current buffer, and enable `auto-fill-mode' with proper fill
 column.
 
 Use together with `magit-log-edit-mode' to check commit messages
-in Magit."  nil " GC-Style" nil
+in Magit."  nil " GC-Style" 'git-commit-minor-mode-map
   (cond
    (git-commit-minor-mode
     (git-commit-mode-setup-filling)
