@@ -165,8 +165,7 @@ continue, otherwise kill the buffer via `kill-buffer'."
 
 The function is called without argument, with the current buffer
 being the commit message buffer.  It shall return t, if the
-commit was successful, or nil otherwise.
-"
+commit was successful, or nil otherwise."
   :group 'git-commit
   :type '(radio (function-item :doc "Save the buffer and end the session."
                                git-commit-end-session)
