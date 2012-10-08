@@ -1,4 +1,4 @@
-;;; gitignore-mode.el --- Major mode for editing .gitconfig files
+;;; gitignore-mode.el --- Major mode for editing .gitignore files
 ;;; -*- coding: utf-8; lexical-binding: t -*-
 
 ;; Copyright (c) 2012 Sebastian Wiesner <lunaryorn@gmail.com>
