@@ -67,7 +67,7 @@
 ;; Provide optional magit integration.  To enable, add the following to our init
 ;; file:
 ;;
-;; (add-hook 'magit-log-edit-mode-hook 'git-commit-style-minor-mode-on)
+;; (add-hook 'magit-log-edit-mode-hook 'git-commit-minor-mode-on)
 ;;
 ;; If enabled font lock and fill settings of `git-commit-mode' are available in
 ;; `magit-log-edit-mode', too.  However, the key bindings are not, because Magit
@@ -199,12 +199,12 @@ Return t if the commit may be performed, or nil otherwise."
                                          compile activate)
   "Check for stylistic errors in the current commit message.
 
-If `git-commit-style-minor-mode` is enabled in the current
+If `git-commit-minor-mode` is enabled in the current
 buffer, check for stylistic errors, unless prefix argument
 IGNORE-STYLE-ERRORS is given.  If the message contains stylistic
 errors, ask for confirmation before committing."
   (interactive "P")
-  (if (or (not git-commit-style-minor-mode)
+  (if (or (not git-commit-minor-mode)
           (git-commit-may-do-commit ignore-style-errors))
       ad-do-it
     (message "Commit canceled due to stylistic errors.")))
@@ -560,7 +560,7 @@ Known comment headings are provided by `git-commit-comment-headings'."
   (setq fill-column 72))
 
 ;;;###autoload
-(define-minor-mode git-commit-style-minor-mode
+(define-minor-mode git-commit-minor-mode
   "Check style in Git commit messages.
 
 If enabled, add `git-commit-mode-font-lock-keywords' to the
@@ -570,7 +570,7 @@ column.
 Use together with `magit-log-edit-mode' to check commit messages
 in Magit."  nil " GC-Style" nil
   (cond
-   (git-commit-style-minor-mode
+   (git-commit-minor-mode
     (git-commit-mode-setup-filling)
     (font-lock-add-keywords nil git-commit-mode-font-lock-keywords)
     (set (make-local-variable 'font-lock-multiline) t))
@@ -580,20 +580,20 @@ in Magit."  nil " GC-Style" nil
     (set (make-local-variable 'font-lock-multiline) nil))))
 
 ;;;###autoload
-(defun git-commit-style-minor-mode-on ()
-  "Turn on variable `git-commit-style-minor-mode'.
+(defun git-commit-minor-mode-on ()
+  "Turn on variable `git-commit-minor-mode'.
 
 Use with `magit-log-edit-mode-hook' to check stylistic errors in Magit."
-  (git-commit-style-minor-mode 1))
+  (git-commit-minor-mode 1))
 
 ;;;###autoload
-(defun git-commit-style-minor-mode-off ()
-  "Turn off variable `git-commit-style-minor-mode'."
-  (git-commit-style-minor-mode -1))
+(defun git-commit-minor-mode-off ()
+  "Turn off variable `git-commit-minor-mode'."
+  (git-commit-minor-mode -1))
 
 ;;;###autoload
-(defalias 'git-commit-mode-magit-setup 'git-commit-style-minor-mode-on
-  "Obsolete alias for `git-commit-style-minor-mode-on'.")
+(defalias 'git-commit-mode-magit-setup 'git-commit-minor-mode-on
+  "Obsolete alias for `git-commit-minor-mode-on'.")
 
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
