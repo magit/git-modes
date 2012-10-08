@@ -436,10 +436,6 @@ NOTE defaults to `current-prefix-arg'."
 The `car' of each cell is the heading text, the `cdr' the face to
 use for fontification.")
 
-(defconst git-commit-skip-before-summary-regexp
-  "\\(?:\\(?:\\s-*\\|\\s<.*\\)\n\\)*"
-  "Regexp to skip comments and empty lines before summary.")
-
 (defvar git-commit-skip-magit-header-regexp nil
   "Regexp to skip magit header.")
 
@@ -455,7 +451,7 @@ use for fontification.")
   (let ((skip-magit (if (eq major-mode 'magit-log-edit-mode)
                         git-commit-skip-magit-header-regexp
                       ""))
-        (skip-before-summary git-commit-skip-before-summary-regexp)
+        (skip-before-summary "\\(?:\\(?:\\s-*\\|\\s<.*\\)\n\\)*")
         (summary "\\(?:^\\(.\\{,50\\}\\)\\(.*?\\)$\\)")
         (nonempty-line "\\(?:\n\\(.*\\)\\)?$"))
     (format "\\`%s%s%s%s"
