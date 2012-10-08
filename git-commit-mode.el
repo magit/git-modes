@@ -447,7 +447,17 @@ use for fontification.")
          (regexp-quote magit-log-header-end))))
 
 (defun git-commit-find-summary-regexp ()
-  "Create a regular expression to find the Git summary line."
+  "Create a regular expression to find the Git summary line.
+
+Return a regular expression that starts at the beginning of the
+buffer, skips over empty lines, comments and also over the magit
+header, if the current buffer is a `magit-log-edit-mode' buffer,
+and finds the summary line.
+
+The regular expression matches three groups.  The first group is
+the summary line, the second group contains any overlong part of
+the summary, and the third group contains a nonempty line
+following the summary line.  The latter two groups may be empty."
   (let ((skip-magit (if (eq major-mode 'magit-log-edit-mode)
                         git-commit-skip-magit-header-regexp
                       ""))
