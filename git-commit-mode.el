@@ -8,7 +8,7 @@
 ;;      Sebastian Wiesner <lunaryorn@gmail.com>
 ;; Maintainer: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; URL: https://github.com/lunaryorn/git-modes
-;; Version: 0.6
+;; Version: 0.7
 ;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
