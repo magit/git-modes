@@ -4,7 +4,7 @@ BYTECOMPILEFORM = (progn \
 	(setq byte-compile-dest-file-function (lambda (fn) "$@")) \
 	(byte-compile-file "$<"))
 
-OBJECTS = git-commit-mode.elc
+OBJECTS = git-commit-mode.elc gitconfig-mode.elc
 
 .PHONY: build
 build : $(OBJECTS)

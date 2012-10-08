@@ -7,16 +7,19 @@ GNU Emacs modes for Git-related files.
 
 - =git-commit-mode= :: A GNU Emacs major mode for editing Git commit messages
      according to the [[http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html][guidelines by Tim Pope]], with optional [[http://magit.github.com/magit/][Magit]] integration.
+- =gitconfig-mode= :: A ~conf-mode~-derived major mode for editing ~.gitconfig~
+     files.
 
 
 ** Installation
 
-Install the ELPA package from [[http://melpa.milkbox.net][MELPA]] (bleeding edge snapshots) or [[http://marmalade-repo.org/][Marmalade]]
-(stable releases) with ~M-x package-install git-commit--mode~, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the
-latest release and install ~git-commit-mode.el~ with =M-x package-install-file=.
+Install the ELPA packages from [[http://melpa.milkbox.net][MELPA]] (bleeding edge snapshots) or [[http://marmalade-repo.org/][Marmalade]]
+(stable releases) with ~M-x package-install git-commit-mode~ and/or ~M-x
+package-install gitconfig-mode~, or [[https://github.com/lunaryorn/gitconfig-mode/tags][download]] the latest release and install
+~git-commit-mode.el~ and/or ~gitconfig-mode.el~ with =M-x package-install-file=.
 
-=git-commit-mode= is written and tested against GNU Emacs 24, earlier releases
-may or may not work.
+The modes are written and tested against GNU Emacs 24 and may or may not work in
+earlier versions of GNU Emacs.
 
 
 ** Usage
@@ -33,15 +36,22 @@ To enable integration with [[http://magit.github.com/magit/][Magit]] to provide 
   (add-hook 'magit-log-edit-mode-hook 'git-commit-mode-magit-setup)
 #+END_SRC
 
+*** =gitconfig-mode=
+
+=gitconfig-mode= is automatically enabled for ~.gitconfig~ and ~.git/config~
+files.  The mode is derived from =conf-unix-mode=, so all commands provided
+by =conf-mode= (e.g. =conf-align-assignments=) will work as expected.
 
 ** Customization
 
 - =git-commit-mode= :: ~M-x customize-group git-commit~
+- =gitconfig-mode= :: No customization provided.
 
 
 ** Further help
 
 - ~C-h f git-commit-mode~
+- ~C-h f gitconfig-mode~
 
 
 ** Credits
