@@ -549,8 +549,8 @@ basic structure of and errors in git commit messages."
     (toggle-save-place 0)))
 
 ;;;###autoload
-(when (boundp 'session-mode-disable-list)
-  (add-to-list 'session-mode-disable-list 'git-commit-mode))
+(eval-after-load 'session
+  #'(add-to-list 'session-mode-disable-list 'git-commit-mode))
 
 ;;;###autoload
 (setq auto-mode-alist
