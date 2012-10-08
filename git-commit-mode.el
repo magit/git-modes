@@ -67,7 +67,7 @@
 ;; Provide optional magit integration.  To enable, add the following to our init
 ;; file:
 ;;
-;; (add-hook 'magit-log-edit-mode-hook 'git-commit-mode-magit-setup)
+;; (add-hook 'magit-log-edit-mode-hook 'git-commit-style-minor-mode-on)
 ;;
 ;; If enabled font lock and fill settings of `git-commit-mode' are available in
 ;; `magit-log-edit-mode', too.  However, the key bindings are not, because Magit

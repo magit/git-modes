@@ -33,7 +33,7 @@ To enable integration with [[http://magit.github.com/magit/][Magit]] to provide 
 =magit-log-edit-mode=, insert the following into your ~init.el~:
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'magit-log-edit-mode-hook 'git-commit-mode-magit-setup)
+  (add-hook 'magit-log-edit-mode-hook 'git-commit-style-minor-mode-on)
 #+END_SRC
 
 *** =gitconfig-mode=
