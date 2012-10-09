@@ -64,14 +64,11 @@
 
 ;; * Magit integration
 ;;
-;; Provide optional magit integration.  To enable, add the following to our init
-;; file:
+;; Overwrite `magit-log-edit-mode' to provide font locking and header insertion
+;; for Magit.
 ;;
-;; (add-hook 'magit-log-edit-mode-hook 'git-commit-minor-mode-on)
-;;
-;; If enabled font lock and fill settings of `git-commit-mode' are available in
-;; `magit-log-edit-mode', too.  However, the key bindings are not, because Magit
-;; has it's own way of committing and dealing with headers.
+;; Change the keymap of `magit-log-edit-mode' to use the header insertion of
+;; `git-commit-mode'.
 
 ;;; Code:
 
@@ -194,19 +191,15 @@ Return t if the commit may be performed, or nil otherwise."
         (yes-or-no-p "Buffer has style errors. Commit anyway?")
       t)))
 
-(defadvice magit-log-edit-commit (around magit-log-edit-commit-check-style
-                                         (&optional ignore-style-errors)
-                                         compile activate)
-  "Check for stylistic errors in the current commit message.
+(defun git-commit-log-edit-commit (&optional force)
+  "Finish edits and create a new commit.
 
-If `git-commit-minor-mode` is enabled in the current
-buffer, check for stylistic errors, unless prefix argument
-IGNORE-STYLE-ERRORS is given.  If the message contains stylistic
-errors, ask for confirmation before committing."
+Check for stylistic errors in the current message, unless FORCE
+is non-nil.  If stylistic errors are found, ask the user to
+confirm the commit."
   (interactive "P")
-  (if (or (not git-commit-minor-mode)
-          (git-commit-may-do-commit ignore-style-errors))
-      ad-do-it
+  (if (git-commit-may-do-commit force)
+      (call-interactively 'magit-log-edit-commit)
     (message "Commit canceled due to stylistic errors.")))
 
 (defun git-commit-commit (&optional force)
@@ -498,7 +491,7 @@ Known comment headings are provided by `git-commit-comment-headings'."
      (eval . (git-commit-mode-summary-font-lock-keywords t)))
    (git-commit-mode-heading-keywords)))
 
-(defvar git-commit-minor-mode-map
+(defvar git-commit-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Short shortcut ;) for the frequently used signoff header
     (define-key map (kbd "C-c C-s") 'git-commit-signoff)
@@ -509,11 +502,7 @@ Known comment headings are provided by `git-commit-comment-headings'."
     (define-key map (kbd "C-c C-h r") 'git-commit-review)
     (define-key map (kbd "C-c C-h o") 'git-commit-cc)
     (define-key map (kbd "C-c C-h p") 'git-commit-reported)
-    map)
-  "Key map used by `git-commit-minor-mode'.")
-
-(defvar git-commit-mode-map
-  (let ((map (copy-keymap git-commit-minor-mode-map)))
+    ;; Committing
     (define-key map (kbd "C-c C-c") 'git-commit-commit)
     map)
   "Key map used by `git-commit-mode'.")
@@ -551,46 +540,13 @@ Known comment headings are provided by `git-commit-comment-headings'."
           (delete-region beg (point-max))
           (insert text))))))
 
-(defun git-commit-mode-setup-filling ()
-  "Setup filling for git commit modes."
-  (turn-on-auto-fill)
-  (setq fill-column 72))
-
 ;;;###autoload
-(define-minor-mode git-commit-minor-mode
-  "Check style in Git commit messages.
+(defun git-commit-mode-magit-setup ()
+  (message "Magit integration is now always enabled!")
+  "Compatibility function.
 
-If enabled, add `git-commit-mode-font-lock-keywords' to the
-current buffer, and enable `auto-fill-mode' with proper fill
-column.
-
-Use together with `magit-log-edit-mode' to check commit messages
-in Magit."  nil " GC-Style" 'git-commit-minor-mode-map
-  (cond
-   (git-commit-minor-mode
-    (git-commit-mode-setup-filling)
-    (font-lock-add-keywords nil git-commit-mode-font-lock-keywords)
-    (set (make-local-variable 'font-lock-multiline) t))
-   (t
-    (turn-off-auto-fill)
-    (font-lock-remove-keywords nil git-commit-mode-font-lock-keywords)
-    (set (make-local-variable 'font-lock-multiline) nil))))
-
-;;;###autoload
-(defun git-commit-minor-mode-on ()
-  "Turn on variable `git-commit-minor-mode'.
-
-Use with `magit-log-edit-mode-hook' to check stylistic errors in Magit."
-  (git-commit-minor-mode 1))
-
-;;;###autoload
-(defun git-commit-minor-mode-off ()
-  "Turn off variable `git-commit-minor-mode'."
-  (git-commit-minor-mode -1))
-
-;;;###autoload
-(defalias 'git-commit-mode-magit-setup 'git-commit-minor-mode-on
-  "Obsolete alias for `git-commit-minor-mode-on'.")
+Obsolete function for compatibility with older releases.  Does
+nothing.")
 
 ;;;###autoload
 (define-derived-mode git-commit-mode text-mode "Git Commit"
@@ -599,9 +555,13 @@ Use with `magit-log-edit-mode-hook' to check stylistic errors in Magit."
 This mode helps with editing git commit messages both by
 providing commands to do common tasks, and by highlighting the
 basic structure of and errors in git commit messages."
+  ;; Font locking
   (setq font-lock-defaults '(git-commit-mode-font-lock-keywords t))
   (set (make-local-variable 'font-lock-multiline) t)
-  (git-commit-mode-setup-filling)
+  ;; Filling according to the guidelines
+  (setq fill-column 72)
+  (turn-on-auto-fill)
+  ;; Comment settings
   (set (make-local-variable 'comment-start) "#")
   (set (make-local-variable 'comment-start-skip)
        (concat (regexp-quote comment-start) "+\\s-*"))
@@ -609,12 +569,30 @@ basic structure of and errors in git commit messages."
   ;; Recognize changelog-style paragraphs
   (set (make-local-variable 'paragraph-start)
        (concat paragraph-start "\\|*\\|("))
+  ;; Do not remember point location in commit messages
   (when (fboundp 'toggle-save-place)
     (toggle-save-place 0)))
 
 ;;;###autoload
 (eval-after-load 'session
   #'(add-to-list 'session-mode-disable-list 'git-commit-mode))
+
+;;;###autoload
+;; Overwrite magit-log-edit-mode to derive it from git-commit-mode
+(eval-after-load 'magit
+  #'(define-derived-mode magit-log-edit-mode git-commit-mode "Magit Log Edit"))
+
+;;;###autoload
+;; Change the Magit log edit keymap to use our commit and header insertion
+;; bindings
+(eval-after-load 'magit
+  #'(progn
+      (substitute-key-definition 'magit-log-edit-toggle-signoff
+                                 'git-commit-signoff
+                                 magit-log-edit-mode-map)
+      (substitute-key-definition 'magit-log-edit-commit
+                                 'git-commit-log-edit-commit
+                                 magit-log-edit-mode-map)))
 
 ;;;###autoload
 (setq auto-mode-alist
