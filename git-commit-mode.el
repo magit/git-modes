@@ -397,8 +397,38 @@ minibuffer."
 The `car' of each cell is the heading text, the `cdr' the face to
 use for fontification.")
 
+(defconst git-commit-skip-before-summary-regexp
+  "\\(?:\\(?:\\s-*\\|\\s<.*\\)\n\\)*"
+  "Regexp to skip empty lines and comments before the summary.
+
+Do not use this expression directly, instead call
+`git-commit-find-summary-regexp' to create a regular expression
+to match the summary line.")
+
+(defconst git-commit-summary-regexp
+   "\\(?:^\\(.\\{,50\\}\\)\\(.*?\\)$\\)"
+   "Regexp to match the summary line.
+
+Do not use this expression directly, instead call
+`git-commit-find-summary-regexp' to create a regular expression
+to match the summary line.")
+
+(defconst git-commit-nonempty-second-line-regexp
+  "\\(?:\n\\(.*\\)\\)?$"
+  "Regexp to match a nonempty line following the summary.
+
+Do not use this expression directly, instead call
+`git-commit-find-summary-regexp' to create a regular expression
+to match the summary line.")
+
 (defvar git-commit-skip-magit-header-regexp nil
-  "Regexp to skip magit header.")
+  "Regexp to skip magit header.
+
+This variable is nil until `magit' is loaded.
+
+Do not use this expression directly, instead call
+`git-commit-find-summary-regexp' to create a regular expression
+to match the summary line.")
 
 (eval-after-load 'magit
   ;; Configure regexp to skip Magit header
@@ -419,15 +449,13 @@ The regular expression matches three groups.  The first group is
 the summary line, the second group contains any overlong part of
 the summary, and the third group contains a nonempty line
 following the summary line.  The latter two groups may be empty."
-  (let ((skip-magit (if (eq major-mode 'magit-log-edit-mode)
-                        git-commit-skip-magit-header-regexp
-                      ""))
-        (skip-before-summary "\\(?:\\(?:\\s-*\\|\\s<.*\\)\n\\)*")
-        (summary "\\(?:^\\(.\\{,50\\}\\)\\(.*?\\)$\\)")
-        (nonempty-line "\\(?:\n\\(.*\\)\\)?$"))
-    (format "\\`%s%s%s%s"
-            skip-magit skip-before-summary
-            summary nonempty-line)))
+  (format "\\`%s%s%s%s"
+          (if (eq major-mode 'magit-log-edit-mode)
+              git-commit-skip-magit-header-regexp
+            "")
+          git-commit-skip-before-summary-regexp
+          git-commit-summary-regexp
+          git-commit-nonempty-second-line-regexp))
 
 (defun git-commit-mode-summary-font-lock-keywords (&optional errors)
   "Create font lock keywords to fontify the Git summary.
