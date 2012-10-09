@@ -306,17 +306,9 @@ before any trailing comments git or the user might have inserted."
         (forward-line 1)
         (point)))))
 
-(defun git-commit-insert-header (type name email &optional note)
+(defun git-commit-insert-header (type name email)
   "Insert a header into the commit message.
 The inserted headers have the format 'TYPE: NAME <EMAIL>'.
-
-If NOTE satisfies `stringp', an additional note of the format
-'[EMAIL: NOTE]' is inserted after the header.
-
-If NOTE is not nil and doesn't satisfy `stringp', the
-surroundings of an additional note will be inserted, and the
-point will be left where the content of the note needs to be
-inserted.
 
 The header is inserted at the position returned by
 `git-commit-find-pseudo-header-position'.  When this position
@@ -328,54 +320,35 @@ inserted before the header."
                       (thing-at-point 'line)))
          (pre       (if (or (string-match "^[^\s:]+:.+$" prev-line)
                             (string-match "\\`\s*$" prev-line))
-                        "" "\n"))
-         (insert    (lambda ()
-                      (goto-char header-at)
-                      (insert (format "%s%s: %s <%s>\n" pre type name email))
-                      (when note
-                        (insert (format "[%s: %s]\n"
-                                        email (if (stringp note) note "")))
-                        (backward-char 2)))))
-    (if (eq t note)
-        (funcall insert)
-      (save-excursion (funcall insert)))))
+                        "" "\n")))
+    (save-excursion
+      (goto-char header-at)
+      (insert (format "%s%s: %s <%s>\n" pre type name email)))))
 
-(defun git-commit-insert-header-as-self (type &optional note)
+(defun git-commit-insert-header-as-self (type)
   "Insert a header with the name and email address of the current user.
 Call `git-commit-insert-header' with the user name and email
 address provided by `git-commit-committer-name' and
 `git-commit-committer-email'.
 
-TYPE and NOTE are passed along unmodified."
+TYPE is passed along unmodified."
   (let ((committer-name (git-commit-committer-name))
         (committer-email (git-commit-committer-email)))
-    (git-commit-insert-header type committer-name committer-email note)))
+    (git-commit-insert-header type committer-name committer-email)))
 
 (defmacro git-define-git-commit-self (action header)
   "Create function git-commit-ACTION.
 ACTION will be part of the function name.
 HEADER is the actual header to be inserted into the comment."
   (let ((func-name (intern (concat "git-commit-" action))))
-    `(defun ,func-name (&optional note)
+    `(defun ,func-name ()
        ,(format "Insert a '%s' header at the end of the commit message.
-If NOTE is given, an additional note will be inserted.
-
-If NOTE satisfies `stringp', the value of NOTE will be inserted
-as the content of the note.
-
-If NOTE is not nil and doesn't satisfy `stringp', the
-surroundings of an additional note will be inserted, and the
-point will be left where the content of the note needs to be
-inserted.
-
-NOTE defaults to `current-prefix-arg'.
 
 The author name and email address used for the header are
 retrieved automatically with the same mechanism git uses."
                 header)
-       (interactive
-        (list (when current-prefix-arg t)))
-       (git-commit-insert-header-as-self ,header note))))
+       (interactive)
+       (git-commit-insert-header-as-self ,header))))
 
 (git-define-git-commit-self "ack"     "Acked-by")
 (git-define-git-commit-self "review"  "Reviewed-by")
@@ -387,30 +360,17 @@ retrieved automatically with the same mechanism git uses."
 ACTION will be part of the function name.
 HEADER is the actual header to be inserted into the comment."
   (let ((func-name (intern (concat "git-commit-" action))))
-    `(defun ,func-name (name email &optional note)
+    `(defun ,func-name (name email)
        ,(format "Insert a '%s' header at the end of the commit message.
 The value of the header is determined by NAME and EMAIL.
 
 When called interactively, both NAME and EMAIL are read from the
-minibuffer.
-
-If NOTE is given, an additional note will be inserted.
-
-If NOTE satisfies `stringp', the value of NOTE will be inserted
-as the content of the note.
-
-If NOTE is not nil and doesn't satisfy `stringp', the
-surroundings of an additional note will be inserted, and the
-point will be left where the content of the note needs to be
-inserted.
-
-NOTE defaults to `current-prefix-arg'."
+minibuffer."
                 header)
        (interactive
         (list (read-string "Name: ")
-              (read-string "Email: ")
-              (when current-prefix-arg t)))
-       (git-commit-insert-header ,header name email note))))
+              (read-string "Email: ")))
+       (git-commit-insert-header ,header name email))))
 
 (git-define-git-commit "cc" "Cc")
 (git-define-git-commit "reported" "Reported-by")
