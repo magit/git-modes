@@ -36,7 +36,7 @@ Usage
 -----
 
 
-# `git-commit-mode`
+### `git-commit-mode`
 
 Just configure `emacs` or `emacsclient` as editor for Git. `git-commit-mode`
 will automatically be enabled for Git message buffers.
@@ -44,13 +44,13 @@ will automatically be enabled for Git message buffers.
 `git-commit-mode` integrates into with [Magit][2] by redefining
 `magit-log-edit-mode` to support all `git-commit-mode` features.
 
-# `gitconfig-mode`
+### `gitconfig-mode`
 
 `gitconfig-mode` is automatically enabled for `.gitconfig` and `.git/config`
 files.  The mode is derived from `conf-unix-mode`, so all commands provided by
 `conf-mode` (e.g. `conf-align-assignments`) will work as expected.
 
-# `gitignore-mode`
+### `gitignore-mode`
 
 `gitignore-mode` is automatically enabled for `.gitignore` and
 `.git/info/exclude` files.
