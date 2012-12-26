@@ -7,12 +7,12 @@ GNU Emacs modes for Git-related files.
 Features
 --------
 
-- **`git-commit-mode`** – A GNU Emacs major mode for editing Git commit messages
+- `git-commit-mode` – A GNU Emacs major mode for editing Git commit messages
   according to the [guidelines by Tim Pope][1].  Integrates into [Magit][2].
-- **`gitconfig-mode`** – A `conf-mode`-derived major mode for editing
+- `gitconfig-mode` – A `conf-mode`-derived major mode for editing
   `.gitconfig` files.
-- **`gitignore-mode`** – A `conf-mode`-derived major mode for editing
-  `.gitignore` files.
+- `gitignore-mode` – A `conf-mode`-derived major mode for editing `.gitignore`
+  files.
 
 
 Installation
@@ -21,9 +21,9 @@ Installation
 Install the ELPA packages from [MELPA][3] (bleeding edge snapshots) or
 [Marmalade][4] (stable releases):
 
-- **`git-commit-mode`**: `M-x package-install git-commit-mode`
-- **`gitconfig-mode`**: `M-x package-install gitconfig-mode`
-- **`gitignore-mode`**: `M-x package-install gitignore-mode`
+- `git-commit-mode`: `M-x package-install git-commit-mode`
+- `gitconfig-mode`: `M-x package-install gitconfig-mode`
+- `gitignore-mode`: `M-x package-install gitignore-mode`
 
 Or [download][5] the latest release and install the desired modes with `M-x
 package-install-file`, e.g. `M-x package-install-file git-commit-mode`.
@@ -59,9 +59,9 @@ files.  The mode is derived from `conf-unix-mode`, so all commands provided by
 Customization
 -------------
 
-- **`git-commit-mode`**: `M-x customize-group git-commit`
-- **`gitconfig-mode`**: No customization provided.
-- **`gitignore-mode`**: No customization provided.
+- `git-commit-mode`: `M-x customize-group git-commit`
+- `gitconfig-mode`: No customization provided.
+- `gitignore-mode`: No customization provided.
 
 
 Further help
