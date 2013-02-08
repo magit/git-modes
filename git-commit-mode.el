@@ -145,6 +145,9 @@ git commit messages"
 default comments in git commit messages"
   :group 'git-commit-faces)
 
+(defcustom git-commit-confirm-commit t
+  "When true, confirm before committing messages with style errors.")
+
 (defun git-commit-end-session ()
   "Save the buffer and end the session.
 
@@ -187,7 +190,8 @@ confirm commit.
 
 Return t if the commit may be performed, or nil otherwise."
   (if force t
-    (if (git-commit-has-style-errors-p)
+    (if (and (git-commit-has-style-errors-p)
+             git-commit-confirm-commit)
         (yes-or-no-p "Buffer has style errors. Commit anyway?")
       t)))
 
