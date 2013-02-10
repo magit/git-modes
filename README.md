@@ -75,8 +75,14 @@ Further help
 Credits
 -------
 
-`git-commit-mode` is forked of the [original work][6] by [Florian Ragwitz][7],
-improved by [John Wiegley][8].  Thanks for their work.
+`git-commit-mode` is forked of the [original work][6] done by
+[Florian Ragwitz][7] and improved by [John Wiegley][8].
+
+The following people contributed to these modes:
+
+- [Bradley Wright](https://github.com/bradleywright)
+- [Peter Eisentraut](https://github.com/petere)
+- [Tim Wraight](https://github.com/timwraight)
 
 
 License
