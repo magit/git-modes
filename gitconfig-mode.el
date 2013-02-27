@@ -32,7 +32,7 @@
 (require 'conf-mode)
 
 (defun gitconfig-line-indented-p ()
-  "Determine whether the current line is intended correctly.
+  "Determine whether the current line is indented correctly.
 
 Return t if so, or nil otherwise."
   (save-excursion
