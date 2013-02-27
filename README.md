@@ -84,6 +84,10 @@ The following people contributed to these modes:
 - [Peter Eisentraut](https://github.com/petere)
 - [Tim Wraight](https://github.com/timwraight)
 
+Great thanks also goes to [Bozhidar Batsov](https://github.com/bbatsov) for
+adding these modes to his awesome [Prelude](https://github.com/bbatsov/prelude)
+project, thus making them available to a larger user base.
+
 
 License
 -------
