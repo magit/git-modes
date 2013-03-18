@@ -1,8 +1,8 @@
-;;; rebase-mode -- edit git rebase files.
+;;; rebase-mode -- edit git rebase files
 
 ;; Copyright (C) 2010  Phil Jackson
 ;; Copyright (C) 2011  Peter J Weisberg
-;;
+
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
@@ -29,19 +29,30 @@
 
 (defgroup rebase-mode nil
   "Customize Rebase Mode"
-  :group 'faces)
+  :group 'tools)
+
+(defcustom rebase-mode-auto-advance nil
+  "If non-nil, moves point forward a line after running an
+action (e.g. pick, edit, etc)."
+  :group 'rebase-mode
+  :type 'boolean)
+
+(defgroup rebase-mode-faces nil
+  "Customize Rebase Mode faces"
+  :group 'faces
+  :group 'rebase-mode)
 
 (defface rebase-mode-killed-action-face
   '((((class color))
      :inherit font-lock-comment-face
      :strike-through t))
   "Action lines in the rebase TODO list that have been commented out."
-  :group 'rebase-mode)
+  :group 'rebase-mode-faces)
 
 (defface rebase-mode-description-face
   '((t :inherit font-lock-comment-face))
   "Face for one-line commit descriptions"
-  :group 'rebase-mode)
+  :group 'rebase-mode-faces)
 
 (defconst rebase-mode-action-line-re
   (rx
@@ -163,7 +174,9 @@ that of CHANGE-TO."
       (goto-char (point-at-bol))
       (delete-region (point) (progn (forward-word 1) (point)))
       (insert change-to)
-      (goto-char start))))
+      (goto-char start)
+      (when rebase-mode-auto-advance
+        (forward-line)))))
 
 (defun rebase-mode-looking-at-action ()
   "Return non-nil if looking at an action line."
@@ -319,5 +332,4 @@ By default, this is the same except for the \"pick\" command."
              '("git-rebase-todo" . rebase-mode))
 
 (provide 'rebase-mode)
-
 ;;; rebase-mode.el ends here
