@@ -95,10 +95,8 @@ Return t if so, or nil otherwise."
        'gitconfig-indent-line))
 
 ;;;###autoload
-(setq auto-mode-alist
-      (append '(("/\\.gitconfig\\'" . gitconfig-mode)
-                ("/\\.git/config\\'" . gitconfig-mode))
-              auto-mode-alist))
+(dolist (pattern '("/\\.gitconfig\\'" "/\\.git/config\\'"))
+  (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
 
 (provide 'gitconfig-mode)
 
