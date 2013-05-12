@@ -82,6 +82,7 @@ The following people contributed to these modes:
 
 - [Bradley Wright](https://github.com/bradleywright)
 - [Peter Eisentraut](https://github.com/petere)
+- [Ramkumar Ramachandra](https://github.com/artagnon)
 - [Tim Wraight](https://github.com/timwraight)
 
 Great thanks also goes to [Bozhidar Batsov](https://github.com/bbatsov) for
