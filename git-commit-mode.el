@@ -140,6 +140,11 @@ git commit messages"
 default comments in git commit messages"
   :group 'git-commit-faces)
 
+(defface git-commit-skip-magit-header-face
+  '((t :inherit font-lock-preprocessor-face))
+  "Face used to highlight the magit header that should be skipped"
+  :group 'git-commit-faces)
+
 (defun git-commit-end-session ()
   "Save the buffer and end the session.
 
@@ -282,25 +287,45 @@ Those headers usually live at the end of a commit message, but
 before any trailing comments git or the user might have
 inserted."
   (save-excursion
-    (let ((comment-start (point)))
-      (goto-char (point-max))
-      (if (not (re-search-backward "^\\S<[^\s:]+:.*$" nil t))
-          ;; no headers yet, so we'll search backwards for a good place
-          ;; to insert them
-          (if (not (re-search-backward "^[^#].*?.*$" nil t))
-              ;; no comment lines anywhere before end-of-buffer, so we
-              ;; want to insert right there
-              (point-max)
-            ;; there's some comments at the end, so we want to insert
-            ;; before those
-            (beginning-of-line)
-            (forward-line 1)
-            (point))
-        ;; we're at the last header, and we want the line right after
-        ;; that to insert further headers
-        (beginning-of-line)
-        (forward-line 1)
-        (point)))))
+    (goto-char (point-max))
+    (if (not (re-search-backward "^\\S<+$" nil t))
+	;; no comment lines anywhere before end-of-buffer, so we
+	;; want to insert right there
+	(point-max)
+      ;; there's some comments at the end, so we want to insert before
+      ;; those; keep going until we find the first non-empty line
+      ;; NOTE: if there is no newline at the end of (point),
+      ;; (forward-line 1) will take us to (point-at-eol).
+      (if (eq (point-at-bol) (point-at-eol)) (re-search-backward "^.+$" nil t))
+      (forward-line 1)
+      (point))))
+
+(defun git-commit-determine-pre-for-pseudo-header ()
+  "Find the characters to insert before the pseudo header.
+Returns either zero, one or two newlines after computation.
+
+`point' either points to an empty line (with a non-empty previous
+line) or the end of a non-empty line."
+  (let ((pre "")
+	(prev-line nil))
+    (if (not (eq (point) (point-at-bol)))
+	(progn
+	  (setq pre (concat pre "\n"))
+	  (setq prev-line (thing-at-point 'line)))
+      ;; else: (point) is at an empty line
+      (when (not (eq (point) (point-min)))
+	(setq prev-line
+	      (save-excursion
+		(forward-line -1)
+		(thing-at-point 'line)))))
+
+    ;; we have prev-line now; if it doesn't match any known pseudo
+    ;; header, add a newline
+    (when prev-line
+      (if (not (delq nil (mapcar (lambda (pseudo-header) (string-match pseudo-header prev-line))
+				 git-commit-known-pseudo-headers)))
+	  (setq pre (concat pre "\n"))))
+    pre))
 
 (defun git-commit-insert-header (type name email)
   "Insert a header into the commit message.
@@ -310,16 +335,11 @@ The header is inserted at the position returned by
 `git-commit-find-pseudo-header-position'.  When this position
 isn't after an existing header or a newline, an extra newline is
 inserted before the header."
-  (let* ((header-at (git-commit-find-pseudo-header-position))
-         (prev-line (or (save-excursion
-                          (goto-char (- header-at 1))
-                          (thing-at-point 'line)) ""))
-         (pre       (if (or (string-match "^[^\s:]+:.+$" prev-line)
-                            (string-match "\\`\\s-*$" prev-line))
-                        "" "\n")))
+  (let ((header-at (git-commit-find-pseudo-header-position)))
     (save-excursion
       (goto-char header-at)
-      (insert (format "%s%s: %s <%s>\n" pre type name email)))))
+      (let ((pre (git-commit-determine-pre-for-pseudo-header)))
+	(insert (format "%s%s: %s <%s>\n" pre type name email))))))
 
 (defun git-commit-insert-header-as-self (type)
   "Insert a header with the name and email address of the current user.
@@ -480,6 +500,8 @@ Known comment headings are provided by `git-commit-comment-headings'."
      ("^\\s<\t\\(?:\\([^:]+\\):\\s-+\\)?\\(.*\\)$"
       (1 'git-commit-comment-action-face t t)
       (2 'git-commit-comment-file-face t))
+     (,git-commit-skip-magit-header-regexp
+      (0 'git-commit-skip-magit-header-face))
      (,(concat "^\\("
                (regexp-opt git-commit-known-pseudo-headers)
                ":\\)\\(\s.*\\)$")
