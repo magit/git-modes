@@ -274,7 +274,17 @@ If the above mechanism fails, the value of the variable
     "Cc"
     "Reported-by"
     "Tested-by"
-    "Reviewed-by")
+    "Reviewed-by"
+    "Reported-and-tested-by"
+    "Helped-by"
+    "Suggested-by"
+    "Originally-by"
+    "Noticed-by"
+    "Spotted-by"
+    "Inspired-by"
+    "Based-on-patch-by"
+    "Bisected-by"
+    "Requested-by")
   "A list of git pseudo headers to be highlighted.")
 
 (defun git-commit-find-pseudo-header-position ()
