@@ -29,14 +29,18 @@
 
 ;;; Code:
 
+(require 'rx)
 (require 'conf-mode)
 
 (defvar gitignore-mode-font-lock-keywords
-  '(("^\\s<.*$" . 'font-lock-comment-face)
-    ("^\\(!?\\)" (1 'font-lock-negation-char-face)) ; Negated patterns
-    ("/" . 'font-lock-constant-face)                ; Directory separators
-    ("\\(?:\\*\\|\\?\\)" . 'font-lock-keyword-face) ; Glob patterns
-    ("\\[.+?\\]" . 'font-lock-keyword-face)         ; Ranged glob patterns
+  `((,(rx line-start (syntax comment-start) (zero-or-more not-newline) line-end)
+     . 'font-lock-comment-face)
+    (,(rx line-start (group (optional "!"))) ; Negated patterns
+     (1 'font-lock-negation-char-face))
+    ("/" . 'font-lock-constant-face)               ; Directory separators
+    (,(rx (or "*" "?")) . 'font-lock-keyword-face) ; Glob patterns
+    (,(rx "[" (minimal-match (one-or-more not-newline)) "]")
+     . 'font-lock-keyword-face)         ; Ranged glob patterns
     ))
 
 ;;;###autoload
@@ -49,7 +53,8 @@
   (set (make-local-variable 'conf-assignment-sign) nil))
 
 ;;;###autoload
-(dolist (pattern '("/\\.gitignore\\'""/\\.git/info/exclude\\'"))
+(dolist (pattern (list (rx "/.gitignore" string-end)
+                       (rx "/.git/info/exclude" string-end)))
   (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
 
 (provide 'gitignore-mode)

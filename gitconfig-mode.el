@@ -29,6 +29,7 @@
 
 ;;; Code:
 
+(require 'rx)
 (require 'conf-mode)
 
 (defun gitconfig-line-indented-p ()
@@ -37,8 +38,13 @@
 Return t if so, or nil otherwise."
   (save-excursion
     (beginning-of-line)
-    (or (looking-at "^\\[\\_<.*?\\]")
-        (looking-at "^\t\\_<\\(?:\\sw|\\s_\\)"))))
+    (or (looking-at (rx line-start "["
+                        symbol-start
+                        (minimal-match (zero-or-more not-newline))
+                        symbol-end "]"))
+        (looking-at (rx line-start "\t"
+                        symbol-start (or (syntax word)
+                                         (syntax symbol)))))))
 
 (defun gitconfig-point-in-indentation-p ()
   "Determine whether the point is in the indentation of the current line.
@@ -74,16 +80,33 @@ Return t if so, or nil otherwise."
   `(
     ;; Highlight section and subsection gitconfig headers, and override
     ;; syntactic fontification in these.
-    ("^\\s-*\\[\\_<\\(\\(?:\\sw\\|\\s_\\)+\\)\\_>\\(?:\\s-+\\(\\s\".+?\\s\"\\)\\)?\\]\\s-*"
+    (,(rx line-start (zero-or-more (syntax whitespace))
+          "[" symbol-start
+          (group (one-or-more (or (syntax word) (syntax symbol))))
+          symbol-end
+          (optional (one-or-more (syntax whitespace))
+                    (group (syntax string-quote)
+                           (minimal-match (one-or-more not-newline))
+                           (syntax string-quote)))
+          "]" (zero-or-more (syntax whitespace)) line-end)
      (1 'font-lock-type-face t nil)
      (2 'font-lock-function-name-face t t))
-    ("^\\s-*\\_<\\(\\(?:\\sw\\|\\s_\\)+\\)\\_>\\s-*\\(?:=.*\\)?$"
+    (,(rx line-start (zero-or-more (syntax whitespace)) symbol-start
+          (group (one-or-more (or (syntax word) (syntax symbol))))
+          symbol-end (zero-or-more (syntax whitespace))
+          (optional "=" (zero-or-more not-newline)) line-end)
      (1 'font-lock-variable-name-face))
     ;; Highlight booleans and numbers
-    (,(format "=\\s-*%s\\s-*$"
-              (regexp-opt '("yes" "no" "true" "false" "on" "off") 'words))
+    (,(rx "="
+          (zero-or-more (syntax whitespace)) word-start
+          (group (or "yes" "no" "true" "false" "on" "off"))
+          word-end (zero-or-more (syntax whitespace)) line-end)
      (1 'font-lock-keyword-face))
-    ("=\\s-*\\<\\([0-9]+\\)\\>\\s-*$" (1 'font-lock-constant-face))))
+    (,(rx "="
+          (zero-or-more (syntax whitespace)) word-start
+          (group (one-or-more digit))
+          word-end (zero-or-more (syntax whitespace)) line-end)
+     (1 'font-lock-constant-face))))
 
 ;;;###autoload
 (define-derived-mode gitconfig-mode conf-unix-mode "Gitconfig"
@@ -95,7 +118,8 @@ Return t if so, or nil otherwise."
        'gitconfig-indent-line))
 
 ;;;###autoload
-(dolist (pattern '("/\\.gitconfig\\'" "/\\.git/config\\'"))
+(dolist (pattern (list (rx "/.gitconfig" string-end)
+                       (rx "/.git/config" string-end)))
   (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
 
 (provide 'gitconfig-mode)
