@@ -14,5 +14,4 @@ clean :
 	rm -f $(OBJECTS)
 
 %.elc : %.el
-	$(EMACS) --no-site-file --no-site-lisp --batch $(EMACSFLAGS) \
-		--eval '$(BYTECOMPILEFORM)'
+	$(EMACS) -Q --batch $(EMACSFLAGS) -f batch-byte-compile $<
