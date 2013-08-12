@@ -3,7 +3,7 @@
 ;; Copyright (c) 2012, 2013 Sebastian Wiesner <lunaryorn@gmail.com>
 ;;
 ;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
-;; URL: https://github.com/lunaryorn/git-modes
+;; URL: https://github.com/magit/git-modes
 ;; Version: 0.1
 ;; Keywords: convenience vc git
 

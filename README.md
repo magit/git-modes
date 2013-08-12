@@ -113,8 +113,8 @@ See [`COPYING`][9] for details.
 [2]: http://magit.github.com/magit/
 [3]: http://melpa.milkbox.net
 [4]: http://marmalade-repo.org/
-[5]: https://github.com/lunaryorn/git-modes/tags
+[5]: https://github.com/magit/git-modes/tags
 [6]: https://github.com/rafl/git-commit-mode
 [7]: https://github.com/rafl
 [8]: https://github.com/jwiegley
-[9]: https://github.com/lunaryorn/git-modes/blob/master/COPYING
+[9]: https://github.com/magit/git-modes/blob/master/COPYING
