@@ -13,6 +13,8 @@ Features
   `.gitconfig` files.
 - `gitignore-mode` – A `conf-mode`-derived major mode for editing `.gitignore`
   files.
+- `rebase-mode` – A major mode for `git-rebase-todo` files created by `git
+  rebase -i`
 
 
 Installation
@@ -55,6 +57,11 @@ files.  The mode is derived from `conf-unix-mode`, so all commands provided by
 `gitignore-mode` is automatically enabled for `.gitignore` and
 `.git/info/exclude` files.
 
+### `rebase-mode`
+
+`rebase-mode` is automatically enabled for `git-rebase-todo` files, such as
+created by `git rebase -i`.
+
 
 Customization
 -------------
@@ -62,6 +69,7 @@ Customization
 - `git-commit-mode`: `M-x customize-group git-commit`
 - `gitconfig-mode`: No customization provided.
 - `gitignore-mode`: No customization provided.
+- `rebase-mode`: `M-x customize-group rebase-mode`
 
 
 Further help
@@ -70,6 +78,7 @@ Further help
 - `C-h f git-commit-mode`
 - `C-h f gitconfig-mode`
 - `C-h f gitignore-mode`
+- `C-h f rebase-mode`
 
 
 Credits
