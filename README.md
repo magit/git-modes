@@ -13,6 +13,8 @@ Features
   `.gitconfig` files.
 - `gitignore-mode` – A `conf-mode`-derived major mode for editing `.gitignore`
   files.
+- `rebase-mode` – A major mode for `git-rebase-todo` files created by `git
+  rebase -i`
 
 
 Installation
@@ -55,6 +57,11 @@ files.  The mode is derived from `conf-unix-mode`, so all commands provided by
 `gitignore-mode` is automatically enabled for `.gitignore` and
 `.git/info/exclude` files.
 
+### `rebase-mode`
+
+`rebase-mode` is automatically enabled for `git-rebase-todo` files, such as
+created by `git rebase -i`.
+
 
 Customization
 -------------
@@ -62,6 +69,7 @@ Customization
 - `git-commit-mode`: `M-x customize-group git-commit`
 - `gitconfig-mode`: No customization provided.
 - `gitignore-mode`: No customization provided.
+- `rebase-mode`: `M-x customize-group rebase-mode`
 
 
 Further help
@@ -70,6 +78,7 @@ Further help
 - `C-h f git-commit-mode`
 - `C-h f gitconfig-mode`
 - `C-h f gitignore-mode`
+- `C-h f rebase-mode`
 
 
 Credits
@@ -93,9 +102,9 @@ project, thus making them available to a larger user base.
 License
 -------
 
-This program is free software; you can redistribute it and/or modify it under
+This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
-Foundation; either version 2 of the License, or (at your option) any later
+Foundation, either version 3 of the License, or (at your option) any later
 version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY
@@ -103,8 +112,7 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
-Street, Fifth Floor, Boston, MA 02110-1301, USA.
+this program.  If not, see <http://www.gnu.org/licenses/>.
 
 See [`COPYING`][9] for details.
 
