@@ -123,5 +123,7 @@ Return t if so, or nil otherwise."
   (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
 
 (provide 'gitconfig-mode)
-
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 ;;; gitconfig-mode.el ends here

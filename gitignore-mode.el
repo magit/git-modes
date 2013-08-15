@@ -58,5 +58,7 @@
   (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
 
 (provide 'gitignore-mode)
-
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 ;;; gitignore-mode.el ends here
