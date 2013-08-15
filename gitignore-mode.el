@@ -4,7 +4,6 @@
 
 ;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
-;; Version: 0.1
 ;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
 
