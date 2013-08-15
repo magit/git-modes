@@ -1,10 +1,10 @@
 ;;; gitconfig-mode.el --- Major mode for editing .gitconfig files -*- lexical-binding: t; -*-
 
 ;; Copyright (c) 2012, 2013 Sebastian Wiesner <lunaryorn@gmail.com>
-;;
+
 ;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
-;; URL: https://github.com/magit/git-modes
 ;; Version: 0.3
+;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
