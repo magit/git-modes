@@ -7,14 +7,16 @@ GNU Emacs modes for Git-related files.
 Features
 --------
 
-- `git-commit-mode` – A GNU Emacs major mode for editing Git commit messages
-  according to the [guidelines by Tim Pope][1].  Integrates into [Magit][2].
+- `git-commit-mode` – A major mode for editing Git commit messages
+  according to the [guidelines by Tim Pope][1].
+- `git-rebase-mode` – A major mode for `git-rebase-todo` files created
+  by `git rebase -i`
 - `gitconfig-mode` – A `conf-mode`-derived major mode for editing
   `.gitconfig` files.
 - `gitignore-mode` – A `conf-mode`-derived major mode for editing `.gitignore`
   files.
-- `rebase-mode` – A major mode for `git-rebase-todo` files created by `git
-  rebase -i`
+
+The first to modes integrate into [Magit][2].
 
 
 Installation
@@ -24,6 +26,7 @@ Install the ELPA packages from [MELPA][3] (bleeding edge snapshots) or
 [Marmalade][4] (stable releases):
 
 - `git-commit-mode`: `M-x package-install git-commit-mode`
+- `git-rebase-mode`: `M-x package-install git-rebase-mode`
 - `gitconfig-mode`: `M-x package-install gitconfig-mode`
 - `gitignore-mode`: `M-x package-install gitignore-mode`
 
@@ -37,14 +40,18 @@ earlier versions of GNU Emacs.
 Usage
 -----
 
-
 ### `git-commit-mode`
 
-Just configure `emacs` or `emacsclient` as editor for Git. `git-commit-mode`
+Just configure `emacsclient` or `emacs` as editor for Git. `git-commit-mode`
 will automatically be enabled for Git message buffers.
 
 `git-commit-mode` integrates into with [Magit][2] by redefining
 `magit-log-edit-mode` to support all `git-commit-mode` features.
+
+### `git-rebase-mode`
+
+`git rebase-mode` is automatically enabled for `git-rebase-todo` files, such as
+created by `git rebase -i`.
 
 ### `gitconfig-mode`
 
@@ -57,46 +64,59 @@ files.  The mode is derived from `conf-unix-mode`, so all commands provided by
 `gitignore-mode` is automatically enabled for `.gitignore` and
 `.git/info/exclude` files.
 
-### `rebase-mode`
-
-`rebase-mode` is automatically enabled for `git-rebase-todo` files, such as
-created by `git rebase -i`.
-
 
 Customization
 -------------
 
 - `git-commit-mode`: `M-x customize-group git-commit`
+- `git-rebase-mode`: `M-x customize-group rebase-mode`
 - `gitconfig-mode`: No customization provided.
 - `gitignore-mode`: No customization provided.
-- `rebase-mode`: `M-x customize-group rebase-mode`
 
 
 Further help
 ------------
 
 - `C-h f git-commit-mode`
+- `C-h f git-rebase-mode`
 - `C-h f gitconfig-mode`
 - `C-h f gitignore-mode`
-- `C-h f rebase-mode`
 
 
 Credits
 -------
 
 `git-commit-mode` is forked of the [original work][6] done by
-[Florian Ragwitz][7] and improved by [John Wiegley][8].
+[Florian Ragwitz][7] and improved by [John Wiegley][8].  And then
+[Sebastian Wiesner][9] took it to the next level.
+
+`git-rebase-mode` was previously part of [Magit][2] as
+`rebase-mode`. It was created by [Phil Jackson][10] and improved by
+[Peter J. Weisberg][11].
+
+`gitconfig-mode` and `gitignore-mode` were created by
+[Sebastian Wiesner][9].
 
 The following people contributed to these modes:
 
+- [Alan Falloon](https://github.com/alanfalloon)
 - [Bradley Wright](https://github.com/bradleywright)
+- [Jonas Bernoulli](https://github.com/tarsius)
+- [Marco Craveiro](https://github.com/mcraveiro)
+- [Mitchel Humpherys](https://github.com/mgalgs)
+- [Pekka Pessi](https://github.com/pessi)
 - [Peter Eisentraut](https://github.com/petere)
+- [Pieter Praet](https://github.com/praet)
 - [Ramkumar Ramachandra](https://github.com/artagnon)
+- [Ryan Thompson](https://github.com/DarwinAwardWinner)
 - [Tim Wraight](https://github.com/timwraight)
+- [Yann Hodique](https://github.com/sigma)
 
-Great thanks also goes to [Bozhidar Batsov](https://github.com/bbatsov) for
-adding these modes to his awesome [Prelude](https://github.com/bbatsov/prelude)
-project, thus making them available to a larger user base.
+An up-to-date list of contributors can also be found [here][12].
+
+Great thanks also goes to [Bozhidar Batsov][13] for adding these modes
+to his awesome [Prelude][14] project, thus making them available to a
+larger user base.
 
 
 License
@@ -115,15 +135,21 @@ You should have received a copy of the GNU General Public License along with
 this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
 Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-See [`COPYING`][9] for details.
+See [`COPYING`][15] for details.
 
 
 [1]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-[2]: http://magit.github.com/magit/
+[2]: http://magit.github.com/magit
 [3]: http://melpa.milkbox.net
-[4]: http://marmalade-repo.org/
+[4]: http://marmalade-repo.org
 [5]: https://github.com/magit/git-modes/tags
 [6]: https://github.com/rafl/git-commit-mode
 [7]: https://github.com/rafl
 [8]: https://github.com/jwiegley
-[9]: https://github.com/magit/git-modes/blob/master/COPYING
+[9]: https://github.com/lunaryorn
+[10]: https://github.com/philjackson
+[11]: https://github.com/pjweisberg
+[12]: https://github.com/magit/git-modes/graphs/contributors
+[13]: https://github.com/bbatsov
+[14]: https://github.com/bbatsov/prelude
+[15]: https://github.com/magit/git-modes/blob/master/COPYING
