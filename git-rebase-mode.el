@@ -4,7 +4,8 @@
 ;; Copyright (C) 2011  Peter J Weisberg
 
 ;; Author: Phil Jackson <phil@shellarchive.co.uk>
-;; URL: https://github.com/magit/git-modes
+;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
@@ -13,12 +14,12 @@
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
-;;
-;; Magit is distributed in the hope that it will be useful, but WITHOUT
-;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-;; or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
-;; License for more details.
-;;
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
 ;; You should have received a copy of the GNU General Public License
 ;; along with Magit.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -363,4 +364,7 @@ By default, this is the same except for the \"pick\" command."
              '("git-rebase-todo" . git-rebase-mode))
 
 (provide 'git-rebase-mode)
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 ;;; git-rebase-mode.el ends here
