@@ -30,8 +30,8 @@
 
 ;; A major mode for editing Git commit messages.
 
-;; * Formatting
-;;
+;;;; Formatting
+
 ;; Highlight the formatting of git commit messages and indicate errors according
 ;; to the guidelines for commit messages (see
 ;; http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
@@ -42,32 +42,24 @@
 ;; Enable `auto-fill-mode' and set the `fill-column' to 72 according to the
 ;; aforementioned guidelines.
 
-;; * Headers
-;;
+;;;; Headers
+
 ;; Provide commands to insert standard headers into commit messages.
 ;;
-;; - C-c C-x s or C-c C-s inserts Signed-off-by (`git-commit-signoff').
-;; - C-C C-x a inserts Acked-by (`git-commit-ack').
-;; - C-c C-x t inserts Tested-by (`git-commit-test').
-;; - C-c C-x r inserts Reviewed-by (`git-commit-review').
-;; - C-c C-x o inserts Cc (`git-commit-cc').
-;; - C-c C-x p inserts Reported-by (`git-commit-reported').
+;; - C-c C-s inserts Signed-off-by (`git-commit-signoff').
+;; - C-C C-a inserts Acked-by (`git-commit-ack').
+;; - C-c C-t inserts Tested-by (`git-commit-test').
+;; - C-c C-r inserts Reviewed-by (`git-commit-review').
+;; - C-c C-o inserts Cc (`git-commit-cc').
+;; - C-c C-p inserts Reported-by (`git-commit-reported').
 
-;; * Committing
-;;
+;;;; Committing
+
 ;; C-c C-c finishes a commit.  By default this means to save and kill the
 ;; buffer.  Customize `git-commit-commit-function' to change this behaviour.
 ;;
 ;; Check a buffer for stylistic errors before committing, and ask for
 ;; confirmation before committing with style errors.
-
-;; * Magit integration
-;;
-;; Overwrite `magit-log-edit-mode' to provide font locking and header insertion
-;; for Magit.
-;;
-;; Change the keymap of `magit-log-edit-mode' to use the header insertion of
-;; `git-commit-mode'.
 
 ;;; Code:
 
@@ -140,26 +132,7 @@ git commit messages"
 default comments in git commit messages"
   :group 'git-commit-faces)
 
-(defface git-commit-skip-magit-header-face
-  '((t :inherit font-lock-preprocessor-face))
-  "Face used to highlight the magit header that should be skipped"
-  :group 'git-commit-faces)
-
-(defun git-commit-end-session ()
-  "Save the buffer and end the session.
-
-If the current buffer has clients from the Emacs server, call
-`server-edit' to mark the buffer as done and let the clients
-continue, otherwise kill the buffer via `kill-buffer'."
-  (save-buffer)
-  (if (and (fboundp 'server-edit)
-           (boundp 'server-buffer-clients)
-           server-buffer-clients)
-      (server-edit) ; The message buffer comes from emacsclient
-    (kill-buffer)))
-
-(defcustom git-commit-commit-function
-  #'git-commit-end-session
+(defcustom git-commit-commit-function 'git-commit-end-session
   "Function called by `git-commit-commit' to actually perform a commit.
 
 The function is called without argument, with the current buffer
@@ -179,17 +152,6 @@ confirmation before committing."
   :group 'git-commit
   :type '(choice (const :tag "On style errors" t)
                  (const :tag "Never" nil)))
-
-(defun git-commit-has-style-errors-p ()
-  "Check whether the current buffer has style errors.
-
-Return t, if the current buffer has style errors, or nil
-otherwise."
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward (git-commit-find-summary-regexp) nil t)
-      (or (string-match-p ".+" (or (match-string 2) ""))
-          (string-match-p "^.+$" (or (match-string 3) ""))))))
 
 (defun git-commit-may-do-commit (&optional force)
   "Check whether a commit may be performed.
@@ -221,6 +183,19 @@ Return t, if the commit was successful, or nil otherwise."
   (if (git-commit-may-do-commit force)
       (funcall git-commit-commit-function)
     (message "Commit canceled due to stylistic errors.")))
+
+(defun git-commit-end-session ()
+  "Save the buffer and end the session.
+
+If the current buffer has clients from the Emacs server, call
+`server-edit' to mark the buffer as done and let the clients
+continue, otherwise kill the buffer via `kill-buffer'."
+  (save-buffer)
+  (if (and (fboundp 'server-edit)
+           (boundp 'server-buffer-clients)
+           server-buffer-clients)
+      (server-edit) ; The message buffer comes from emacsclient
+    (kill-buffer)))
 
 (defun git-commit-git-config-var (key)
   "Retrieve a git configuration value.
@@ -286,9 +261,9 @@ inserted."
   (save-excursion
     (goto-char (point-max))
     (if (not (re-search-backward "^\\S<.+$" nil t))
-	;; no comment lines anywhere before end-of-buffer, so we
-	;; want to insert right there
-	(point-max)
+        ;; no comment lines anywhere before end-of-buffer, so we
+        ;; want to insert right there
+        (point-max)
       ;; there's some comments at the end, so we want to insert before
       ;; those; keep going until we find the first non-empty line
       ;; NOTE: if there is no newline at the end of (point),
@@ -304,24 +279,25 @@ Returns either zero, one or two newlines after computation.
 `point' either points to an empty line (with a non-empty previous
 line) or the end of a non-empty line."
   (let ((pre "")
-	(prev-line nil))
+        (prev-line nil))
     (if (not (eq (point) (point-at-bol)))
-	(progn
-	  (setq pre (concat pre "\n"))
-	  (setq prev-line (thing-at-point 'line)))
+        (progn
+          (setq pre (concat pre "\n"))
+          (setq prev-line (thing-at-point 'line)))
       ;; else: (point) is at an empty line
       (when (not (eq (point) (point-min)))
-	(setq prev-line
-	      (save-excursion
-		(forward-line -1)
-		(thing-at-point 'line)))))
+        (setq prev-line
+              (save-excursion
+                (forward-line -1)
+                (thing-at-point 'line)))))
 
     ;; we have prev-line now; if it doesn't match any known pseudo
     ;; header, add a newline
     (when prev-line
-      (if (not (delq nil (mapcar (lambda (pseudo-header) (string-match pseudo-header prev-line))
-				 git-commit-known-pseudo-headers)))
-	  (setq pre (concat pre "\n"))))
+      (if (not (delq nil (mapcar (lambda (pseudo-header)
+                                   (string-match pseudo-header prev-line))
+                                 git-commit-known-pseudo-headers)))
+          (setq pre (concat pre "\n"))))
     pre))
 
 (defun git-commit-insert-header (type name email)
@@ -336,7 +312,7 @@ inserted before the header."
     (save-excursion
       (goto-char header-at)
       (let ((pre (git-commit-determine-pre-for-pseudo-header)))
-	(insert (format "%s%s: %s <%s>\n" pre type name email))))))
+        (insert (format "%s%s: %s <%s>\n" pre type name email))))))
 
 (defun git-commit-insert-header-as-self (type)
   "Insert a header with the name and email address of the current user.
@@ -402,6 +378,7 @@ use for fontification.")
 
 (defconst git-commit-summary-regexp
   (rx
+   string-start
    ;; Skip empty lines or comments before the summary
    (zero-or-more
     line-start
@@ -421,50 +398,30 @@ use for fontification.")
     (group (zero-or-more not-newline))
     line-end)
    )
-  "Regexp to match the summary line.
+  "Regexp to match the summary line.")
 
-Do not use this expression directly, instead call
-`git-commit-find-summary-regexp' to create a regular expression
-to match the summary line.")
+(defun git-commit-has-style-errors-p ()
+  "Check whether the current buffer has style errors.
 
-(defvar git-commit-skip-magit-header-regexp nil
-  "Regexp to skip magit header.
-
-This variable is nil until `magit' is loaded.
-
-Do not use this expression directly, instead call
-`git-commit-find-summary-regexp' to create a regular expression
-to match the summary line.")
-
-(defun git-commit-find-summary-regexp ()
-  "Create a regular expression to find the Git summary line.
-
-Return a regular expression that starts at the beginning of the
-buffer, skips over empty lines, comments and also over the magit
-header, if the current buffer is a `magit-log-edit-mode' buffer,
-and finds the summary line.
-
-The regular expression matches three groups.  The first group is
-the summary line, the second group contains any overlong part of
-the summary, and the third group contains a nonempty line
-following the summary line.  The latter two groups may be empty."
-  (format "\\`%s%s"
-          (if (eq major-mode 'magit-log-edit-mode)
-              git-commit-skip-magit-header-regexp
-            "")
-          git-commit-summary-regexp))
+Return t, if the current buffer has style errors, or nil
+otherwise."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward git-commit-summary-regexp nil t)
+      (or (string-match-p ".+" (or (match-string 2) ""))
+          (string-match-p "^.+$" (or (match-string 3) ""))))))
 
 (defun git-commit-mode-summary-font-lock-keywords (&optional errors)
   "Create font lock keywords to fontify the Git summary.
 
 If ERRORS is non-nil create keywords that highlight errors in the
 summary line, not the summary line itself."
-  (let ((regexp (git-commit-find-summary-regexp)))
-    (if errors
-        `(,regexp
-          (2 'git-commit-overlong-summary-face t t)
-          (3 'git-commit-nonempty-second-line-face t t))
-      `(,regexp (1 'git-commit-summary-face t)))))
+  (if errors
+      `(,git-commit-summary-regexp
+        (2 'git-commit-overlong-summary-face t t)
+        (3 'git-commit-nonempty-second-line-face t t))
+    `(,git-commit-summary-regexp
+      (1 'git-commit-summary-face t))))
 
 (defun git-commit-mode-heading-keywords ()
   "Create font lock keywords to fontify comment headings.
@@ -497,17 +454,20 @@ Known comment headings are provided by `git-commit-comment-headings'."
 
 (defvar git-commit-mode-map
   (let ((map (make-sparse-keymap)))
-    ;; Short shortcut ;) for the frequently used signoff header
+    (define-key map (kbd "C-c C-c") 'git-commit-commit)
     (define-key map (kbd "C-c C-s") 'git-commit-signoff)
-    ;; Verbose shortcuts for all headers to avoid conflicts with magit bindings
+    (define-key map (kbd "C-c C-a") 'git-commit-ack)
+    (define-key map (kbd "C-c C-t") 'git-commit-test)
+    (define-key map (kbd "C-c C-r") 'git-commit-review)
+    (define-key map (kbd "C-c C-o") 'git-commit-cc)
+    (define-key map (kbd "C-c C-p") 'git-commit-reported)
+    ;; Old bindings to avoid confusion
     (define-key map (kbd "C-c C-x s") 'git-commit-signoff)
     (define-key map (kbd "C-c C-x a") 'git-commit-ack)
     (define-key map (kbd "C-c C-x t") 'git-commit-test)
     (define-key map (kbd "C-c C-x r") 'git-commit-review)
     (define-key map (kbd "C-c C-x o") 'git-commit-cc)
     (define-key map (kbd "C-c C-x p") 'git-commit-reported)
-    ;; Committing
-    (define-key map (kbd "C-c C-c") 'git-commit-commit)
     map)
   "Key map used by `git-commit-mode'.")
 
@@ -564,32 +524,6 @@ basic structure of and errors in git commit messages."
   ;; Do not remember point location in commit messages
   (when (fboundp 'toggle-save-place)
     (toggle-save-place 0)))
-
-;;;###autoload
-;; Overwrite magit-log-edit-mode to derive from git-commit-mode, and change it's
-;; key bindings to use our commit and header insertion bindings
-(eval-after-load 'magit
-  '(progn
-     (setq git-commit-skip-magit-header-regexp
-           (format
-            "\\(?:\\(?:[A-Za-z0-9-_]+: *.*\n\\)*%s\\)?"
-            (regexp-quote magit-log-header-end)))
-
-     (defvar git-commit-magit-font-lock-keywords
-       `((,git-commit-skip-magit-header-regexp
-          (0 'git-commit-skip-magit-header-face)))
-       "Font lock keywords for Magit Log Edit Mode.")
-
-     (define-derived-mode magit-log-edit-mode git-commit-mode "Magit Log Edit"
-       (font-lock-add-keywords nil git-commit-magit-font-lock-keywords)
-       (set (make-local-variable 'git-commit-commit-function)
-            (apply-partially #'call-interactively 'magit-log-edit-commit)))
-      (substitute-key-definition 'magit-log-edit-toggle-signoff
-                                 'git-commit-signoff
-                                 magit-log-edit-mode-map)
-      (substitute-key-definition 'magit-log-edit-commit
-                                 'git-commit-commit
-                                  magit-log-edit-mode-map)))
 
 ;;;###autoload
 (dolist (pattern '("/COMMIT_EDITMSG\\'" "/NOTES_EDITMSG\\'"
