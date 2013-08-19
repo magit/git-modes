@@ -16,7 +16,7 @@ Features
 - `gitignore-mode` – A `conf-mode`-derived major mode for editing `.gitignore`
   files.
 
-The first to modes integrate into [Magit][2].
+The first two modes integrate into [Magit][2].
 
 
 Installation
