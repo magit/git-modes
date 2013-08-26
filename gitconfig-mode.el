@@ -119,7 +119,13 @@ Return t if so, or nil otherwise."
 
 ;;;###autoload
 (dolist (pattern (list (rx "/.gitconfig" string-end)
-                       (rx "/.git/config" string-end)))
+                       (rx "/.git/config" string-end)
+                       (rx (eval
+                            (expand-file-name
+                             "git/config"
+                             (file-name-as-directory
+                              (or (getenv "XDG_CONFIG_HOME")
+                                  "~/.config/")))) string-end)))
   (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
 
 (provide 'gitconfig-mode)
