@@ -15,6 +15,7 @@ Features
   `.gitconfig` files.
 - `gitignore-mode` – A `conf-mode`-derived major mode for editing `.gitignore`
   files.
+- `gitattributes-mode` – A major mode for editing .gitattributes files.
 
 The first two modes integrate into [Magit][2].
 
@@ -64,6 +65,10 @@ files.  The mode is derived from `conf-unix-mode`, so all commands provided by
 `gitignore-mode` is automatically enabled for `.gitignore` and
 `.git/info/exclude` files.
 
+### `gitattributes-mode`
+`gitattributes-mode` is automatically enabled for `.gitattributes`,
+`.git/info/attributes`, and `git/attributes`.
+
 
 Customization
 -------------
@@ -72,6 +77,7 @@ Customization
 - `git-rebase-mode`: `M-x customize-group rebase-mode`
 - `gitconfig-mode`: No customization provided.
 - `gitignore-mode`: No customization provided.
+- `gitattributes-mode`: No customization provided.
 
 
 Further help
@@ -81,6 +87,7 @@ Further help
 - `C-h f git-rebase-mode`
 - `C-h f gitconfig-mode`
 - `C-h f gitignore-mode`
+- `C-h f gitattributes-mode`
 
 
 Credits
@@ -96,6 +103,8 @@ Credits
 
 `gitconfig-mode` and `gitignore-mode` were created by
 [Sebastian Wiesner][9].
+
+`gitattributes-mode` was created by [Rüdiger Sonderfeld][16].
 
 The following people contributed to these modes:
 
@@ -153,3 +162,4 @@ See [`COPYING`][15] for details.
 [13]: https://github.com/bbatsov
 [14]: https://github.com/bbatsov/prelude
 [15]: https://github.com/magit/git-modes/blob/master/COPYING
+[16]: https://github.com/ruediger
