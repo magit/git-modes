@@ -41,6 +41,18 @@
   :prefix "gitattributes-mode-"
   :group 'tools)
 
+(defcustom gitattributes-mode-man-function #'man
+  "Function to open the gitattributes(5) manpage."
+  :type '(choice (const :tag "Man" #'man)
+                 (const :tag "Woman" #'woman)
+                 (function :tag "Function"))
+  :group 'gitattributes-mode)
+
+(defun gitattributes-mode-help ()
+  "Open the gitattributes(5) manpage using `gitattributes-mode-man-function'."
+  (interactive)
+  (funcall gitattributes-mode-man-function "gitattributes(5)"))
+
 (defvar gitattributes-mode-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\s " " table)
@@ -90,9 +102,12 @@ If ARG is omitted or nil, move point forward one field."
     ["Backward Field" backward-sexp :active t
      :help "Move backward across one field"]
     ["Kill Field Forward" kill-sexp :active t
-     :help "Kill field following cursor."]
+     :help "Kill field following cursor"]
     ["Kill Field Backward" backward-kill-sexp :active t
-     :help "Kill field preceding cursor."]))
+     :help "Kill field preceding cursor"]
+    "--"
+    ["Help" gitattributes-mode-help :active t
+     :help "Open gitattributes(5) manpage"]))
 
 ;;;###autoload
 (define-derived-mode gitattributes-mode text-mode "Gitattributes"
