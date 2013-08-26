@@ -35,8 +35,6 @@
 
 ;;; Code:
 
-(require 'rx)
-
 (defgroup gitattributes-mode nil
   "Major mode for editing .gitattributes files"
   :link '(url-link "https://github.com/magit/git-modes")
@@ -55,12 +53,9 @@
 
 (defvar gitattributes-mode-font-lock-keywords
   ;; TODO use `gitignore-mode-font-lock-keywords' for first column.
-  `((,(rx (or "true" "false"))
-     . 'font-lock-keyword-face)
-    (,(rx (1+ (syntax whitespace)) (group (or ?- ?!)) (1+ word))
-     1 'font-lock-negation-char-face)
-    (,(rx (1+ (syntax whitespace)) (? (or ?- ?!)) (group (1+ word)) (? ?=))
-     1 'font-lock-variable-name-face))
+  '(("\\(?:\\(?:fals\\|tru\\)e\\)" . 'font-lock-keyword-face)
+    ("\\s-+\\(-\\|!\\)[[:word:]]+" 1 'font-lock-negation-char-face)
+    ("\\s-+\\(?:-\\|!\\)?\\([[:word:]]+\\)=?" 1 'font-lock-variable-name-face))
   "Keywords for highlight in `gitattributes-mode'.")
 
 ;;;###autoload
@@ -71,9 +66,9 @@
   (setq font-lock-defaults '(gitattributes-mode-font-lock-keywords)))
 
 ;;;###autoload
-(dolist (pattern (list (rx "/.gitattributes" string-end)
-                       (rx "/.git/info/attributes" string-end)
-                       (rx "/git/attributes" string-end)))
+(dolist (pattern '("/\\.gitattributes\\'"
+                   "/\\.git/info/attributes\\'"
+                   "/git/attributes\\'"))
   (add-to-list 'auto-mode-alist (cons pattern #'gitattributes-mode)))
 
 (provide 'gitattributes-mode)
