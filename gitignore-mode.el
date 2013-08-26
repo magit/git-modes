@@ -55,12 +55,7 @@
 ;;;###autoload
 (dolist (pattern (list (rx "/.gitignore" string-end)
                        (rx "/.git/info/exclude" string-end)
-                       (rx (eval (expand-file-name
-                                  "git/ignore"
-                                  (file-name-as-directory
-                                   (or (getenv "XDG_CONFIG_HOME")
-                                       "~/.config/"))))
-                           string-end)))
+                       (rx "/git/ignore" string-end)))
   (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
 
 (provide 'gitignore-mode)
