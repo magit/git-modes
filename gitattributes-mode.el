@@ -58,12 +58,50 @@
     ("\\s-+\\(?:-\\|!\\)?\\([[:word:]]+\\)=?" 1 'font-lock-variable-name-face))
   "Keywords for highlight in `gitattributes-mode'.")
 
+(defun gitattributes-mode-forward-field (&optional arg)
+  "Move point ARG fields forward.
+If ARG is omitted or nil, move point forward one field."
+  (interactive "p")
+  (if (< arg 0)
+      (gitattributes-mode-backward-field (- arg))
+    (dotimes (_ (or arg 1))
+      (re-search-forward "\\s-" nil 'move))))
+
+(defun gitattributes-mode-backward-field (&optional arg)
+  "Move point ARG fields forward.
+If ARG is omitted or nil, move point forward one field."
+  (interactive "p")
+  (if (< arg 0)
+      (gitattributes-mode-forward-field (- arg))
+    (dotimes (_ (or arg 1))
+      (re-search-backward "\\s-" nil 'move))))
+
+(defvar gitattributes-mode-map
+  (let ((map (make-sparse-keymap)))
+    map)
+  "Keymap for `gitattributes-mode'.")
+
+(easy-menu-define gitattributes-mode-menu
+  gitattributes-mode-map
+  "Menu for `gitattributes-mode'."
+  '("Git Attributes"
+    ["Forward Field" forward-sexp :active t
+     :help "Move forward across one field"]
+    ["Backward Field" backward-sexp :active t
+     :help "Move backward across one field"]
+    ["Kill Field Forward" kill-sexp :active t
+     :help "Kill field following cursor."]
+    ["Kill Field Backward" backward-kill-sexp :active t
+     :help "Kill field preceding cursor."]))
+
 ;;;###autoload
 (define-derived-mode gitattributes-mode text-mode "Gitattributes"
-  "A major mode for editing .gitattributes files."
+  "A major mode for editing .gitattributes files.
+\\{gitattributes-mode-map}"
   :group 'gitattributes-mode
   :syntax-table gitattributes-mode-syntax-table
-  (setq font-lock-defaults '(gitattributes-mode-font-lock-keywords)))
+  (setq font-lock-defaults '(gitattributes-mode-font-lock-keywords))
+  (setq-local forward-sexp-function #'gitattributes-mode-forward-field))
 
 ;;;###autoload
 (dolist (pattern '("/\\.gitattributes\\'"
