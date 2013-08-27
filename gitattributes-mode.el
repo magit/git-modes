@@ -136,6 +136,7 @@ If NO-STATE is non-nil then do not print state."
 (defvar gitattributes-mode-font-lock-keywords
   ;; TODO use `gitignore-mode-font-lock-keywords' for first column.
   '(("\\(?:\\(?:fals\\|tru\\)e\\)" . 'font-lock-keyword-face)
+    ("^\\[attr\\]" . 'font-lock-keyword-face)
     ("\\s-+\\(-\\|!\\)[[:word:]]+" 1 'font-lock-negation-char-face)
     ("\\s-+\\(?:-\\|!\\)?\\([[:word:]]+\\)=?" 1 'font-lock-variable-name-face))
   "Keywords for highlight in `gitattributes-mode'.")
