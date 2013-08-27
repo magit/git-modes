@@ -25,7 +25,8 @@
 
 ;;; Commentary:
 
-;; A major mode for editing gitattributes(5) files.
+;; A major mode for editing gitattributes(5) files.  `eldoc-mode' is supported
+;; for known attributes.
 
 ;;; Format:
 
@@ -52,6 +53,75 @@
   "Open the gitattributes(5) manpage using `gitattributes-mode-man-function'."
   (interactive)
   (funcall gitattributes-mode-man-function "gitattributes(5)"))
+
+(defconst gitattributes-mode-attributes
+  '(("text"
+     "This attribute enables and controls end-of-line normalization."
+     (t "auto"))
+    ("eol"
+     "This attribute sets a specific line-ending style to be used in the \
+working directory."
+     ("crlf" "lf"))
+    ("ident" "Handle $Id$." t)
+    ("filter"
+     "A filter attribute can be set to a string value that names a filter \
+driver specified in the configuration."
+     string)
+    ("diff"
+     "The attribute diff affects how Git generates diffs for particular files."
+     (t string "ada" "bibtex" "cpp" "csharp" "fortran" "html" "java"
+        "matlab" "objc" "pascal" "perl" "php" "python" "ruby" "tex"))
+    ("merge"
+     "The attribute merge affects how three versions of a file are merged."
+     (t string "text" "binary" "union"))
+    ("conflict-marker-size"
+     "This attribute controls the length of conflict markers left in the work \
+tree file during a conflicted merge."
+     (number))
+    ("whitespace"
+     "The core.whitespace configuration variable allows you to define what \
+diff and apply should consider whitespace errors for all paths in the project."
+     (t string))
+    ("export-ignore"
+     "Files and directories with the attribute export-ignore won’t be added to \
+archive files."
+     t)
+    ("export-subst"
+     "If the attribute export-subst is set for a file then Git will expand \
+several placeholders when adding this file to an archive."
+     t)
+    ("delta"
+     "Delta compression will not be attempted for blobs for paths with the \
+attribute delta set to false."
+     t)
+    ("encoding"
+     "The encoding used for the file in GUI Tools (e.g., gitk(1) and \
+git-gui(1))."
+     string))
+  "List of known attributes.
+Format (NAME DOC ALLOWED-STATES).
+NAME should be the name as a string.
+DOC should be a short doc-string.
+ALLOWED-STATE should be a list or single symbol or string of allowed values.
+t means the attribute can be Set or Unset.  `string' means the symbol value
+can be any string and `number' means the value should be a number.")
+
+(require 'thingatpt)
+
+(defun gitattributes-mode-eldoc (&optional no-state)
+  "Support for `eldoc-mode'.
+If NO-STATE is non-nil then do not print state."
+  (let (entry)
+    (when (and (thing-at-point-looking-at "\\s-+\\(-\\|!\\)?\\([[:word:]]+\\)\\(=\\)?")
+               (setq entry (assoc-string (match-string 2)
+                                         gitattributes-mode-attributes)))
+      (concat (unless no-state
+                (cond
+                 ((string= (match-string 1) "-") "[Unset] ")
+                 ((string= (match-string 1) "!") "[Unspecified] ")
+                 ((string= (match-string 3) "=") "[Set to a value] ")
+                 (t "[Set] ")))
+              (cadr entry)))))
 
 (defvar gitattributes-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -116,6 +186,7 @@ If ARG is omitted or nil, move point forward one field."
   :group 'gitattributes-mode
   :syntax-table gitattributes-mode-syntax-table
   (setq font-lock-defaults '(gitattributes-mode-font-lock-keywords))
+  (setq-local eldoc-documentation-function #'gitattributes-mode-eldoc)
   (setq-local forward-sexp-function #'gitattributes-mode-forward-field))
 
 ;;;###autoload
