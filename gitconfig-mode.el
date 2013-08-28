@@ -108,6 +108,9 @@ Return t if so, or nil otherwise."
           word-end (zero-or-more (syntax whitespace)) line-end)
      (1 'font-lock-constant-face))))
 
+(defvar gitconfig-mode-hook nil
+  "List of functions to be called when activating `gitconfig-mode'.")
+
 ;;;###autoload
 (define-derived-mode gitconfig-mode conf-unix-mode "Gitconfig"
   "A major mode for editing .gitconfig files."
@@ -115,7 +118,9 @@ Return t if so, or nil otherwise."
   (conf-mode-initialize "#" gitconfig-mode-font-lock-keywords)
   (setq indent-tabs-mode t)
   (set (make-local-variable 'indent-line-function)
-       'gitconfig-indent-line))
+       'gitconfig-indent-line)
+  ;; Run any user-defined hooks as the last thing we do.
+  (run-mode-hooks 'gitconfig-mode-hook))
 
 ;;;###autoload
 (dolist (pattern (list (rx "/.gitconfig" string-end)

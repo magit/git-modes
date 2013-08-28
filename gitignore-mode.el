@@ -32,6 +32,9 @@
 (require 'rx)
 (require 'conf-mode)
 
+(defvar gitignore-mode-hook nil
+  "List of functions to be called when activating `gitignore-mode'.")
+
 (defvar gitignore-mode-font-lock-keywords
   `((,(rx line-start (syntax comment-start) (zero-or-more not-newline) line-end)
      . 'font-lock-comment-face)
@@ -50,7 +53,9 @@
   ;; Disable syntactic font locking, because comments are only valid at
   ;; beginning of line.
   (setq font-lock-defaults '(gitignore-mode-font-lock-keywords t t))
-  (set (make-local-variable 'conf-assignment-sign) nil))
+  (set (make-local-variable 'conf-assignment-sign) nil)
+  ;; Run any user-defined hooks as the last thing we do.
+  (run-mode-hooks 'gitignore-mode-hook))
 
 ;;;###autoload
 (dolist (pattern (list (rx "/.gitignore" string-end)
