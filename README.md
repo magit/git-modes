@@ -69,7 +69,7 @@ Customization
 -------------
 
 - `git-commit-mode`: `M-x customize-group git-commit`
-- `git-rebase-mode`: `M-x customize-group rebase-mode`
+- `git-rebase-mode`: `M-x customize-group git-rebase`
 - `gitconfig-mode`: No customization provided.
 - `gitignore-mode`: No customization provided.
 
