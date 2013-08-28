@@ -144,6 +144,9 @@ confirmation before committing."
   "Hook run by `git-commit-commit' unless clients exist.
 Only use this if you know what you are doing.")
 
+(defvar git-commit-mode-hook nil
+  "List of functions to be called when activating `git-commit-mode'.")
+
 (defun git-commit-commit (&optional force)
   "Finish editing the commit message and commit.
 
@@ -511,7 +514,9 @@ basic structure of and errors in git commit messages."
        (concat paragraph-start "\\|*\\|("))
   ;; Do not remember point location in commit messages
   (when (fboundp 'toggle-save-place)
-    (toggle-save-place 0)))
+    (toggle-save-place 0))
+  ;; Run any user-defined hooks as the last thing we do.
+  (run-mode-hooks 'git-commit-mode-hook))
 
 ;;;###autoload
 (dolist (pattern '("/COMMIT_EDITMSG\\'" "/NOTES_EDITMSG\\'"
