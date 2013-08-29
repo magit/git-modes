@@ -325,7 +325,7 @@ use for fontification.")
    ;; Skip empty lines or comments before the summary
    (zero-or-more
     line-start
-    (or (one-or-more (syntax whitespace))
+    (or (zero-or-more (syntax whitespace))
         (and (syntax comment-start) (zero-or-more not-newline)))
     "\n")
    ;; The actual summary line
