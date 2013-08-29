@@ -325,7 +325,7 @@ use for fontification.")
    ;; Skip empty lines or comments before the summary
    (zero-or-more
     line-start
-    (or (one-or-more (syntax whitespace))
+    (or (zero-or-more (syntax whitespace))
         (and (syntax comment-start) (zero-or-more not-newline)))
     "\n")
    ;; The actual summary line
@@ -467,7 +467,7 @@ basic structure of and errors in git commit messages."
        (concat paragraph-start "\\|*\\|("))
   ;; Do not remember point location in commit messages
   (when (fboundp 'toggle-save-place)
-    (toggle-save-place 0)))
+    (setq save-place nil)))
 
 ;;;###autoload
 (dolist (pattern '("/COMMIT_EDITMSG\\'" "/NOTES_EDITMSG\\'"
