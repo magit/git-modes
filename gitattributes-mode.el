@@ -42,6 +42,13 @@
   :prefix "gitattributes-mode-"
   :group 'tools)
 
+(defcustom gitattributes-mode-enable-eldoc t
+  "Enable `eldoc-mode' when loading `gitattributes-mode'.
+This provides documentation for known variables in the echo area.
+Alternatively add `turn-on-eldoc-mode' to the mode hook."
+  :type 'boolean
+  :group 'gitattributes-mode)
+
 (defcustom gitattributes-mode-man-function #'man
   "Function to open the gitattributes(5) manpage."
   :type '(choice (const :tag "Man" #'man)
@@ -191,7 +198,9 @@ If ARG is omitted or nil, move point forward one field."
   :syntax-table gitattributes-mode-syntax-table
   (setq font-lock-defaults '(gitattributes-mode-font-lock-keywords))
   (setq-local eldoc-documentation-function #'gitattributes-mode-eldoc)
-  (setq-local forward-sexp-function #'gitattributes-mode-forward-field))
+  (setq-local forward-sexp-function #'gitattributes-mode-forward-field)
+  (when gitattributes-mode-enable-eldoc
+    (eldoc-mode 1)))
 
 ;;;###autoload
 (dolist (pattern '("/\\.gitattributes\\'"

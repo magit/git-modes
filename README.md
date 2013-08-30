@@ -77,7 +77,7 @@ Customization
 - `git-rebase-mode`: `M-x customize-group rebase-mode`
 - `gitconfig-mode`: No customization provided.
 - `gitignore-mode`: No customization provided.
-- `gitattributes-mode`: No customization provided.
+- `gitattributes-mode`: `M-x customize-group gitattributes-mode`.
 
 
 Further help
