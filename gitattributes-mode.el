@@ -127,18 +127,21 @@ If NO-STATE is non-nil then do not print state."
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\s " " table)
     (modify-syntax-entry ?\t " " table)
-    (modify-syntax-entry ?- ".w" table)
+    (modify-syntax-entry ?- "_." table)
     (modify-syntax-entry ?! "." table)
     (modify-syntax-entry ?= "." table)
     table)
   "Syntax table for `gitattributes-mode'.")
 
 (defvar gitattributes-mode-font-lock-keywords
-  ;; TODO use `gitignore-mode-font-lock-keywords' for first column.
   '(("\\(?:\\(?:fals\\|tru\\)e\\)" . 'font-lock-keyword-face)
-    ("^\\[attr\\]" . 'font-lock-keyword-face)
+    ("^\\[attr]" . 'font-lock-function-name-face)
     ("\\s-+\\(-\\|!\\)[[:word:]]+" 1 'font-lock-negation-char-face)
-    ("\\s-+\\(?:-\\|!\\)?\\([[:word:]]+\\)=?" 1 'font-lock-variable-name-face))
+    ("\\s-+\\(?:-\\|!\\)?\\(\\sw\\(?:\\sw\\|\\s_\\)*\\)=?" 1 'font-lock-variable-name-face)
+    ;; Pattern highlight similar to `gitignore-mode-font-lock-keywords'
+    ; ("^[^[:space:]]*\\(/\\)" 1 'font-lock-constant-face) ;; TODO fix
+    ("^[^[:space:]]*\\([*?]\\)" 1 'font-lock-keyword-face)
+    ("^[^[:space:]]*\\(\\[.+?]\\)" 1 'font-lock-keyword-face))
   "Keywords for highlight in `gitattributes-mode'.")
 
 (defun gitattributes-mode-forward-field (&optional arg)
