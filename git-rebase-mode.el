@@ -129,7 +129,7 @@
     (define-key map (kbd "M-n") 'git-rebase-move-line-down)
     map)
   "Keymap for Git-Rebase mode.
-Note this will be added to by the top-level code which defines
+Note that this will be added to the top-level code which defines
 the edit functions.")
 
 (easy-menu-define git-rebase-mode-menu git-rebase-mode-map
@@ -146,7 +146,7 @@ the edit functions.")
     ["Execute" git-rebase-exec t]
     "---"
     ["Abort" git-rebase-abort t]
-    ["Done" server-edit t]))
+    ["Done" git-rebase-server-edit t]))
 
 ;;; Utilities
 
@@ -209,8 +209,10 @@ that of CHANGE-TO."
   (when (git-rebase-looking-at-action-or-exec)
     (let ((buffer-read-only nil)
           (col (current-column)))
-      (transpose-lines 1)
-      (forward-line -2)
+      (goto-char (point-at-bol))
+      (unless (bobp)
+        (transpose-lines 1)
+        (forward-line -2))
       (move-to-column col))))
 
 (defun git-rebase-move-line-down ()
@@ -321,7 +323,7 @@ Like `forward-line' but go into the opposite direction."
 ;;; Mode
 
 ;;;###autoload
-(define-derived-mode git-rebase-mode special-mode "Rebase"
+(define-derived-mode git-rebase-mode special-mode "Git Rebase"
   "Major mode for editing of a Git rebase file.
 
 Rebase files are generated when you run 'git rebase -i' or run
