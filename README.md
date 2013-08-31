@@ -56,14 +56,15 @@ created by `git rebase -i`.
 
 ### `gitconfig-mode`
 
-`gitconfig-mode` is automatically enabled for `.gitconfig` and `.git/config`
-files.  The mode is derived from `conf-unix-mode`, so all commands provided by
-`conf-mode` (e.g. `conf-align-assignments`) will work as expected.
+`gitconfig-mode` is automatically enabled for `.gitconfig`, `.git/config`
+and `git/config` files.  The mode is derived from `conf-unix-mode`, so all
+commands provided by `conf-mode` (e.g. `conf-align-assignments`) will work
+as expected.
 
 ### `gitignore-mode`
 
-`gitignore-mode` is automatically enabled for `.gitignore` and
-`.git/info/exclude` files.
+`gitignore-mode` is automatically enabled for `.gitignore`,
+`.git/info/exclude` and `git/ignore` files.
 
 ### `gitattributes-mode`
 `gitattributes-mode` is automatically enabled for `.gitattributes`,
