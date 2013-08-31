@@ -54,7 +54,8 @@
 
 ;;;###autoload
 (dolist (pattern (list (rx "/.gitignore" string-end)
-                       (rx "/.git/info/exclude" string-end)))
+                       (rx "/.git/info/exclude" string-end)
+                       (rx "/git/ignore" string-end)))
   (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
 
 (provide 'gitignore-mode)
