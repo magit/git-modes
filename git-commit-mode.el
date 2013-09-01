@@ -325,11 +325,11 @@ use for fontification.")
 (defun git-commit-build-summary-regexp (max-summary-col)
   (concat
    ;; Skip empty lines or comments before the summary
-   "\\`\\(?:^\\(?:\\s-+\\|\\s<.*\\)\n\\)*"
+   "\\`\\(?:^\\(?:\\s-*\\|\\s<.*\\)\n\\)*"
    ;; The summary line
    (format "\\(.\\{0,%d\\}\\)\\(.*\\)\n" max-summary-col)
    ;; Non-empty non-comment second line
-   "\\(?:[^\n#].+\\)?"))
+   "\\([^\n#].+\\)?"))
 
 (defvar git-commit-summary-regexp nil
   "Regexp to match the summary line.")
@@ -471,7 +471,7 @@ basic structure of and errors in git commit messages."
        (concat paragraph-start "\\|*\\|("))
   ;; Do not remember point location in commit messages
   (when (fboundp 'toggle-save-place)
-    (toggle-save-place 0)))
+    (setq save-place nil)))
 
 ;;;###autoload
 (dolist (pattern '("/COMMIT_EDITMSG\\'" "/NOTES_EDITMSG\\'"
