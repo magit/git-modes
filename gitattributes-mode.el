@@ -140,15 +140,30 @@ If NO-STATE is non-nil then do not print state."
     table)
   "Syntax table for `gitattributes-mode'.")
 
+(defun gitattributes-mode--highlight-1st-field (regexp)
+  "Highlight REGEXP in the first field only."
+  `(lambda (limit)
+     (let ((old-limit limit))
+       (save-excursion
+         (beginning-of-line)
+         (when (re-search-forward "[[:space:]]" limit 'noerror)
+           (setq limit (point))))
+       (unless (< limit (point))
+         (if (re-search-forward ,regexp limit 'noerror)
+             t
+           (forward-line)
+           (when (< (point) old-limit)
+             (gitattributes-mode--highlight-1st-field old-limit)))))))
+
 (defvar gitattributes-mode-font-lock-keywords
-  '(("\\(?:\\(?:fals\\|tru\\)e\\)" . 'font-lock-keyword-face)
-    ("^\\[attr]" . 'font-lock-function-name-face)
-    ("\\s-+\\(-\\|!\\)[[:word:]]+" 1 'font-lock-negation-char-face)
-    ("\\s-+\\(?:-\\|!\\)?\\(\\sw\\(?:\\sw\\|\\s_\\)*\\)=?" 1 'font-lock-variable-name-face)
+  `(("^\\[attr]" . 'font-lock-function-name-face)
+    ("\\s-+\\(-\\|!\\)[[:word:]]+" (1 'font-lock-negation-char-face))
+    ("\\s-+\\(?:-\\|!\\)?\\(\\sw\\(?:\\sw\\|\\s_\\)*\\)=?"
+     (1 'font-lock-variable-name-face))
     ;; Pattern highlight similar to `gitignore-mode-font-lock-keywords'
-    ; ("^[^[:space:]]*\\(/\\)" 1 'font-lock-constant-face) ;; TODO fix
-    ("^[^[:space:]]*\\([*?]\\)" 1 'font-lock-keyword-face)
-    ("^[^[:space:]]*\\(\\[.+?]\\)" 1 'font-lock-keyword-face))
+    (,(gitattributes-mode--highlight-1st-field "/") . 'font-lock-constant-face)
+    (,(gitattributes-mode--highlight-1st-field "[*?]") . 'font-lock-keyword-face)
+    (,(gitattributes-mode--highlight-1st-field "\\[.+?]") . 'font-lock-keyword-face))
   "Keywords for highlight in `gitattributes-mode'.")
 
 (defun gitattributes-mode-forward-field (&optional arg)
