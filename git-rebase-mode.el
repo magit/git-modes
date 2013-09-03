@@ -117,16 +117,17 @@
     (define-key map [remap undo]    'git-rebase-undo)
     (define-key map (kbd "RET") 'git-rebase-show-commit)
     (define-key map (kbd "x")   'git-rebase-exec)
-    (define-key map (kbd "c")   'git-rebase-pick)
+    (define-key map (kbd "p")   'git-rebase-pick)
     (define-key map (kbd "r")   'git-rebase-reword)
     (define-key map (kbd "e")   'git-rebase-edit)
     (define-key map (kbd "s")   'git-rebase-squash)
     (define-key map (kbd "f")   'git-rebase-fixup)
     (define-key map (kbd "k")   'git-rebase-kill-line)
-    (define-key map (kbd "p")   'git-rebase-backward-line)
-    (define-key map (kbd "n")   'forward-line)
+    (define-key map (kbd "C-k") 'git-rebase-kill-line)
     (define-key map (kbd "M-p") 'git-rebase-move-line-up)
     (define-key map (kbd "M-n") 'git-rebase-move-line-down)
+    (define-key map (kbd "M-<up>") 'git-rebase-move-line-up)
+    (define-key map (kbd "M-<down>") 'git-rebase-move-line-down)
     map)
   "Keymap for Git-Rebase mode.
 Note that this will be added to the top-level code which defines
@@ -314,12 +315,6 @@ exec line was commented out, also uncomment it."
             (let ((default-directory (expand-file-name "../../")))
               (magit-show-commit commit nil nil 'select))
           (shell-command (concat "git show " commit)))))))
-
-(defun git-rebase-backward-line (&optional n)
-  "Move N lines backward (forward if N is negative).
-Like `forward-line' but go into the opposite direction."
-  (interactive "p")
-  (forward-line (* n -1)))
 
 ;;; Mode
 
