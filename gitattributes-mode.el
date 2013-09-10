@@ -215,7 +215,8 @@ If ARG is omitted or nil, move point forward one field."
   (setq font-lock-defaults '(gitattributes-mode-font-lock-keywords))
   (setq-local eldoc-documentation-function #'gitattributes-mode-eldoc)
   (setq-local forward-sexp-function #'gitattributes-mode-forward-field)
-  (when gitattributes-mode-enable-eldoc
+  (when (and gitattributes-mode-enable-eldoc
+             (require 'eldoc nil 'noerror))
     (eldoc-mode 1)))
 
 ;;;###autoload
