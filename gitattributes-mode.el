@@ -176,7 +176,7 @@ If ARG is omitted or nil, move point forward one field."
   (if (< arg 0)
       (gitattributes-mode-backward-field (- arg))
     (dotimes (_ (or arg 1))
-      (re-search-forward "\\s-" nil 'move))))
+      (re-search-forward "\\s-[!-]?\\<" nil 'move))))
 
 (defun gitattributes-mode-backward-field (&optional arg)
   "Move point ARG fields backward.
@@ -185,7 +185,7 @@ If ARG is omitted or nil, move point backward one field."
   (if (< arg 0)
       (gitattributes-mode-forward-field (- arg))
     (dotimes (_ (or arg 1))
-      (re-search-backward "\\s-" nil 'move))))
+      (re-search-backward "\\s-[!-]?\\<" nil 'move))))
 
 (defvar gitattributes-mode-map
   (let ((map (make-sparse-keymap)))
