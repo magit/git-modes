@@ -36,6 +36,8 @@
 
 ;;; Code:
 
+(require 'easymenu)
+
 (defgroup gitattributes-mode nil
   "Major mode for editing .gitattributes files"
   :link '(url-link "https://github.com/magit/git-modes")
@@ -59,7 +61,7 @@ Alternatively add `turn-on-eldoc-mode' to the mode hook."
 (defun gitattributes-mode-help ()
   "Open the gitattributes(5) manpage using `gitattributes-mode-man-function'."
   (interactive)
-  (funcall gitattributes-mode-man-function "gitattributes(5)"))
+  (funcall gitattributes-mode-man-function "gitattributes"))
 
 (defconst gitattributes-mode-attributes
   '(("text"
@@ -119,7 +121,7 @@ can be any string and `number' means the value should be a number.")
   "Support for `eldoc-mode'.
 If NO-STATE is non-nil then do not print state."
   (let (entry)
-    (when (and (thing-at-point-looking-at "\\s-+\\(-\\|!\\)?\\([[:word:]]+\\)\\(=\\)?")
+    (when (and (thing-at-point-looking-at "\\s-+\\(-\\|!\\)?\\(\\(?:\\sw-?\\)+\\)\\(=\\)?")
                (setq entry (assoc-string (match-string 2)
                                          gitattributes-mode-attributes)))
       (concat (unless no-state
@@ -156,7 +158,8 @@ If NO-STATE is non-nil then do not print state."
              (gitattributes-mode--highlight-1st-field old-limit)))))))
 
 (defvar gitattributes-mode-font-lock-keywords
-  `(("^\\[attr]" . 'font-lock-function-name-face)
+  `(("^\\s-*#.*" . 'font-lock-comment-face)
+    ("^\\[attr]" . 'font-lock-function-name-face)
     ("\\s-+\\(-\\|!\\)[[:word:]]+" (1 'font-lock-negation-char-face))
     ("\\s-+\\(?:-\\|!\\)?\\(\\sw\\(?:\\sw\\|\\s_\\)*\\)=?"
      (1 'font-lock-variable-name-face))
@@ -173,16 +176,16 @@ If ARG is omitted or nil, move point forward one field."
   (if (< arg 0)
       (gitattributes-mode-backward-field (- arg))
     (dotimes (_ (or arg 1))
-      (re-search-forward "\\s-" nil 'move))))
+      (re-search-forward "\\s-[!-]?\\<" nil 'move))))
 
 (defun gitattributes-mode-backward-field (&optional arg)
-  "Move point ARG fields forward.
-If ARG is omitted or nil, move point forward one field."
+  "Move point ARG fields backward.
+If ARG is omitted or nil, move point backward one field."
   (interactive "p")
   (if (< arg 0)
       (gitattributes-mode-forward-field (- arg))
     (dotimes (_ (or arg 1))
-      (re-search-backward "\\s-" nil 'move))))
+      (re-search-backward "\\s-[!-]?\\<" nil 'move))))
 
 (defvar gitattributes-mode-map
   (let ((map (make-sparse-keymap)))
@@ -214,7 +217,8 @@ If ARG is omitted or nil, move point forward one field."
   (setq font-lock-defaults '(gitattributes-mode-font-lock-keywords))
   (setq-local eldoc-documentation-function #'gitattributes-mode-eldoc)
   (setq-local forward-sexp-function #'gitattributes-mode-forward-field)
-  (when gitattributes-mode-enable-eldoc
+  (when (and gitattributes-mode-enable-eldoc
+             (require 'eldoc nil 'noerror))
     (eldoc-mode 1)))
 
 ;;;###autoload
