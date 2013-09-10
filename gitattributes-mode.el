@@ -61,7 +61,7 @@ Alternatively add `turn-on-eldoc-mode' to the mode hook."
 (defun gitattributes-mode-help ()
   "Open the gitattributes(5) manpage using `gitattributes-mode-man-function'."
   (interactive)
-  (funcall gitattributes-mode-man-function "gitattributes(5)"))
+  (funcall gitattributes-mode-man-function "gitattributes"))
 
 (defconst gitattributes-mode-attributes
   '(("text"
