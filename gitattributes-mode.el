@@ -156,7 +156,8 @@ If NO-STATE is non-nil then do not print state."
              (gitattributes-mode--highlight-1st-field old-limit)))))))
 
 (defvar gitattributes-mode-font-lock-keywords
-  `(("^\\[attr]" . 'font-lock-function-name-face)
+  `(("^\\s-*#.*" . 'font-lock-comment-face)
+    ("^\\[attr]" . 'font-lock-function-name-face)
     ("\\s-+\\(-\\|!\\)[[:word:]]+" (1 'font-lock-negation-char-face))
     ("\\s-+\\(?:-\\|!\\)?\\(\\sw\\(?:\\sw\\|\\s_\\)*\\)=?"
      (1 'font-lock-variable-name-face))
