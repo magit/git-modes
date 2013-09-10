@@ -179,8 +179,8 @@ If ARG is omitted or nil, move point forward one field."
       (re-search-forward "\\s-" nil 'move))))
 
 (defun gitattributes-mode-backward-field (&optional arg)
-  "Move point ARG fields forward.
-If ARG is omitted or nil, move point forward one field."
+  "Move point ARG fields backward.
+If ARG is omitted or nil, move point backward one field."
   (interactive "p")
   (if (< arg 0)
       (gitattributes-mode-forward-field (- arg))
