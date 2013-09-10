@@ -119,7 +119,7 @@ can be any string and `number' means the value should be a number.")
   "Support for `eldoc-mode'.
 If NO-STATE is non-nil then do not print state."
   (let (entry)
-    (when (and (thing-at-point-looking-at "\\s-+\\(-\\|!\\)?\\([[:word:]]+\\)\\(=\\)?")
+    (when (and (thing-at-point-looking-at "\\s-+\\(-\\|!\\)?\\(\\(?:\\sw-?\\)+\\)\\(=\\)?")
                (setq entry (assoc-string (match-string 2)
                                          gitattributes-mode-attributes)))
       (concat (unless no-state
