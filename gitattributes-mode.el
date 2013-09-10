@@ -36,6 +36,8 @@
 
 ;;; Code:
 
+(require 'easymenu)
+
 (defgroup gitattributes-mode nil
   "Major mode for editing .gitattributes files"
   :link '(url-link "https://github.com/magit/git-modes")
