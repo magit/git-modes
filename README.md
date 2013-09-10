@@ -15,7 +15,7 @@ Features
   `.gitconfig` files.
 - `gitignore-mode` – A `conf-mode`-derived major mode for editing `.gitignore`
   files.
-- `gitattributes-mode` – A major mode for editing .gitattributes files.
+- `gitattributes-mode` – A major mode for editing `.gitattributes` files.
 
 The first two modes integrate into [Magit][2].
 
