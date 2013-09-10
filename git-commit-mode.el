@@ -39,7 +39,7 @@
 ;; characters (configurable using `git-commit-summary-max-length').
 ;;
 ;; Enable `auto-fill-mode' and set the `fill-column' to 72 according to the
-;; aforementioned guidelines.
+;; aforementioned guidelines (configurable using `git-commit-message-max-length').
 
 ;;;; Headers
 
@@ -345,6 +345,11 @@ use for fontification.")
   :group 'git-commit
   :type 'number)
 
+(defcustom git-commit-message-max-length 72
+  "Automatically wrap commit message lines beyond this column."
+  :group 'git-commit
+  :type 'number)
+
 (defun git-commit-has-style-errors-p ()
   "Check whether the current buffer has style errors.
 
@@ -462,7 +467,7 @@ basic structure of and errors in git commit messages."
   (set (make-local-variable 'font-lock-multiline) t)
   (git-commit-font-lock-diff)
   ;; Filling according to the guidelines
-  (setq fill-column 72)
+  (setq fill-column git-commit-message-max-length)
   (turn-on-auto-fill)
   ;; Recognize changelog-style paragraphs
   (set (make-local-variable 'paragraph-start)
