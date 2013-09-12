@@ -61,8 +61,9 @@
 
 ;;; Code:
 
-(require 'saveplace)
 (require 'server)
+
+(defvar save-place)
 
 (defgroup git-commit nil
   "Mode for editing git commit messages"
@@ -479,7 +480,7 @@ basic structure of and errors in git commit messages."
   (set (make-local-variable 'paragraph-start)
        (concat paragraph-start "\\|*\\|("))
   ;; Do not remember point location in commit messages
-  (when (fboundp 'toggle-save-place)
+  (when save-place
     (setq save-place nil)))
 
 ;;;###autoload
