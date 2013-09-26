@@ -247,29 +247,36 @@ Return t, if the commit was successful, or nil otherwise."
       (message "Commit canceled due to stylistic errors.")
     (save-buffer)
     (run-hooks 'git-commit-kill-buffer-hook)
+    (remove-hook 'kill-buffer-query-functions #'git-commit--kill-buffer 'local)
     (git-commit-restore-previous-winconf
       (if (git-commit-buffer-clients)
           (server-edit)
         (run-hook-with-args 'git-commit-commit-hook)
         (kill-buffer)))))
 
+(defun git-commit--kill-buffer ()
+  "Hook to run if buffer is killed.
+Aborts the commit.  Remove before committing."
+  (remove-hook 'kill-buffer-hook #'git-commit--kill-buffer 'local)
+  (save-buffer)
+  (run-hooks 'git-commit-kill-buffer-hook)
+  (let ((clients (git-commit-buffer-clients)))
+    (when clients
+      (dolist (client clients)
+        (server-send-string client "-error Commit aborted by user")
+        (delete-process client))))
+  (message (concat "Commit aborted."
+                   (when (memq 'git-commit-save-message
+                               git-commit-kill-buffer-hook)
+                     "  Message saved to `log-edit-comment-ring'.")))
+  t) ;; Return non-nil because it is used as a `kill-buffer-query-functions'.
+
 (defun git-commit-abort ()
   "Abort the commit.
 The commit message is saved to the kill ring."
   (interactive)
-  (save-buffer)
-  (run-hooks 'git-commit-kill-buffer-hook)
   (git-commit-restore-previous-winconf
-    (let ((clients (git-commit-buffer-clients)))
-      (if clients
-          (dolist (client clients)
-            (server-send-string client "-error Commit aborted by user")
-            (delete-process client))
-        (kill-buffer))))
-  (message (concat "Commit aborted."
-                   (when (memq 'git-commit-save-message
-                               git-commit-kill-buffer-hook)
-                     "  Message saved to `log-edit-comment-ring'."))))
+    (kill-buffer)))
 
 (defun git-commit-buffer-clients ()
   (and (fboundp 'server-edit)
@@ -557,6 +564,13 @@ basic structure of and errors in git commit messages."
   ;; Do not remember point location in commit messages
   (when (fboundp 'toggle-save-place)
     (setq save-place nil))
+  ;; Abort commit if buffer is killed.
+  ;; Workaround:  Because `server-kill-buffer' is added to `kill-buffer-hook'
+  ;;              before any hook added here we use
+  ;;              `kill-buffer-query-functions' instead.
+  ;;              Make sure to remove it in `git-commit-commit'!
+  (add-hook 'kill-buffer-query-functions #'git-commit--kill-buffer
+            'append 'local)
   ;; If the commit summary is empty, insert a newline after point
   (when (string= "" (buffer-substring-no-properties
                      (line-beginning-position)
