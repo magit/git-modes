@@ -1,17 +1,20 @@
 EMACS = emacs
-EMACSFLAGS =
-BYTECOMPILEFORM = (progn \
-	(setq byte-compile-dest-file-function (lambda (fn) "$@")) \
-	(byte-compile-file "$<"))
+EFLAGS =
 
-OBJECTS = git-commit-mode.elc gitconfig-mode.elc gitignore-mode.elc
+ELS  = git-commit-mode.el
+ELS += git-rebase-mode.el
+ELS += gitattributes-mode.el
+ELS += gitconfig-mode.el
+ELS += gitignore-mode.el
+ELCS = $(ELS:.el=.elc)
 
-.PHONY: build
-build : $(OBJECTS)
+.PHONY: lisp
+lisp: $(ELCS)
 
 .PHONY: clean
-clean :
-	rm -f $(OBJECTS)
+clean:
+	@echo "Cleaning..."
+	@rm -f $(ELCS)
 
-%.elc : %.el
-	$(EMACS) -Q --batch $(EMACSFLAGS) -f batch-byte-compile $<
+%.elc: %.el
+	@$(EMACS) $(EFLAGS) -Q -batch -f batch-byte-compile $<
