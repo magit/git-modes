@@ -63,7 +63,7 @@ Return t if so, or nil otherwise."
           (was-in-indent (gitconfig-point-in-indentation-p)))
       (beginning-of-line)
       (delete-horizontal-space)
-      (unless (= (char-after) ?\[)
+      (unless (equal (char-after) ?\[)
         (insert-char ?\t 1))
       (if was-in-indent
           (back-to-indentation)
