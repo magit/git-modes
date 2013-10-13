@@ -1,5 +1,5 @@
-EMACS = emacs
-EFLAGS =
+EMACS  ?= emacs
+EFLAGS ?=
 
 ELS  = git-commit-mode.el
 ELS += git-rebase-mode.el
