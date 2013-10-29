@@ -29,6 +29,19 @@
 
 ;; A major mode for editing Git commit messages.
 
+;;;; Activation
+
+;; The variable `auto-mode-alist' has to be explicitly extended, by
+;; adding this to your init file.
+;;
+;;    (require 'git-commit-mode)    ; unless autoloaded
+;;    (git-commit-auto-mode-enable)
+;;
+;; Loading `magit' takes care of this, so if you use that, you can
+;; skip the above.  Unless you also have `magit-log-edit' installed,
+;; in which case `magit' assumes you want to use that instead of this
+;; library.
+
 ;;;; Formatting
 
 ;; Highlight the formatting of git commit messages and indicate errors according
@@ -196,6 +209,10 @@ default comments in git commit messages"
     (define-key map (kbd "C-c M-s") 'git-commit-save-message)
     (define-key map (kbd "M-p")     'git-commit-prev-message)
     (define-key map (kbd "M-n")     'git-commit-next-message)
+    (define-key map [remap server-edit]         'git-commit-commit)
+    (define-key map [remap kill-buffer]         'git-commit-abort)
+    (define-key map [remap ido-kill-buffer]     'git-commit-abort)
+    (define-key map [remap ibuffer-kill-buffer] 'git-commit-abort)
     ;; Old bindings to avoid confusion
     (define-key map (kbd "C-c C-x s") 'git-commit-signoff)
     (define-key map (kbd "C-c C-x a") 'git-commit-ack)
@@ -274,6 +291,8 @@ Return t, if the commit was successful, or nil otherwise."
       (message "Commit canceled due to stylistic errors.")
     (save-buffer)
     (run-hooks 'git-commit-kill-buffer-hook)
+    (remove-hook 'kill-buffer-query-functions
+                 'git-commit-kill-buffer-noop t)
     (git-commit-restore-previous-winconf
       (if (git-commit-buffer-clients)
           (server-edit)
@@ -286,6 +305,8 @@ The commit message is saved to the kill ring."
   (interactive)
   (save-buffer)
   (run-hooks 'git-commit-kill-buffer-hook)
+  (remove-hook 'kill-buffer-hook 'server-kill-buffer t)
+  (remove-hook 'kill-buffer-query-functions 'git-commit-kill-buffer-noop t)
   (git-commit-restore-previous-winconf
     (let ((clients (git-commit-buffer-clients)))
       (if clients
@@ -593,7 +614,27 @@ basic structure of and errors in git commit messages."
   (when (string= "" (buffer-substring-no-properties
                      (line-beginning-position)
                      (line-end-position)))
-    (open-line 1)))
+    (open-line 1))
+  ;; Make sure `git-commit-abort' cannot be by-passed
+  (add-hook 'kill-buffer-query-functions
+            'git-commit-kill-buffer-noop nil t)
+  ;; Make the wrong usage info from `server-execute' go way
+  (run-with-timer 0.01 nil (lambda (m) (message "%s" m))
+                  (substitute-command-keys
+                   (concat "Type \\[git-commit-commit] "
+                           (let ((n (buffer-file-name)))
+                             (cond ((equal n "TAG_EDITMSG") "to tag")
+                                   ((or (equal n "NOTES_EDITMSG")
+                                        (equal n "PULLREQ_EDITMSG"))
+                                    "when done")
+                                   (t "to commit")))
+                           " (\\[git-commit-abort] to abort)."))))
+
+(defun git-commit-kill-buffer-noop ()
+  (message
+   (substitute-command-keys
+    "Don't kill this buffer.  Instead abort using \\[git-commit-abort]."))
+  nil)
 
 (defun git-commit-mode-flyspell-verify ()
   (not (nth 4 (syntax-ppss)))) ; not inside a comment
@@ -602,11 +643,18 @@ basic structure of and errors in git commit messages."
   '(put 'git-commit-mode 'flyspell-mode-predicate
         'git-commit-mode-flyspell-verify))
 
-;;;###autoload
-(dolist (pattern '("/COMMIT_EDITMSG\\'" "/NOTES_EDITMSG\\'"
-                   "/MERGE_MSG\\'" "/TAG_EDITMSG\\'"
-                   "/PULLREQ_EDITMSG\\'"))
-  (add-to-list 'auto-mode-alist (cons pattern 'git-commit-mode)))
+(defvar git-commit-auto-mode-regexps
+  '("/COMMIT_EDITMSG\\'"    "/TAG_EDITMSG\\'"
+    "/PULLREQ_EDITMSG\\'" "/NOTES_EDITMSG\\'" "/MERGE_MSG\\'"))
+
+(defun git-commit-auto-mode-enable ()
+  (dolist (p git-commit-auto-mode-regexps)
+    (add-to-list 'auto-mode-alist (cons p 'git-commit-mode))))
+
+(defun git-commit-auto-mode-disable ()
+  (dolist (p git-commit-auto-mode-regexps)
+    (setq auto-mode-alist
+          (delete (cons p 'git-commit-mode) 'auto-mode-alist))))
 
 (provide 'git-commit-mode)
 ;; Local Variables:
