@@ -26,3 +26,32 @@
   "msg\n\n" "#comment\n\n#more comment\n")
 (git-commit-message-end-position-test nl+comment
   "\n\n" "#comment\n\n#more comment\n")
+
+(defconst git-commit-test-message-history
+  (let ((ring (make-ring log-edit-maximum-comment-ring-size)))
+    (ring-insert ring "msg one\n\n")
+    (ring-insert ring "msg two\n\n")
+    (ring-insert ring "msg three\n\n")
+    ring))
+
+(defmacro git-commit-with-temp-message-history (&rest body)
+  `(let ((log-edit-comment-ring (ring-copy git-commit-test-message-history))
+         (log-edit-comment-ring-index nil))
+     (with-temp-buffer
+       ,@body)))
+
+(ert-deftest git-commit-message-history-leave-comments ()
+  "History cycling commands should not affect comments"
+  (flet ((git-commit-save-message () nil)) ;ignore issue #75
+    (git-commit-with-temp-message-history
+     (insert "current msg\n\n#comment")
+     (git-commit-prev-message 1)
+     (should (equal (buffer-string) "msg three\n\n#comment")))))
+
+(ert-deftest git-commit-message-history-leave-comments-empty ()
+  "History cycling commands should not affect comments, start from empty message."
+  (flet ((git-commit-save-message () nil)) ;ignore issue #75
+    (git-commit-with-temp-message-history
+     (insert "\n\n#comment")
+     (git-commit-prev-message 1)
+     (should (equal (buffer-string) "msg three\n\n#comment")))))
