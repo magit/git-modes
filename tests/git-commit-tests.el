@@ -5,6 +5,15 @@
 
 ;;; tests
 
+(defmacro git-commit-with-temp-buffer (&rest body)
+  "Like `with-temp-buffer', but put the buffer in `git-commit' mode."
+  `(with-temp-buffer
+     (git-commit-mode)
+     (erase-buffer)                   ; `git-commit-mode' adds newline
+     (remove-hook 'kill-buffer-query-functions
+                  'git-commit-kill-buffer-noop t)
+     ,@body))
+
 
 (defmacro git-commit-message-end-position-test (test-name msg comment)
   "Make a `git-commit-message-end-position' test."
@@ -12,7 +21,7 @@
   `(ert-deftest ,(intern (concat "git-commit-message-end-position-test-"
                                  (symbol-name test-name))) ()
      (concat "Test `git-commit-message-end-position': " ,(symbol-name test-name))
-     (with-temp-buffer
+     (git-commit-with-temp-buffer
        (insert ,msg ,comment)
        (should (equal (buffer-substring
                        1 (git-commit-find-pseudo-header-position))
@@ -37,7 +46,7 @@
 (defmacro git-commit-with-temp-message-history (&rest body)
   `(let ((log-edit-comment-ring (ring-copy git-commit-test-message-history))
          (log-edit-comment-ring-index nil))
-     (with-temp-buffer
+     (git-commit-with-temp-buffer
        ,@body)))
 
 (ert-deftest git-commit-message-history-leave-comments ()
