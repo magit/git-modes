@@ -46,9 +46,6 @@ Usage
 Just configure `emacsclient` or `emacs` as editor for Git. `git-commit-mode`
 will automatically be enabled for Git message buffers.
 
-`git-commit-mode` integrates into with [Magit][2] by redefining
-`magit-log-edit-mode` to support all `git-commit-mode` features.
-
 ### `git-rebase-mode`
 
 `git rebase-mode` is automatically enabled for `git-rebase-todo` files, such as
