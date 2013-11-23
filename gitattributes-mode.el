@@ -1,4 +1,4 @@
-;;; gitattributes-mode --- Major mode for editing .gitattributes files -*- lexical-binding: t -*-
+;;; gitattributes-mode.el --- Major mode for editing .gitattributes files -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2013 Rüdiger Sonderfeld
 
