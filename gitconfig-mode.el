@@ -120,7 +120,8 @@ Return t if so, or nil otherwise."
 ;;;###autoload
 (dolist (pattern (list (rx "/.gitconfig" string-end)
                        (rx "/.git/config" string-end)
-                       (rx "/git/config" string-end)))
+                       (rx "/git/config" string-end)
+                       (rx "/.gitmodules" string-end)))
   (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
 
 (provide 'gitconfig-mode)
