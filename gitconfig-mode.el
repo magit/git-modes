@@ -33,9 +33,7 @@
 (require 'conf-mode)
 
 (defun gitconfig-line-indented-p ()
-  "Determine whether the current line is indented correctly.
-
-Return t if so, or nil otherwise."
+  "Return t if the current line is indented correctly."
   (save-excursion
     (beginning-of-line)
     (or (looking-at (rx line-start "["
@@ -47,9 +45,7 @@ Return t if so, or nil otherwise."
                                          (syntax symbol)))))))
 
 (defun gitconfig-point-in-indentation-p ()
-  "Determine whether the point is in the indentation of the current line.
-
-Return t if so, or nil otherwise."
+  "Return if the point is in the indentation of the current line."
   (save-excursion
     (let ((pos (point)))
       (back-to-indentation)
