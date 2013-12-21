@@ -31,6 +31,7 @@
 ;;; Code:
 
 (require 'easymenu)
+(require 'thingatpt)
 
 (defgroup gitattributes-mode nil
   "Major mode for editing .gitattributes files"
@@ -108,8 +109,6 @@ DOC should be a short doc-string.
 ALLOWED-STATE should be a list or single symbol or string of allowed values.
 t means the attribute can be Set or Unset.  `string' means the symbol value
 can be any string and `number' means the value should be a number.")
-
-(require 'thingatpt)
 
 (defun gitattributes-mode-eldoc (&optional no-state)
   "Support for `eldoc-mode'.
