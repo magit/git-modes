@@ -3,7 +3,6 @@
 ;; Copyright (C) 2013 Rüdiger Sonderfeld
 
 ;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.de>
-;; Created: 26 Aug 2013
 ;; Version: 0.14.0
 ;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
@@ -25,14 +24,9 @@
 
 ;;; Commentary:
 
-;; A major mode for editing gitattributes(5) files.  `eldoc-mode' is supported
-;; for known attributes.
-
-;;; Format:
-
-;; pattern attr1 attr2 ... attrN
-
-;; Pattern format is described in gitignore(5).
+;; A major mode for editing .gitattributes files.  See
+;; the gitattributes(5) manpage for more information.
+;; `eldoc-mode' is supported for known attributes.
 
 ;;; Code:
 
