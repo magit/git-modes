@@ -180,9 +180,7 @@ If ARG is omitted or nil, move point backward one field."
     (dotimes (_ (or arg 1))
       (re-search-backward "\\s-[!-]?\\<" nil 'move))))
 
-(defvar gitattributes-mode-map
-  (let ((map (make-sparse-keymap)))
-    map)
+(defvar gitattributes-mode-map (make-sparse-keymap)
   "Keymap for `gitattributes-mode'.")
 
 (easy-menu-define gitattributes-mode-menu
