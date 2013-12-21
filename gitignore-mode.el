@@ -29,19 +29,14 @@
 
 ;;; Code:
 
-(require 'rx)
 (require 'conf-mode)
 
 (defvar gitignore-mode-font-lock-keywords
-  `((,(rx line-start (syntax comment-start) (zero-or-more not-newline) line-end)
-     . 'font-lock-comment-face)
-    (,(rx line-start (group (optional "!"))) ; Negated patterns
-     (1 'font-lock-negation-char-face))
-    ("/" . 'font-lock-constant-face)               ; Directory separators
-    (,(rx (or "*" "?")) . 'font-lock-keyword-face) ; Glob patterns
-    (,(rx "[" (minimal-match (one-or-more not-newline)) "]")
-     . 'font-lock-keyword-face)         ; Ranged glob patterns
-    ))
+  '(("^\\s<.*$"   . font-lock-comment-face)
+    ("^[!?]"      . font-lock-negation-char-face) ; Negative pattern
+    ("[/]"        . font-lock-constant-face)      ; Directory separators
+    ("[*?]"       . font-lock-keyword-face)       ; Glob patterns
+    ("\\[.+?\\]"  . font-lock-keyword-face)))     ; Ranged glob patterns
 
 ;;;###autoload
 (define-derived-mode gitignore-mode conf-unix-mode "Gitignore"
