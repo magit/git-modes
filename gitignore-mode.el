@@ -33,8 +33,8 @@
 
 (defvar gitignore-mode-font-lock-keywords
   '(("^\\s<.*$"   . font-lock-comment-face)
-    ("^[!?]"      . font-lock-negation-char-face) ; Negative pattern
-    ("[/]"        . font-lock-constant-face)      ; Directory separators
+    ("^!"         . font-lock-negation-char-face) ; Negative pattern
+    ("/"          . font-lock-constant-face)      ; Directory separators
     ("[*?]"       . font-lock-keyword-face)       ; Glob patterns
     ("\\[.+?\\]"  . font-lock-keyword-face)))     ; Ranged glob patterns
 
