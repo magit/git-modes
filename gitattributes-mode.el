@@ -35,7 +35,7 @@
 (require 'thingatpt)
 
 (defgroup gitattributes-mode nil
-  "Major mode for editing .gitattributes files"
+  "Edit .gitattributes files."
   :link '(url-link "https://github.com/magit/git-modes")
   :prefix "gitattributes-mode-"
   :group 'tools)
