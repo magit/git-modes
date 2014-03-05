@@ -302,8 +302,9 @@ The commit message is saved to the kill ring."
     (let ((clients (git-commit-buffer-clients)))
       (if clients
           (dolist (client clients)
-            (server-send-string client "-error Commit aborted by user")
-            (delete-process client))
+            (when (eq (process-status client) 'run)
+              (server-send-string client "-error Commit aborted by user")
+              (delete-process client)))
         (kill-buffer))))
   (message (concat "Commit aborted."
                    (when (memq 'git-commit-save-message
