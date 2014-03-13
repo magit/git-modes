@@ -1,6 +1,6 @@
 ;;; gitattributes-mode.el --- Major mode for editing .gitattributes files -*- lexical-binding: t -*-
 
-;; Copyright (C) 2013 Rüdiger Sonderfeld
+;; Copyright (C) 2013-2014  The Magit Project Developers
 
 ;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.de>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
