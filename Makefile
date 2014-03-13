@@ -9,6 +9,7 @@ ELS += git-rebase-mode.el
 ELS += gitattributes-mode.el
 ELS += gitconfig-mode.el
 ELS += gitignore-mode.el
+ELS += with-editor.el
 ELCS = $(ELS:.el=.elc)
 
 .PHONY: lisp
