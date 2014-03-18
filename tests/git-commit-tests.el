@@ -11,7 +11,7 @@
      (git-commit-mode)
      (erase-buffer)                   ; `git-commit-mode' adds newline
      (remove-hook 'kill-buffer-query-functions
-                  'git-commit-kill-buffer-noop t)
+                  'with-editor-kill-buffer-noop t)
      ,@body))
 
 
