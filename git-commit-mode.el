@@ -80,10 +80,25 @@
 
 If t, ask for confirmation before creating a commit with style
 errors, unless the commit is forced.  If nil, never ask for
-confirmation before committing."
+confirmation due to style errors before committing."
   :group 'git-commit
   :type '(choice (const :tag "On style errors" t)
                  (const :tag "Never" nil)))
+
+(defcustom git-commit-without-user-email 'ask
+  "Specifies whether the user.email git configuration option is
+required to be set before committing.  This helps avoid
+accidentally leaking invalid or incorrect email addresses into
+repositories.  Possible values are:
+    nil -- always refuse to commit if user.email is not set
+    ask -- if not set, ask for confirmation before committing
+    t   -- always allow committing even if user.email is not set"
+  :group 'git-commit
+  :type
+  '(choice
+    (const :tag "Always refuse to commit if user.email is not set" nil)
+    (const :tag "If not set, ask for confirmation before committing" ask)
+    (const :tag "Always allow committing even if user.email is not set" t)))
 
 (defcustom git-commit-mode-hook '(turn-on-auto-fill flyspell-mode)
   "Hook run when entering Git Commit mode."
@@ -278,15 +293,22 @@ Return t, if the commit was successful, or nil otherwise."
            (not force)
            (not (y-or-n-p "Commit despite stylistic errors?")))
       (message "Commit canceled due to stylistic errors.")
-    (save-buffer)
-    (run-hooks 'git-commit-kill-buffer-hook)
-    (remove-hook 'kill-buffer-query-functions
-                 'git-commit-kill-buffer-noop t)
-    (git-commit-restore-previous-winconf
-      (if (git-commit-buffer-clients)
-          (server-edit)
-        (run-hook-with-args 'git-commit-commit-hook)
-        (kill-buffer)))))
+    (let ((commit-allowed
+           (or (magit-get "user.email")
+               (eq git-commit-without-user-email t)
+               (and (eq git-commit-without-user-email 'ask)
+                    (y-or-n-p "Commit despite user.email not being set?")))))
+      (if (not commit-allowed)
+          (message "Commit prohibited by `git-commit-without-user-email' since user.email not set")
+        (save-buffer)
+        (run-hooks 'git-commit-kill-buffer-hook)
+        (remove-hook 'kill-buffer-query-functions
+                     'git-commit-kill-buffer-noop t)
+        (git-commit-restore-previous-winconf
+          (if (git-commit-buffer-clients)
+              (server-edit)
+            (run-hook-with-args 'git-commit-commit-hook)
+            (kill-buffer)))))))
 
 (defun git-commit-abort ()
   "Abort the commit.
