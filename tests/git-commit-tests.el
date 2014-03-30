@@ -13,6 +13,15 @@
 
 ;;; Utilities
 
+(defmacro git-commit--silentio (&rest body)
+  ;; Once upon a time there was a dynamic `flet'...
+  (declare (indent defun))
+  (let ((orig (cl-gensym)))
+    `(let ((,orig (symbol-function 'message)))
+       (fset 'message (lambda (&rest silentio)))
+       (prog1 (progn ,@body)
+	 (fset 'message ,orig)))))
+
 (defmacro git-commit-with-temp-buffer (&rest body)
   "Like `with-temp-buffer', but put the buffer in `git-commit' mode."
   (declare (indent defun))
@@ -41,8 +50,7 @@
     (ring-insert log-edit-comment-ring "msg one\n\n")
     (ring-insert log-edit-comment-ring "msg two\n\n")
     (ring-insert log-edit-comment-ring "msg three\n\n")
-    (git-commit-with-temp-buffer
-      ,@body)))
+    (git-commit-with-temp-buffer (git-commit--silentio ,@body))))
 
 ;;; Tests
 
