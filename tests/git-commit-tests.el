@@ -20,7 +20,7 @@
   (declare (indent defun))
   `(ert-deftest ,(intern (concat "git-commit-message-end-position-test-"
                                  (symbol-name test-name))) ()
-     (concat "Test `git-commit-message-end-position': " ,(symbol-name test-name))
+     ,(format "Test `git-commit-message-end-position': %s" test-name)
      (git-commit-with-temp-buffer
        (insert ,msg ,comment)
        (should (equal (buffer-substring
