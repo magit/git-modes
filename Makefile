@@ -1,5 +1,5 @@
 EMACS  ?= emacs
-EFLAGS ?=
+EFLAGS ?= -L ../dash
 BATCH   = $(EMACS) $(EFLAGS) -batch -Q -L .
 BATCHE  = $(BATCH) -eval
 BATCHC  = $(BATCH) -f batch-byte-compile
