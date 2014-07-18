@@ -355,6 +355,16 @@ With a numeric prefix ARG, go forward ARG comments."
 
 ;;; Headers
 
+(defun git-commit-prev-line-is-pseudo-header-p ()
+  "Whether we're on the line immediately following existing
+pseudo headers."
+  (save-excursion
+    (forward-line -1)
+    ;; until we can use -any? from dash :(
+    (first (member t (mapcar (lambda (hdr)
+                               (looking-at-p (regexp-quote (concat hdr ":"))))
+                             git-commit-known-pseudo-headers)))))
+
 (defun git-commit-find-pseudo-header-position ()
   "Find the position at which commit pseudo headers should be inserted.
 
@@ -369,7 +379,8 @@ inserted."
       ;; there's only blanks & comments, headers go before comments
       (goto-char (point-min))
       (and (re-search-forward "^#" nil t) (forward-line 0)))
-    (skip-chars-forward "\n")
+    (unless (git-commit-prev-line-is-pseudo-header-p)
+      (skip-chars-forward "\n")) 
     (point)))
 
 (defun git-commit-determine-pre-for-pseudo-header ()
