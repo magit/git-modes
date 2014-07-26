@@ -99,7 +99,7 @@ please see https://github.com/magit/magit/wiki/Emacsclient."))
 
 (defcustom with-editor-looping-editor "\
 sh -c '\
-echo \"WITH-EDITOR: $$ OPEN %r$0\"; \
+echo \"WITH-EDITOR: PID $$ DIRECTORY %r FILE $0\"; \
 trap \"exit 0\" USR1; \
 trap \"exit 1\" USR2; \
 while true; do %s; done'"
@@ -337,16 +337,9 @@ current buffer (which is the one requested by the client)."
 (defun with-editor-looping-editor ()
   "Return the looping editor appropriate for `default-directory'.
 Also see documentation for option `with-editor-looping-editor'."
-  (if (file-remote-p default-directory)
-      (with-parsed-tramp-file-name default-directory nil
-        (format-spec with-editor-looping-editor
-                     `((?r . ,(if user
-                                  (format "/%s:%s@%s:" method user host)
-                                (format "/%s:%s:" method host)))
-                       (?s . ,with-editor-looping-sleep))))
-    (format-spec with-editor-looping-editor
-                 `((?r . "")
-                   (?s . ,with-editor-looping-sleep)))))
+  (format-spec with-editor-looping-editor
+               `((?r . ,default-directory)
+                 (?s . ,with-editor-looping-sleep))))
 
 (defadvice start-file-process (around with-editor activate)
   "When called inside a `with-editor' form and the Emacsclient
@@ -392,16 +385,26 @@ which may or may not insert the text into the PROCESS' buffer."
           (,filter proc str))
      filter)))
 
-(defun with-editor-process-filter
-    (process string &optional no-standard-filter)
+(defun with-editor-make-path (directory filename)
+  "Construct a path from `directory' and `filename'."
+  (if (file-name-absolute-p filename)
+      (if (file-remote-p directory)
+          (with-parsed-tramp-file-name directory nil
+            (tramp-make-tramp-file-name method user host filename hop))
+        filename)
+    (expand-file-name directory filename)))
+
+(defun with-editor-process-filter (process string &optional no-standard-filter)
   "Listen for edit requests by child processes."
-  (when (string-match "^WITH-EDITOR: \\([0-9]+\\) OPEN \\(.+\\)$" string)
+  (when (string-match "^WITH-EDITOR: PID \\([0-9]+\\) DIRECTORY \\(.+\\) FILE \\(.+\\)$" string)
     (save-match-data
-      (with-current-buffer (find-file-noselect (match-string 2 string))
-        (with-editor-mode 1)
-        (run-hooks 'with-editor-filter-visit-hook)
-        (funcall (or server-window 'pop-to-buffer) (current-buffer))
-        (kill-local-variable 'server-window)))
+      (let ((directory (match-string 2 string))
+            (filename (match-string 3 string)))
+        (with-current-buffer (find-file-noselect (with-editor-make-path directory filename))
+          (with-editor-mode 1)
+          (run-hooks 'with-editor-filter-visit-hook)
+          (funcall (or server-window 'pop-to-buffer) (current-buffer))
+          (kill-local-variable 'server-window))))
     (setq with-editor--pid (match-string 1 string)))
   (unless no-standard-filter
     (with-editor-standard-process-filter process string)))
