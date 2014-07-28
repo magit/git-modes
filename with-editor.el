@@ -367,14 +367,19 @@ the appropriate editor environment variable."
       (process-put process 'default-dir default-directory)
       process)))
 
+(defcustom with-editor-shell-command-editors '(EDITOR GIT_EDITOR)
+  "List of editors that `shell-command' will overload with with-editor."
+  :group 'with-editor
+  :type '(repeat symbol))
+
 (defadvice shell-command (around with-editor activate)
   ;; (fn COMMAND &OPTIONAL OUTPUT-BUFFER ERROR-BUFFER)
   (cond ((not (string-match-p "&$" (ad-get-arg 0))) ad-do-it)
         ((not (file-remote-p default-directory)) (with-editor ad-do-it))
-        (t (ad-set-arg
-            0 (concat "EDITOR="
-                      (shell-quote-argument (with-editor-looping-editor))
-                      " " (ad-get-arg 0)))
+        (t (--each with-editor-shell-command-editors
+             (ad-set-arg 0 (concat (format "%s=" it)
+                                   (shell-quote-argument (with-editor-looping-editor))
+                                   " " (ad-get-arg 0))))
            ;; We cannot use `comint-{,pre}ouput-filter-functions'
            ;; because we want to permanently change the buffer,
            ;; and `comint-ouput-filter' expects we don't do that.
