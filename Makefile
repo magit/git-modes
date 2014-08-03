@@ -22,18 +22,3 @@ clean:
 
 %.elc: %.el
 	@$(BATCHC) $<
-
-.PHONY: test
-test:
-	@$(BATCHE) "(progn\
-	(require 'cl) \
-	(put 'flet 'byte-obsolete-info nil))" \
-	-l tests/git-commit-tests.el -f ert-run-tests-batch-and-exit
-
-.PHONY: test-interactive
-test-interactive:
-	@$(EMACS) $(EFLAGS) -Q -L "." --eval "(progn\
-	(require 'cl)\
-	(put 'flet 'byte-obsolete-info nil)\
-	(load-file \"tests/git-commit-tests.el\")\
-	(ert t))"
