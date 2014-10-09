@@ -376,8 +376,8 @@ the appropriate editor environment variable."
         (ad-set-arg  2 prog)
         (ad-set-args 3 args)))
     (let ((process ad-do-it))
-      (set-process-filter process 'with-editor-process-filter)
       (process-put process 'default-dir default-directory)
+      (set-process-filter process 'with-editor-process-filter)
       process)))
 
 (defadvice shell-command (around with-editor activate)
