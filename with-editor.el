@@ -392,6 +392,7 @@ the appropriate editor environment variable."
            ;; because we want to permanently change the buffer,
            ;; and `comint-ouput-filter' expects we don't do that.
            (let ((process ad-do-it))
+             (process-put process 'default-dir default-directory)
              (set-process-filter
               process (lambda (proc str)
                         ;; FIXME `get-buffer-process' might return nil
