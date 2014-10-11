@@ -376,34 +376,15 @@ the appropriate editor environment variable."
         (ad-set-arg  2 prog)
         (ad-set-args 3 args)))
     (let ((process ad-do-it))
-      (set-process-filter process 'with-editor-process-filter)
       (process-put process 'default-dir default-directory)
+      (set-process-filter process 'with-editor-process-filter)
       process)))
 
-(defun with-editor-set-process-filter (process filter)
-  "Like `set-process-filter' but keep `with-editor-process-filter'.
-Give PROCESS the new FILTER but keep `with-editor-process-filter'
-if that was added earlier by the adviced `start-file-process'.
-
-Do so by wrapping the two filter functions using a lambda, which
-becomes the actual filter.  It calls `with-editor-process-filter'
-first, passing t as NO-STANDARD-FILTER.  Then it calls FILTER,
-which may or may not insert the text into the PROCESS' buffer."
-  (set-process-filter
-   process
-   (if (eq (process-filter process) 'with-editor-process-filter)
-       `(lambda (proc str)
-          (with-editor-process-filter proc str t)
-          (,filter proc str))
-     filter)))
-
-(defun with-editor-process-filter
-    (process string &optional no-default-filter)
-  "Listen for edit requests by child processes."
+(defun with-editor-process-output (string &optional directory)
   (when (string-match "^WITH-EDITOR: \\([0-9]+\\) OPEN \\(.+\\)$" string)
     (let ((pid  (match-string 1 string))
           (file (match-string 2 string))
-          (dir  (process-get process 'default-dir)))
+          (dir  (or directory default-directory)))
       (with-current-buffer
           (find-file-noselect
            (if (file-name-absolute-p file)
@@ -418,6 +399,29 @@ which may or may not insert the text into the PROCESS' buffer."
         (funcall (or (with-editor-server-window) 'switch-to-buffer)
                  (current-buffer))
         (kill-local-variable 'server-window))))
+  string)
+
+(defun with-editor-set-process-filter (process filter)
+  "Like `set-process-filter' but keep `with-editor-process-filter'.
+Give PROCESS the new FILTER but keep `with-editor-process-filter'
+if that was added earlier by the adviced `start-file-process'.
+
+Do so by wrapping the two filter functions using a lambda, which
+becomes the actual filter.  It calls `with-editor-process-filter'
+first, passing t as NO-STANDARD-FILTER.  Then it calls FILTER,
+which may or may not insert the text into the PROCESS' buffer."
+  (set-process-filter
+   process
+   (if (eq (process-filter process) 'with-editor-process-filter)
+       `(lambda (proc str)
+          (,filter proc str)
+          (with-editor-process-filter proc str t))
+     filter)))
+
+(defun with-editor-process-filter
+    (process string &optional no-default-filter)
+  "Listen for edit requests by child processes."
+  (with-editor-process-output string (process-get process 'default-dir))
   (unless no-default-filter
     (internal-default-process-filter process string)))
 
@@ -436,6 +440,84 @@ which may or may not insert the text into the PROCESS' buffer."
               (setq mark (set-marker mark (point))))
             (when move
               (goto-char mark))))))))
+
+(defun with-editor-global-async-shell-command-mode-on ()
+  (defadvice shell-command (around with-editor activate)
+    (cond ((not (string-match-p "&$" (ad-get-arg 0))) ad-do-it)
+          ((not (file-remote-p default-directory)) (with-editor ad-do-it))
+          (t (ad-set-arg
+              0 (concat "EDITOR="
+                        (shell-quote-argument (with-editor-looping-editor))
+                        " " (ad-get-arg 0)))
+             ;; We cannot use `comint-{,pre}ouput-filter-functions'
+             ;; because we want to permanently change the buffer,
+             ;; and `comint-ouput-filter' expects we don't do that.
+             (let ((process ad-do-it))
+               (process-put process 'default-dir default-directory)
+               (set-process-filter
+                process (lambda (proc str)
+                          ;; FIXME `get-buffer-process' might return nil
+                          ;; at this point but `ansi-color-process-output'
+                          ;; ignores that.  I *think* that is a bug which
+                          ;; at most is triggered by this advice.
+                          (comint-output-filter proc str)
+                          (with-editor-process-filter proc str t)))
+               process)))))
+
+(defun with-editor-global-async-shell-command-mode-off ()
+  (ad-remove-advice 'shell-command 'around 'with-editor))
+
+;;;###autoload
+(define-minor-mode with-editor-global-async-shell-command-mode
+  "Toggle with-editor for async-shell-command buffer."
+  nil
+  " with-editor-global-async-shell-command"
+  nil
+  :global t
+  (if with-editor-global-async-shell-command-mode
+      (with-editor-global-async-shell-command-mode-on)
+    (with-editor-global-async-shell-command-mode-off)))
+
+(defun with-editor-comint-mode-on ()
+  (add-to-list 'comint-output-filter-functions 'with-editor-process-output)
+  (comint-send-string (current-buffer) (concat "export EDITOR="
+                                               (shell-quote-argument (with-editor-looping-editor))
+                                               "\n")))
+
+(defun with-editor-comint-mode-off ()
+  (comint-send-string (current-buffer) "export EDITOR=\n")
+  (setq comint-output-filter-functions (delete 'with-editor-process-output comint-output-filter-functions)))
+
+;;;###autoload
+(define-minor-mode with-editor-comint-mode
+  "Toggle with-editor inside current comint buffer."
+  nil
+  " with-editor-comint"
+  nil
+  (if with-editor-comint-mode
+      (with-editor-comint-mode-on)
+    (with-editor-comint-mode-off)))
+
+(defun with-editor-eshell-mode-on ()
+  (add-to-list 'eshell-preoutput-filter-functions 'with-editor-process-output)
+  (insert (concat "export EDITOR="
+                  (eshell-quote-argument (with-editor-looping-editor))))
+  (eshell-send-input))
+
+(defun with-editor-eshell-mode-off ()
+  (insert "export EDITOR=")
+  (eshell-send-input)
+  (setq eshell-preoutput-filter-functions (delete 'with-editor-process-output eshell-preoutput-filter-functions)))
+
+;;;###autoload
+(define-minor-mode with-editor-eshell-mode
+  "Toggle with-editor inside current eshell buffer."
+  nil
+  " with-editor-eshell"
+  nil
+  (if with-editor-eshell-mode
+      (with-editor-eshell-mode-on)
+    (with-editor-eshell-mode-off)))
 
 ;;; with-editor.el ends soon
 
