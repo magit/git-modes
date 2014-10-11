@@ -380,29 +380,6 @@ the appropriate editor environment variable."
       (set-process-filter process 'with-editor-process-filter)
       process)))
 
-(defadvice shell-command (around with-editor activate)
-  ;; (fn COMMAND &OPTIONAL OUTPUT-BUFFER ERROR-BUFFER)
-  (cond ((not (string-match-p "&$" (ad-get-arg 0))) ad-do-it)
-        ((not (file-remote-p default-directory)) (with-editor ad-do-it))
-        (t (ad-set-arg
-            0 (concat "EDITOR="
-                      (shell-quote-argument (with-editor-looping-editor))
-                      " " (ad-get-arg 0)))
-           ;; We cannot use `comint-{,pre}ouput-filter-functions'
-           ;; because we want to permanently change the buffer,
-           ;; and `comint-ouput-filter' expects we don't do that.
-           (let ((process ad-do-it))
-             (process-put process 'default-dir default-directory)
-             (set-process-filter
-              process (lambda (proc str)
-                        ;; FIXME `get-buffer-process' might return nil
-                        ;; at this point but `ansi-color-process-output'
-                        ;; ignores that.  I *think* that is a bug which
-                        ;; at most is triggered by this advice.
-                        (comint-output-filter proc str)
-                        (with-editor-process-filter proc str t)))
-             process))))
-
 (defun with-editor-process-output (string &optional directory)
   (when (string-match "^WITH-EDITOR: \\([0-9]+\\) OPEN \\(.+\\)$" string)
     (let ((pid  (match-string 1 string))
@@ -462,6 +439,43 @@ which may or may not insert the text into the PROCESS' buffer."
               (setq mark (set-marker mark (point))))
             (when move
               (goto-char mark))))))))
+
+(defun with-editor-global-async-shell-command-mode-on ()
+  (defadvice shell-command (around with-editor activate)
+    (cond ((not (string-match-p "&$" (ad-get-arg 0))) ad-do-it)
+          ((not (file-remote-p default-directory)) (with-editor ad-do-it))
+          (t (ad-set-arg
+              0 (concat "EDITOR="
+                        (shell-quote-argument (with-editor-looping-editor))
+                        " " (ad-get-arg 0)))
+             ;; We cannot use `comint-{,pre}ouput-filter-functions'
+             ;; because we want to permanently change the buffer,
+             ;; and `comint-ouput-filter' expects we don't do that.
+             (let ((process ad-do-it))
+               (process-put process 'default-dir default-directory)
+               (set-process-filter
+                process (lambda (proc str)
+                          ;; FIXME `get-buffer-process' might return nil
+                          ;; at this point but `ansi-color-process-output'
+                          ;; ignores that.  I *think* that is a bug which
+                          ;; at most is triggered by this advice.
+                          (comint-output-filter proc str)
+                          (with-editor-process-filter proc str t)))
+               process)))))
+
+(defun with-editor-global-async-shell-command-mode-off ()
+  (ad-remove-advice 'shell-command 'around 'with-editor))
+
+;;;###autoload
+(define-minor-mode with-editor-global-async-shell-command-mode
+  "Toggle with-editor for async-shell-command buffer."
+  nil
+  " with-editor-global-async-shell-command"
+  nil
+  :global t
+  (if with-editor-global-async-shell-command-mode
+      (with-editor-global-async-shell-command-mode-on)
+    (with-editor-global-async-shell-command-mode-off)))
 
 ;;; with-editor.el ends soon
 
