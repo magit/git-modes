@@ -477,6 +477,26 @@ which may or may not insert the text into the PROCESS' buffer."
       (with-editor-global-async-shell-command-mode-on)
     (with-editor-global-async-shell-command-mode-off)))
 
+(defun with-editor-comint-mode-on ()
+  (add-to-list 'comint-output-filter-functions 'with-editor-process-output)
+  (comint-send-string (current-buffer) (concat "export EDITOR="
+                                               (shell-quote-argument (with-editor-looping-editor))
+                                               "\n")))
+
+(defun with-editor-comint-mode-off ()
+  (comint-send-string (current-buffer) "export EDITOR=\n")
+  (setq comint-output-filter-functions (delete 'with-editor-process-output comint-output-filter-functions)))
+
+;;;###autoload
+(define-minor-mode with-editor-comint-mode
+  "Toggle with-editor inside current comint buffer."
+  nil
+  " with-editor-comint"
+  nil
+  (if with-editor-comint-mode
+      (with-editor-comint-mode-on)
+    (with-editor-comint-mode-off)))
+
 ;;; with-editor.el ends soon
 
 (defconst with-editor-font-lock-keywords
