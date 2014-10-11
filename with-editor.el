@@ -398,7 +398,8 @@ the appropriate editor environment variable."
         (run-hooks 'with-editor-filter-visit-hook)
         (funcall (or (with-editor-server-window) 'switch-to-buffer)
                  (current-buffer))
-        (kill-local-variable 'server-window)))))
+        (kill-local-variable 'server-window))))
+  string)
 
 (defun with-editor-set-process-filter (process filter)
   "Like `set-process-filter' but keep `with-editor-process-filter'.
@@ -496,6 +497,27 @@ which may or may not insert the text into the PROCESS' buffer."
   (if with-editor-comint-mode
       (with-editor-comint-mode-on)
     (with-editor-comint-mode-off)))
+
+(defun with-editor-eshell-mode-on ()
+  (add-to-list 'eshell-preoutput-filter-functions 'with-editor-process-output)
+  (insert (concat "export EDITOR="
+                  (eshell-quote-argument (with-editor-looping-editor))))
+  (eshell-send-input))
+
+(defun with-editor-eshell-mode-off ()
+  (insert "export EDITOR=")
+  (eshell-send-input)
+  (setq eshell-preoutput-filter-functions (delete 'with-editor-process-output eshell-preoutput-filter-functions)))
+
+;;;###autoload
+(define-minor-mode with-editor-eshell-mode
+  "Toggle with-editor inside current eshell buffer."
+  nil
+  " with-editor-eshell"
+  nil
+  (if with-editor-eshell-mode
+      (with-editor-eshell-mode-on)
+    (with-editor-eshell-mode-off)))
 
 ;;; with-editor.el ends soon
 
