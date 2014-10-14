@@ -511,6 +511,24 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
                (default "EDITOR"))
   (read-string (format "%s (%s): " prompt default) nil nil default))
 
+(define-minor-mode shell-command-with-editor-mode
+  "Teach `shell-command' to use current Emacs instance as editor.
+
+Teach `shell-command', and all commands that ultimately call that
+command, to use the current Emacs instance as editor by executing
+\"EDITOR=CLIENT COMMAND&\" instead of just \"COMMAND&\".
+
+CLIENT is automatically generated; EDITOR=CLIENT instructs
+COMMAND to use to the current Emacs instance as \"the editor\",
+assuming no other variable overrides the effect of \"$EDITOR\".
+CLIENT maybe the path to an appropriate emacsclient executable
+with arguments, or a script which also works over Tramp.
+
+Alternatively you can use the command `async-shell-command',
+which also allows the use of another variable instead of
+\"EDITOR\"."
+  :global t)
+
 (defun with-editor-async-shell-command
     (command &optional output-buffer error-buffer envvar)
   "Like `async-shell-command' but with `$EDITOR' set.
@@ -559,7 +577,7 @@ else like the former."
           (and async current-prefix-arg (with-editor-read-envvar)))))
 
 (defadvice shell-command (around with-editor activate)
-  (cond ((or (not with-editor--envvar)
+  (cond ((or (not (or with-editor--envvar shell-command-with-editor-mode))
              (not (string-match-p "&$" (ad-get-arg 0))))
          ad-do-it)
         ((and with-editor-emacsclient-executable
