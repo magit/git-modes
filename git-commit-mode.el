@@ -650,8 +650,9 @@ basic structure of and errors in git commit messages."
         'git-commit-mode-flyspell-verify))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("/\\(?:\\(?:COMMIT\\|NOTES\\|TAG\\|PULLREQ\\)_EDIT\\|MERGE_\\)MSG\\'"
-                                . git-commit-mode))
+(add-to-list 'auto-mode-alist '("/\\(?:COMMIT\\|NOTES\\|TAG\\|PULLREQ\\)_EDITMSG\\'" . git-commit-mode))
+;;;###autoload
+(add-to-list 'auto-mode-alist '("/MERGE_MSG\\'" . git-commit-mode))
 
 (defun git-commit-auto-mode-enable ()
   (message "git-commit-auto-mode-enable is obsolete and doesn't do anything"))
