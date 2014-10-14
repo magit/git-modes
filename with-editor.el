@@ -39,6 +39,18 @@
 (require 'tramp)
 (require 'tramp-sh nil t)
 
+(eval-when-compile
+  (progn (require 'dired nil t)
+         (require 'eshell nil t)
+         (require 'term nil t)))
+(declare-function dired-get-filename 'dired)
+(declare-function eshell-send-input 'esh-mode)
+(declare-function eshell-quote-argument 'esh-arg)
+(declare-function term-send-input 'term)
+(declare-function term-emulate-terminal 'term)
+(defvar eshell-last-output-end)
+(defvar eshell-preoutput-filter-functions)
+
 ;;; Options
 
 (defgroup with-editor nil
@@ -168,7 +180,7 @@ a good idea to change such entries.  The `git-commit-mode' and
 loading `magit' does add entries for the files handled by these
 packages.  Don't change these, or Magit will get confused.")
 
-;;; Commands
+;;; Mode Commands
 
 (defvar with-editor-pre-finish-hook nil)
 (defvar with-editor-pre-cancel-hook nil)
@@ -424,6 +436,63 @@ which may or may not insert the text into the PROCESS' buffer."
               (setq mark (set-marker mark (point))))
             (when move
               (goto-char mark))))))))
+
+;;; Augmentations
+
+(cl-defun with-editor-export-editor (&optional (envvar "EDITOR"))
+  "Teach subsequent commands to use current Emacs instance as editor.
+
+Set and export the environment variable ENVVAR, by default
+\"EDITOR\".  The value is automatically generated to teach
+commands use the current Emacs instance as \"the editor\".  It is
+either the path to an appropriate `emacsclient' executable along
+with the appropriate arguments, or a script which also works over
+Tramp.
+
+This works in `shell-mode', `term-mode' and `eshell-mode'."
+  (interactive (list (with-editor-read-envvar)))
+  (let ((editor (format "export %s=%s"
+                        (or envvar "EDITOR")
+                        (funcall (if (derived-mode-p 'eshell-mode)
+                                     'eshell-quote-argument
+                                   'shell-quote-argument)
+                                 (let ((with-editor-emacsclient-executable nil))
+                                   (with-editor (getenv envvar)))))))
+    (cond
+     ((derived-mode-p 'shell-mode)
+      (add-hook 'comint-output-filter-functions
+                'with-editor-output-filter nil t)
+      (comint-send-string (current-buffer) (concat editor "\n")))
+     ((derived-mode-p 'term-mode)
+      (let ((process (get-buffer-process (current-buffer))))
+        (with-editor-set-process-filter process 'with-editor-emulate-terminal)
+        (goto-char (process-mark process)))
+      (insert editor)
+      (term-send-input))
+     ((derived-mode-p 'eshell-mode)
+      (goto-char eshell-last-output-end)
+      (insert editor)
+      (eshell-send-input))
+     (t
+      (error "Cannot export environment variables in this buffer")))))
+
+(defun with-editor-export-git-editor ()
+  "Like `with-editor-export-editor' but always set `$GIT_EDITOR'."
+  (with-editor-export-editor "GIT_EDITOR"))
+
+(eval-after-load 'esh-mode
+  '(add-to-list 'eshell-preoutput-filter-functions
+                'with-editor-output-filter))
+
+(defun with-editor-emulate-terminal (process string)
+  "Like `term-emulate-terminal' but also handle edit requests."
+  (when (with-editor-output-filter string)
+    (term-emulate-terminal process string)))
+
+(cl-defun with-editor-read-envvar
+    (&optional (prompt  "Set environment variable")
+               (default "EDITOR"))
+  (read-string (format "%s (%s): " prompt default) nil nil default))
 
 ;;; with-editor.el ends soon
 
