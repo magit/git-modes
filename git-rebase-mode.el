@@ -286,7 +286,6 @@ running 'man git-rebase' at the command line) for details."
   (when git-rebase-remove-instructions
     (let ((inhibit-read-only t))
       (flush-lines "^\\($\\|#\\)")))
-  (with-editor-mode 1)
   (when git-rebase-confirm-cancel
     (add-hook 'with-editor-cancel-query-functions
               'git-rebase-cancel-confirm nil t)))

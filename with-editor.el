@@ -308,6 +308,8 @@ packages.  Don't change these, or Magit will get confused.")
     (define-key map [remap iswitchb-kill-buffer] 'with-editor-cancel)
     map))
 
+(defvar with-editor--enable-mode nil "For internal use.")
+
 (define-minor-mode with-editor-mode
   "Edit a file as the $EDITOR of an external process."
   :lighter with-editor-mode-lighter
@@ -321,9 +323,17 @@ packages.  Don't change these, or Magit will get confused.")
   ;; `server-excecute' displays a message which is not
   ;; correct when using this mode.
   (when with-editor-show-usage
-    (with-editor-usage-message)))
+    (with-editor-usage-message))
+  ;; We just handled that request.
+  (setq with-editor--enable-mode nil))
 
 (put 'with-editor-mode 'permanent-local t)
+
+(defun with-editor--maybe-enable-mode ()
+  (when with-editor--enable-mode
+    (with-editor-mode 1)))
+
+(add-hook 'server-visit-hook 'with-editor--maybe-enable-mode)
 
 (defun with-editor-kill-buffer-noop ()
   (message (substitute-command-keys "\
@@ -379,7 +389,9 @@ ENVVAR is provided then bind that environment variable instead.
          (setenv "EMACS_SERVER_FILE"
                  (expand-file-name server-name server-auth-dir)))
        ;; As last resort fallback to the looping editor.
-       (setenv "ALTERNATE_EDITOR" (with-editor-looping-editor)))
+       (setenv "ALTERNATE_EDITOR" (with-editor-looping-editor))
+       ;; Make sure `with-editor-mode' gets turned on.
+       (setq with-editor--enable-mode t))
      ,@body))
 
 (defun with-editor-server-window ()
