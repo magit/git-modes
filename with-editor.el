@@ -147,9 +147,9 @@ please see https://github.com/magit/magit/wiki/Emacsclient."))
 (defcustom with-editor-looping-editor "\
 sh -c '\
 echo \"WITH-EDITOR: $$ OPEN $0\"; \
-trap \"exit 0\" USR1; \
-trap \"exit 1\" USR2; \
-while true; do %s; done'"
+trap \"kill $sleep; exit 0\" USR1; \
+trap \"kill $sleep; exit 1\" USR2; \
+sleep 604800 & sleep=$!; wait $sleep"
   "The looping editor, used when the Emacsclient cannot be used.
 
 This fallback is used for asynchronous process started inside the
@@ -162,22 +162,7 @@ Where the latter uses a socket to communicate with Emacs' server,
 this substitute prints edit requests to its standard output on
 which a process filter listens for such requests.  As such it is
 not a complete substitute for a proper Emacsclient, it can only
-be used as $EDITOR of child process of the current Emacs instance.
-
-If the value of this variable contains %s, then that is replaced
-with the value of `with-editor-looping-sleep'."
-  :group 'with-editor
-  :type 'string)
-
-(defcustom with-editor-looping-sleep "sleep 1"
-  "How the looping editor sleeps.
-
-The executable that sleeps and the argument that controls how
-long it shall nap.  Unfortunately not all implementations support
-floats so the defaults is \"sleep 1\", which leads to a noticable
-delay.  If you only ever connect to machines that have GNU sleep
-installed change this to \"sleep 0.1\" or so.  If you only ever
-use BSDs then consider using \"nanosleep 0.1\" instead."
+be used as $EDITOR of child process of the current Emacs instance."
   :group 'with-editor
   :type 'string)
 
@@ -356,7 +341,7 @@ ENVVAR is provided then bind that environment variable instead.
          (process-environment process-environment))
      (if (or (not with-editor-emacsclient-executable)
              (file-remote-p default-directory))
-         (setenv with-editor--envvar (with-editor-looping-editor))
+         (setenv with-editor--envvar with-editor-looping-editor)
        ;; Make sure server-use-tcp's value is valid.
        (unless (featurep 'make-network-process '(:family local))
          (setq server-use-tcp t))
@@ -379,7 +364,7 @@ ENVVAR is provided then bind that environment variable instead.
          (setenv "EMACS_SERVER_FILE"
                  (expand-file-name server-name server-auth-dir)))
        ;; As last resort fallback to the looping editor.
-       (setenv "ALTERNATE_EDITOR" (with-editor-looping-editor)))
+       (setenv "ALTERNATE_EDITOR" with-editor-looping-editor))
      ,@body))
 
 (defun with-editor-server-window ()
@@ -394,12 +379,6 @@ ENVVAR is provided then bind that environment variable instead.
                            (or next-buffer (current-buffer))
                          (with-editor-server-window))))
     ad-do-it))
-
-(defun with-editor-looping-editor ()
-  "Return the looping editor appropriate for `default-directory'.
-Also see documentation for option `with-editor-looping-editor'."
-  (format with-editor-looping-editor
-          with-editor-looping-sleep))
 
 (defadvice start-file-process (around with-editor activate)
   "When called inside a `with-editor' form and the Emacsclient
@@ -420,8 +399,7 @@ the appropriate editor environment variable."
         (unless (equal program "env")
           (push prog args)
           (setq prog "env"))
-        (push (concat with-editor--envvar "="
-                      (with-editor-looping-editor)) args)
+        (push (concat with-editor--envvar "=" with-editor-looping-editor) args)
         (ad-set-arg  2 prog)
         (ad-set-args 3 args)))
     (let ((process ad-do-it))
@@ -623,7 +601,7 @@ else like the former."
          (ad-set-arg
           0 (format "%s=%s %s"
                     (or with-editor--envvar "EDITOR")
-                    (shell-quote-argument (with-editor-looping-editor))
+                    (shell-quote-argument with-editor-looping-editor)
                     (ad-get-arg 0)))
          (let ((process ad-do-it))
            (set-process-filter
