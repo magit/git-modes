@@ -298,6 +298,7 @@ usually honor this wish and return non-nil."
   (when git-commit-major-mode
     (funcall git-commit-major-mode))
   (setq with-editor-show-usage nil)
+  (with-editor-mode 1)
   (add-hook 'with-editor-finish-query-functions
             'git-commit-finish-query-functions nil t)
   (add-hook 'with-editor-pre-cancel-hook
