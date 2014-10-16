@@ -509,7 +509,8 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
   (let ((editor (format "export %s=%s"
                         (or envvar "EDITOR")
                         (shell-quote-argument
-                         (with-editor (getenv envvar))))))
+                         (let ((with-editor-emacsclient-executable nil))
+                           (with-editor (getenv envvar)))))))
     (cond
      ((derived-mode-p 'shell-mode)
       (add-hook 'comint-output-filter-functions
