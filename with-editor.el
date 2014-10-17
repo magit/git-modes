@@ -147,9 +147,10 @@ please see https://github.com/magit/magit/wiki/Emacsclient."))
 (defcustom with-editor-looping-editor "\
 sh -c '\
 echo \"WITH-EDITOR: $$ OPEN $0\"; \
+sleep 604800 & sleep=$!; \
 trap \"kill $sleep; exit 0\" USR1; \
 trap \"kill $sleep; exit 1\" USR2; \
-sleep 604800 & sleep=$!; wait $sleep"
+wait $sleep'"
   "The looping editor, used when the Emacsclient cannot be used.
 
 This fallback is used for asynchronous process started inside the
@@ -426,7 +427,7 @@ which may or may not insert the text into the PROCESS' buffer."
 
 (defun with-editor-output-filter (string)
   (save-match-data
-    (if (string-match "^WITH-EDITOR: \\([0-9]+\\) OPEN \\(.+\\)$" string)
+    (if (string-match "^WITH-EDITOR: \\([0-9]+\\) OPEN \\(.+?\\)\r?$" string)
         (let ((pid  (match-string 1 string))
               (file (match-string 2 string)))
           (with-current-buffer
@@ -472,6 +473,12 @@ which may or may not insert the text into the PROCESS' buffer."
 
 ;;; Augmentations
 
+(defun with-editor-quote-argument (string)
+  "Quote STRING appropriately depending on the current mode."
+  (if (derived-mode-p 'eshell-mode)
+      (eshell-quote-argument string)
+    (shell-quote-argument string)))
+
 (cl-defun with-editor-export-editor (&optional (envvar "EDITOR"))
   "Teach subsequent commands to use current Emacs instance as editor.
 
@@ -486,7 +493,7 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
   (interactive (list (with-editor-read-envvar)))
   (let ((editor (format "export %s=%s"
                         (or envvar "EDITOR")
-                        (shell-quote-argument
+                        (with-editor-quote-argument
                          (let ((with-editor-emacsclient-executable nil))
                            (with-editor (getenv envvar)))))))
     (cond
@@ -497,9 +504,8 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
      ((derived-mode-p 'term-mode)
       (let ((process (get-buffer-process (current-buffer))))
         (with-editor-set-process-filter process 'with-editor-emulate-terminal)
-        (goto-char (process-mark process)))
-      (insert editor)
-      (term-send-input))
+        (goto-char (process-mark process))
+        (process-send-string process (concat editor "\n"))))
      ((derived-mode-p 'eshell-mode)
       (goto-char eshell-last-output-end)
       (insert editor)
