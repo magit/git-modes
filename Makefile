@@ -20,7 +20,7 @@ clean:
 	@rm -f $(ELCS)
 
 %.elc: %.el
-	@$(BATCHC) $<
+	$(BATCHC) $<
 
 .PHONY: test
 test:
