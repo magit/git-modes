@@ -1,6 +1,6 @@
-EMACS  ?= emacs
+EMACS_BIN  ?= emacs
 EFLAGS ?= -L ../dash
-BATCH   = $(EMACS) $(EFLAGS) -batch -Q -L .
+BATCH   = $(EMACS_BIN) $(EFLAGS) -batch -Q -L .
 BATCHE  = $(BATCH) -eval
 BATCHC  = $(BATCH) -f batch-byte-compile
 
