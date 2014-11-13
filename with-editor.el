@@ -393,7 +393,7 @@ which may or may not insert the text into the PROCESS' buffer."
 
 (defun with-editor-output-filter (string)
   (save-match-data
-    (if (string-match "^WITH-EDITOR: \\([0-9]+\\) OPEN \\(.+\\)$" string)
+    (if (string-match "^WITH-EDITOR: \\([0-9]+\\) OPEN \\(.+?\\)\r?$" string)
         (let ((pid  (match-string 1 string))
               (file (match-string 2 string)))
           (with-current-buffer
