@@ -500,9 +500,7 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
     (let ((process (get-buffer-process (current-buffer)))
           (editor (format "export %s=%s"
                           envvar
-                          (shell-quote-argument
-                           (let ((with-editor-emacsclient-executable nil))
-                             (with-editor (getenv envvar)))))))
+                          (shell-quote-argument with-editor-looping-editor))))
       ;; Both comint & term use processes
       (with-editor-process-send-string-silently process editor)
 
