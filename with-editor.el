@@ -474,6 +474,15 @@ which may or may not insert the text into the PROCESS' buffer."
 
 ;;; Augmentations
 
+(defun with-editor-process-send-string-silently (process string)
+  "Send STRING to PROCESS without it showing up."
+  (let ((filter (process-filter process)))
+    (set-process-filter process 'ignore)
+    (goto-char (process-mark process))
+    (process-send-string process (concat string "\n"))
+    (while (accept-process-output process 0.1))
+    (set-process-filter process filter)))
+
 (cl-defun with-editor-export-editor (&optional (envvar "EDITOR"))
   "Teach subsequent commands to use current Emacs instance as editor.
 
@@ -486,34 +495,29 @@ Tramp.
 
 This works in `shell-mode', `term-mode' and `eshell-mode'."
   (interactive (list (with-editor-read-envvar)))
-  (let ((editor (format "export %s=%s"
-                        envvar
-                        (funcall (if (derived-mode-p 'eshell-mode)
-                                     'eshell-quote-argument
-                                   'shell-quote-argument)
-                                 (let ((with-editor-emacsclient-executable nil))
-                                   (with-editor (getenv envvar)))))))
-    (cond
-     ((derived-mode-p 'comint-mode)
-      (add-hook 'comint-output-filter-functions
-                'with-editor-output-filter nil t)
-      (let ((comint-preoutput-filter-functions '((lambda (s) ""))))
-        (comint-send-string (current-buffer) (concat editor "\n"))
-        (while (accept-process-output (get-buffer-process (current-buffer)) 0.1))))
-     ((derived-mode-p 'term-mode)
-      (let* ((process (get-buffer-process (current-buffer)))
-             (filter (process-filter process)))
-        (set-process-filter process 'ignore)
-        (goto-char (process-mark process))
-        (process-send-string process (concat editor "\n"))
-        (while (accept-process-output process 0.1))
-        (set-process-filter process filter)
-        (with-editor-set-process-filter process 'with-editor-emulate-terminal)))
-     ((derived-mode-p 'eshell-mode)
-      (eshell/export (format "%s=%s" envvar with-editor-looping-editor)))
-     (t
-      (error "Cannot export environment variables in this buffer")))
-    (message "Successfuly exported %s" envvar)))
+  (cond
+   ((derived-mode-p 'comint-mode 'term-mode)
+    (let ((process (get-buffer-process (current-buffer)))
+          (editor (format "export %s=%s"
+                          envvar
+                          (shell-quote-argument
+                           (let ((with-editor-emacsclient-executable nil))
+                             (with-editor (getenv envvar)))))))
+      ;; Both comint & term use processes
+      (with-editor-process-send-string-silently process editor)
+
+      ;; Mode specific configuration
+      (cond
+       ((derived-mode-p 'comint-mode)
+        (add-hook 'comint-output-filter-functions
+                  'with-editor-output-filter nil t))
+       ((derived-mode-p 'term-mode)
+        (with-editor-set-process-filter process 'with-editor-emulate-terminal)))))
+   ((derived-mode-p 'eshell-mode)
+    (eshell/export (format "%s=%s" envvar with-editor-looping-editor)))
+   (t
+    (error "Cannot export environment variables in this buffer")))
+  (message "Successfuly exported %s" envvar))
 
 (defun with-editor-export-git-editor ()
   "Like `with-editor-export-editor' but always set `$GIT_EDITOR'."
