@@ -487,7 +487,7 @@ Tramp.
 This works in `shell-mode', `term-mode' and `eshell-mode'."
   (interactive (list (with-editor-read-envvar)))
   (let ((editor (format "export %s=%s"
-                        (or envvar "EDITOR")
+                        envvar
                         (funcall (if (derived-mode-p 'eshell-mode)
                                      'eshell-quote-argument
                                    'shell-quote-argument)
