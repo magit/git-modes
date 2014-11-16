@@ -508,7 +508,8 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
       (insert editor)
       (eshell-send-input))
      (t
-      (error "Cannot export environment variables in this buffer")))))
+      (error "Cannot export environment variables in this buffer")))
+    (message "Successfuly exported %s" envvar)))
 
 (defun with-editor-export-git-editor ()
   "Like `with-editor-export-editor' but always set `$GIT_EDITOR'."
