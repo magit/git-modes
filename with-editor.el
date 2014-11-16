@@ -494,10 +494,12 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
                                  (let ((with-editor-emacsclient-executable nil))
                                    (with-editor (getenv envvar)))))))
     (cond
-     ((derived-mode-p 'shell-mode)
+     ((derived-mode-p 'comint-mode)
       (add-hook 'comint-output-filter-functions
                 'with-editor-output-filter nil t)
-      (comint-send-string (current-buffer) (concat editor "\n")))
+      (let ((comint-preoutput-filter-functions '((lambda (s) ""))))
+        (comint-send-string (current-buffer) (concat editor "\n"))
+        (while (accept-process-output (get-buffer-process (current-buffer)) 0.1))))
      ((derived-mode-p 'term-mode)
       (let ((process (get-buffer-process (current-buffer))))
         (with-editor-set-process-filter process 'with-editor-emulate-terminal)
