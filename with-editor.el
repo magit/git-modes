@@ -510,9 +510,7 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
         (set-process-filter process filter)
         (with-editor-set-process-filter process 'with-editor-emulate-terminal)))
      ((derived-mode-p 'eshell-mode)
-      (goto-char eshell-last-output-end)
-      (insert editor)
-      (eshell-send-input))
+      (eshell/export (format "%s=%s" envvar with-editor-looping-editor)))
      (t
       (error "Cannot export environment variables in this buffer")))
     (message "Successfuly exported %s" envvar)))
