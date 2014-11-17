@@ -1,16 +1,10 @@
-EMACS_BIN  ?= emacs
-EFLAGS ?= -L ../dash
-BATCH   = $(EMACS_BIN) $(EFLAGS) -batch -Q -L .
-BATCHE  = $(BATCH) -eval
-BATCHC  = $(BATCH) -f batch-byte-compile
-
-ELS  = git-commit-mode.el
-ELS += git-rebase-mode.el
-ELS += gitattributes-mode.el
-ELS += gitconfig-mode.el
-ELS += gitignore-mode.el
-ELS += with-editor.el
+EMACS_BIN ?= emacs
+EFLAGS ?=
+ELS = gitattributes-mode.el gitconfig-mode.el gitignore-mode.el
 ELCS = $(ELS:.el=.elc)
+# These libraries used to be part of this
+# repository, make sure they are gone.
+ELCS += git-commit-mode.elc git-rebase-mode.elc with-editor.elc
 
 .PHONY: lisp
 lisp: $(ELCS)
@@ -21,4 +15,4 @@ clean:
 	@rm -f $(ELCS)
 
 %.elc: %.el
-	@$(BATCHC) $<
+	@$(EMACS_BIN) -batch -Q -f batch-byte-compile $<
