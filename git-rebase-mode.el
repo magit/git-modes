@@ -1,6 +1,6 @@
 ;;; git-rebase-mode.el --- Major mode for editing git rebase files
 
-;; Copyright (C) 2010-2014  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Developers
 
 ;; Author: Phil Jackson <phil@shellarchive.co.uk>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -323,8 +323,7 @@ exec line was commented out, also uncomment it."
     (when (looking-at git-rebase-action-line-re)
       (let ((commit (match-string 2)))
         (if (fboundp 'magit-show-commit)
-            (let ((default-directory (expand-file-name "../../")))
-              (magit-show-commit commit))
+            (magit-show-commit commit)
           (shell-command (concat "git show " commit)))))))
 
 (defun git-rebase-backward-line (&optional n)
