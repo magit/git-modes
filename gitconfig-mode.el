@@ -40,30 +40,41 @@
                         symbol-start
                         (minimal-match (zero-or-more not-newline))
                         symbol-end "]"))
-        (looking-at (rx line-start "\t"
-                        symbol-start (or (syntax word)
-                                         (syntax symbol)))))))
+        (looking-at (concat (rx line-start)
+                            (gitconfig-indentation-string)
+                            (rx symbol-start (or (syntax word)
+                                                 (syntax symbol)))))
+        (looking-at "#")
+        (looking-at (rx line-end)))))
 
 (defun gitconfig-point-in-indentation-p ()
   "Return if the point is in the indentation of the current line."
   (save-excursion
     (let ((pos (point)))
       (back-to-indentation)
-      (< pos (point)))))
+      (<= pos (point)))))
 
 (defun gitconfig-indent-line ()
   "Indent the current line."
   (interactive)
-  (unless (gitconfig-line-indented-p)
+  (if (gitconfig-line-indented-p)
+      (when (gitconfig-point-in-indentation-p)
+        (back-to-indentation))
     (let ((old-point (point-marker))
           (was-in-indent (gitconfig-point-in-indentation-p)))
       (beginning-of-line)
       (delete-horizontal-space)
-      (unless (equal (char-after) ?\[)
-        (insert-char ?\t 1))
+      (unless (looking-at (rx (or "#" "[" line-end)))
+        (insert (gitconfig-indentation-string)))
       (if was-in-indent
           (back-to-indentation)
-        (goto-char (marker-position old-point))))))
+        (goto-char (marker-position old-point)))
+      (set-marker old-point nil))))
+
+(defun gitconfig-indentation-string ()
+  (if indent-tabs-mode
+      "\t"
+    (make-string tab-width ?\ )))
 
 (defvar gitconfig-mode-syntax-table
   (let ((table (make-syntax-table conf-unix-mode-syntax-table)))
@@ -109,7 +120,6 @@
   "A major mode for editing .gitconfig files."
   ;; .gitconfig is indented with tabs only
   (conf-mode-initialize "#" gitconfig-mode-font-lock-keywords)
-  (setq indent-tabs-mode t)
   (set (make-local-variable 'indent-line-function)
        'gitconfig-indent-line))
 
