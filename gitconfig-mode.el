@@ -68,7 +68,8 @@
         (insert (gitconfig-indentation-string)))
       (if was-in-indent
           (back-to-indentation)
-        (goto-char (marker-position old-point))))))
+        (goto-char (marker-position old-point)))
+      (set-marker old-point nil))))
 
 (defun gitconfig-indentation-string ()
   (if indent-tabs-mode
