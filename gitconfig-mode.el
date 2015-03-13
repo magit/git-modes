@@ -65,7 +65,8 @@
         (insert-char ?\t 1))
       (if was-in-indent
           (back-to-indentation)
-        (goto-char (marker-position old-point))))))
+        (goto-char (marker-position old-point)))
+      (set-marker old-point nil))))
 
 (defvar gitconfig-mode-syntax-table
   (let ((table (make-syntax-table conf-unix-mode-syntax-table)))
