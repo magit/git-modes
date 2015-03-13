@@ -40,9 +40,10 @@
                         symbol-start
                         (minimal-match (zero-or-more not-newline))
                         symbol-end "]"))
-        (looking-at (rx line-start "\t"
-                        symbol-start (or (syntax word)
-                                         (syntax symbol))))
+        (looking-at (concat (rx line-start)
+                            (gitconfig-indentation-string)
+                            (rx symbol-start (or (syntax word)
+                                                 (syntax symbol)))))
         (looking-at "#")
         (looking-at (rx line-end)))))
 
@@ -62,10 +63,15 @@
       (beginning-of-line)
       (delete-horizontal-space)
       (unless (looking-at (rx (or "#" "[" line-end)))
-        (insert-char ?\t 1))
+        (insert (gitconfig-indentation-string)))
       (if was-in-indent
           (back-to-indentation)
         (goto-char (marker-position old-point))))))
+
+(defun gitconfig-indentation-string ()
+  (if indent-tabs-mode
+      "\t"
+    (make-string tab-width ?\ )))
 
 (defvar gitconfig-mode-syntax-table
   (let ((table (make-syntax-table conf-unix-mode-syntax-table)))
@@ -111,7 +117,6 @@
   "A major mode for editing .gitconfig files."
   ;; .gitconfig is indented with tabs only
   (conf-mode-initialize "#" gitconfig-mode-font-lock-keywords)
-  (setq indent-tabs-mode t)
   (set (make-local-variable 'indent-line-function)
        'gitconfig-indent-line))
 
