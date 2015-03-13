@@ -42,7 +42,9 @@
                         symbol-end "]"))
         (looking-at (rx line-start "\t"
                         symbol-start (or (syntax word)
-                                         (syntax symbol)))))))
+                                         (syntax symbol))))
+        (looking-at "#")
+        (looking-at (rx line-end)))))
 
 (defun gitconfig-point-in-indentation-p ()
   "Return if the point is in the indentation of the current line."
@@ -59,7 +61,7 @@
           (was-in-indent (gitconfig-point-in-indentation-p)))
       (beginning-of-line)
       (delete-horizontal-space)
-      (unless (equal (char-after) ?\[)
+      (unless (looking-at (rx (or "#" "[" line-end)))
         (insert-char ?\t 1))
       (if was-in-indent
           (back-to-indentation)
