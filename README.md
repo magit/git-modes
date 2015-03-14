@@ -3,27 +3,21 @@ Git Config Modes
 
 Emacs major modes for various Git configuration files.
 
-An list of contributors can be found [here][1].
+A list of contributors can be found [here][1].
 
 `gitconfig-mode`
 ----------------
 
-`gitconfig-mode` is automatically enabled for `.gitconfig`,
-`.git/config` and `git/config` files.
-
-Derives from `conf-unix-mode`, so commands provided by `conf-mode`
-work here too.
+`gitconfig-mode` derives from `conf-unix-mode` and is automatically
+enabled for `.gitconfig`, `.git/config` and `git/config` files.
 
 `gitconfig-mode` was created by [Sebastian Wiesner][sw].
 
 `gitignore-mode`
 ----------------
 
-`gitignore-mode` is automatically enabled for `.gitignore`,
-`.git/info/exclude` and `git/ignore` files.
-
-Derives from `conf-unix-mode`, so commands provided by `conf-mode`
-work here too.
+`gitignore-mode` derives from `conf-unix-mode` and is automatically
+enabled for `.gitignore`, `.git/info/exclude` and `git/ignore` files.
 
 `gitignore-mode` was created by [Sebastian Wiesner][sw].
 
