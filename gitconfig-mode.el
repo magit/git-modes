@@ -49,12 +49,14 @@
   (save-excursion
     (let ((pos (point)))
       (back-to-indentation)
-      (< pos (point)))))
+      (<= pos (point)))))
 
 (defun gitconfig-indent-line ()
   "Indent the current line."
   (interactive)
-  (unless (gitconfig-line-indented-p)
+  (if (gitconfig-line-indented-p)
+      (when (gitconfig-point-in-indentation-p)
+        (back-to-indentation))
     (let ((old-point (point-marker))
           (was-in-indent (gitconfig-point-in-indentation-p)))
       (beginning-of-line)
@@ -63,7 +65,8 @@
         (insert-char ?\t 1))
       (if was-in-indent
           (back-to-indentation)
-        (goto-char (marker-position old-point))))))
+        (goto-char (marker-position old-point)))
+      (set-marker old-point nil))))
 
 (defvar gitconfig-mode-syntax-table
   (let ((table (make-syntax-table conf-unix-mode-syntax-table)))
