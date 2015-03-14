@@ -5,6 +5,8 @@ Emacs major modes for various Git configuration files.
 
 A list of contributors can be found [here][1].
 
+All modes are maintained by [Jonas Bernoulli][jb].
+
 `gitconfig-mode`
 ----------------
 
@@ -31,5 +33,6 @@ enabled for `.gitignore`, `.git/info/exclude` and `git/ignore` files.
 
 
 [1]:  https://github.com/magit/git-modes/graphs/contributors
+[jb]: https://github.com/tarsius
 [sw]: https://github.com/lunaryorn
 [rs]: https://github.com/ruediger
