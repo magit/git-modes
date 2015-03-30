@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 2010-2012  Florian Ragwitz
 ;; Copyright (c) 2012-2013  Sebastian Wiesner
-;; Copyright (C) 2010-2014  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Developers
 
 ;; Authors: Jonas Bernoulli <jonas@bernoul.li>
 ;;	Sebastian Wiesner <lunaryorn@gmail.com>
