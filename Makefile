@@ -7,7 +7,6 @@ ELS  = gitattributes-mode.el
 ELS += gitconfig-mode.el
 ELS += gitignore-mode.el
 ELCS = $(ELS:.el=.elc)
-ELCS_OLD = git-commit-mode.elc git-rebase-mode.elc with-editor.elc
 ELMS = $(ELS:%.el=marmalade/%-$(VERSION).el)
 
 EMACS_BIN ?= emacs
@@ -27,7 +26,7 @@ install: lisp
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	@$(RM) -f $(ELCS) $(ELCS_OLD)
+	@$(RM) $(ELCS)
 	@$(RMDIR) marmalade
 
 %.elc: %.el
