@@ -1,4 +1,4 @@
-VERSION ?= 1.0.0
+VERSION ?= 1.1.0
 
 PREFIX  ?= /usr/local
 LISPDIR ?= $(PREFIX)/share/emacs/site-lisp/git-modes
