@@ -14,18 +14,19 @@ EMACS_BIN ?= emacs
 CP    ?= install -p -m 644
 MKDIR ?= install -p -m 755 -d
 RMDIR ?= rm -rf
+SED   ?= sed
 
 lisp: $(ELCS)
 
 .PHONY: install
 install: lisp
-	@echo "Installing..."
+	@printf "Installing...\n"
 	@$(MKDIR) $(DESTDIR)$(LISPDIR)
 	@$(CP) $(ELS) $(ELCS) $(DESTDIR)$(LISPDIR)
 
 .PHONY: clean
 clean:
-	@echo "Cleaning..."
+	@printf "Cleaning...\n"
 	@$(RM) $(ELCS)
 	@$(RMDIR) marmalade
 
@@ -35,10 +36,9 @@ clean:
 .PHONY: marmalade-upload
 marmalade-upload: marmalade
 	@marmalade-upload $(ELMS)
-	@rm -rf marmalade
+	@$(RMDIR) marmalade
 marmalade: $(ELMS)
 $(ELMS): marmalade/%-$(VERSION).el: %.el
-	@echo $< $@
 	@$(MKDIR) -p marmalade
 	@$(CP) $< $@
-	@sed -e "/^;; Keywords:/a;; Package-Version: $(VERSION)" -i $@
+	@$(SED) -e "/^;; Keywords:/a;; Package-Version: $(VERSION)" -i $@
