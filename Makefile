@@ -1,5 +1,3 @@
-VERSION ?= 1.1.0
-
 PREFIX  ?= /usr/local
 LISPDIR ?= $(PREFIX)/share/emacs/site-lisp/git-modes
 
@@ -15,6 +13,11 @@ CP    ?= install -p -m 644
 MKDIR ?= install -p -m 755 -d
 RMDIR ?= rm -rf
 SED   ?= sed
+
+VERSION ?= $(shell test -e .git && git describe --tags --dirty 2> /dev/null)
+ifeq "$(VERSION)" ""
+  VERSION = 1.1.0
+endif
 
 .PHONY: install clean marmalade-upload
 
