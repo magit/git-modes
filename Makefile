@@ -16,15 +16,15 @@ MKDIR ?= install -p -m 755 -d
 RMDIR ?= rm -rf
 SED   ?= sed
 
+.PHONY: install clean marmalade-upload
+
 lisp: $(ELCS)
 
-.PHONY: install
 install: lisp
 	@printf "Installing...\n"
 	@$(MKDIR) $(DESTDIR)$(LISPDIR)
 	@$(CP) $(ELS) $(ELCS) $(DESTDIR)$(LISPDIR)
 
-.PHONY: clean
 clean:
 	@printf "Cleaning...\n"
 	@$(RM) $(ELCS)
@@ -33,7 +33,6 @@ clean:
 %.elc: %.el
 	@$(EMACS_BIN) -batch -Q -f batch-byte-compile $<
 
-.PHONY: marmalade-upload
 marmalade-upload: marmalade
 	@marmalade-upload $(ELMS)
 	@$(RMDIR) marmalade
