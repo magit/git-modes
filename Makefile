@@ -16,7 +16,7 @@ SED   ?= sed
 
 VERSION ?= $(shell test -e .git && git describe --tags --dirty 2> /dev/null)
 ifeq "$(VERSION)" ""
-  VERSION = 1.1.0
+  VERSION = 1.2.0
 endif
 
 .PHONY: install clean marmalade-upload
