@@ -216,7 +216,7 @@ If ARG is omitted or nil, move point backward one field."
 
 ;;;###autoload
 (dolist (pattern '("/\\.gitattributes\\'"
-                   "/\\.git/info/attributes\\'"
+                   "/info/attributes\\'"
                    "/git/attributes\\'"))
   (add-to-list 'auto-mode-alist (cons pattern #'gitattributes-mode)))
 

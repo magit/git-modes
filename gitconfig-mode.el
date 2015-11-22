@@ -122,8 +122,9 @@
        'gitconfig-indent-line))
 
 ;;;###autoload
-(dolist (pattern '("/\\.gitconfig\\'" "/\\.git/config\\'"
-                   "/git/config\\'"   "/\\.gitmodules\\'"))
+(dolist (pattern '("/\\.gitconfig\\'"      "/\\.git/config\\'"
+                   "/modules/.*/config\\'" "/git/config\\'"
+                   "/\\.gitmodules\\'"))
   (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
 
 (provide 'gitconfig-mode)
