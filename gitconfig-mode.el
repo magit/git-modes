@@ -124,7 +124,7 @@
 ;;;###autoload
 (dolist (pattern '("/\\.gitconfig\\'"      "/\\.git/config\\'"
                    "/modules/.*/config\\'" "/git/config\\'"
-                   "/\\.gitmodules\\'"))
+                   "/\\.gitmodules\\'"     "/etc/gitconfig\\'"))
   (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
 
 (provide 'gitconfig-mode)
