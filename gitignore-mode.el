@@ -49,7 +49,7 @@
 
 ;;;###autoload
 (dolist (pattern (list "/\\.gitignore\\'"
-                       "/\\.git/info/exclude\\'"
+                       "/info/exclude\\'"
                        "/git/ignore\\'"))
   (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
 
