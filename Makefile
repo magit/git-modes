@@ -1,7 +1,8 @@
 PREFIX  ?= /usr/local
 LISPDIR ?= $(PREFIX)/share/emacs/site-lisp/git-modes
 
-ELS  = gitattributes-mode.el
+ELS  = git-modes.el
+ELS += gitattributes-mode.el
 ELS += gitconfig-mode.el
 ELS += gitignore-mode.el
 ELCS = $(ELS:.el=.elc)
@@ -34,7 +35,8 @@ clean:
 	@$(RMDIR) marmalade
 
 %.elc: %.el
-	@$(EMACS_BIN) -batch -Q -f batch-byte-compile $<
+	@printf "Compiling $<...\n"
+	@$(EMACS_BIN) -batch -Q -L . -f batch-byte-compile $<
 
 marmalade-upload: marmalade
 	@marmalade-upload $(ELMS)
