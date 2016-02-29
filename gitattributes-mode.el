@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2013-2016  The Magit Project Contributors
 
-;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.de>
+;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.net>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 ;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
