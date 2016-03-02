@@ -6,7 +6,6 @@ ELS += gitattributes-mode.el
 ELS += gitconfig-mode.el
 ELS += gitignore-mode.el
 ELCS = $(ELS:.el=.elc)
-ELMS = $(ELS:%.el=marmalade/%-$(VERSION).el)
 
 EMACS_BIN ?= emacs
 
@@ -20,7 +19,7 @@ ifeq "$(VERSION)" ""
   VERSION = 1.2.0
 endif
 
-.PHONY: install clean marmalade-upload
+.PHONY: install clean
 
 lisp: $(ELCS)
 
@@ -32,17 +31,7 @@ install: lisp
 clean:
 	@printf "Cleaning...\n"
 	@$(RM) $(ELCS)
-	@$(RMDIR) marmalade
 
 %.elc: %.el
 	@printf "Compiling $<...\n"
 	@$(EMACS_BIN) -batch -Q -L . -f batch-byte-compile $<
-
-marmalade-upload: marmalade
-	@marmalade-upload $(ELMS)
-	@$(RMDIR) marmalade
-marmalade: $(ELMS)
-$(ELMS): marmalade/%-$(VERSION).el: %.el
-	@$(MKDIR) -p marmalade
-	@$(CP) $< $@
-	@$(SED) -e "/^;; Keywords:/a;; Package-Version: $(VERSION)" -i $@
