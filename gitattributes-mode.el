@@ -141,7 +141,7 @@ If NO-STATE is non-nil then do not print state."
      (let ((old-limit limit))
        (save-excursion
          (beginning-of-line)
-         (while (looking-at "^\\s-*$")
+         (while (and (not (eobp)) (looking-at "^\\s-*$"))
            (forward-line))
          (when (re-search-forward "[[:space:]]" limit 'noerror)
            (setq limit (point))))
