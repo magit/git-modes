@@ -77,6 +77,8 @@
   (let ((table (make-syntax-table conf-unix-mode-syntax-table)))
     ;; ; is a comment in .gitconfig
     (modify-syntax-entry ?\; "<" table)
+    ;; ' is not used for string quoting
+    (modify-syntax-entry ?\' "." table)
     table)
   "Syntax table to use in .gitconfig buffers.")
 
