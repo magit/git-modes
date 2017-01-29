@@ -47,4 +47,4 @@
 
 (provide 'git-modes)
 
-;;; gitignore-mode.el ends here
+;;; git-modes.el ends here
