@@ -48,7 +48,7 @@
   (set (make-local-variable 'conf-assignment-sign) nil))
 
 ;;;###autoload
-(dolist (pattern (list "/\\.gitignore\\'"
+(dolist (pattern (list "\\.gitignore.*\\'"
                        "/info/exclude\\'"
                        "/git/ignore\\'"))
   (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
