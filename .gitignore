@@ -1,2 +1,3 @@
-*.elc
-git-modes-autoloads.el
+/*.elc
+/*-autoloads.el
+/.config.mk
