@@ -225,5 +225,7 @@ If ARG is omitted or nil, move point backward one field."
 
 ;;; _
 (provide 'gitattributes-mode)
-
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 ;;; gitattributes-mode.el ends here
