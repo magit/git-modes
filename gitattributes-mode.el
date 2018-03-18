@@ -1,6 +1,6 @@
 ;;; gitattributes-mode.el --- Major mode for editing .gitattributes files -*- lexical-binding: t -*-
 
-;; Copyright (C) 2013-2017  The Magit Project Contributors
+;; Copyright (C) 2013-2018  The Magit Project Contributors
 
 ;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.net>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -223,6 +223,7 @@ If ARG is omitted or nil, move point backward one field."
                    "/git/attributes\\'"))
   (add-to-list 'auto-mode-alist (cons pattern #'gitattributes-mode)))
 
+;;; _
 (provide 'gitattributes-mode)
 
 ;;; gitattributes-mode.el ends here
