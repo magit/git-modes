@@ -27,3 +27,11 @@ Auto-/loading the library `gitignore-mode` enables the mode for
 `.gitignore`, `.git/info/exclude`, and `git/ignore` files.
 
 `gitignore-mode` derives from `conf-unix-mode`.
+
+This mode may be of use in other files that don't have anything to do
+with Git, for example:
+
+```lisp
+(add-to-list 'auto-mode-alist
+             (cons "/.dockerignore\\'" 'gitignore-mode))
+```
