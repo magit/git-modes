@@ -1,4 +1,4 @@
-;;; git-modes.el --- Major modes for editing Git configuration files -*- lexical-binding: t; -*-
+;;; git-modes.el --- Major modes for editing Git configuration files  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2012-2013  Sebastian Wiesner
 ;; Copyright (C) 2013-2015  Rüdiger Sonderfeld

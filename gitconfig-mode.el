@@ -1,4 +1,4 @@
-;;; gitconfig-mode.el --- Major mode for editing .gitconfig files -*- lexical-binding: t; -*-
+;;; gitconfig-mode.el --- Major mode for editing .gitconfig files  -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2012-2013  Sebastian Wiesner
 ;; Copyright (C) 2012-2021  The Magit Project Contributors
