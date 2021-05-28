@@ -47,7 +47,7 @@
   ;; Disable syntactic font locking, because comments are only valid at
   ;; beginning of line.
   (setq font-lock-defaults '(gitignore-mode-font-lock-keywords t t))
-  (set (make-local-variable 'conf-assignment-sign) nil))
+  (setq-local conf-assignment-sign nil))
 
 ;;;###autoload
 (dolist (pattern (list "/\\.gitignore\\'"
