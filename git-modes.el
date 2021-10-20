@@ -11,6 +11,7 @@
 ;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
 ;; Package-Requires: ((emacs "24.3"))
+;; Package-Version: 1.4.0
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -35,10 +36,9 @@
 ;;    `gitconfig-mode', and
 ;;    `gitignore-mode'
 
-;; Each mode is defined in its own library by the same name.  Loading
-;; `git-modes' causes all three libraries to be loaded, but you could
-;; also load the libraries individually.  On Melpa, the libraries are
-;; distributed as separate packages.
+;; Each mode is defined in its own library by the same name.
+;; All additions to `auto-mode-alist' are autoloaded, so it is
+;; not necessary load `git-modes' or the individual libraries.
 
 ;;; Code:
 
