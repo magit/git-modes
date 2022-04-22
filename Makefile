@@ -16,15 +16,12 @@ EMACS_ARGS ?=
 LOAD_PATH  ?= $(addprefix -L ../,$(DEPS))
 LOAD_PATH  += -L .
 
-PREFIX ?= /usr/local
-
 all: lisp
 
 help:
 	$(info make all          - generate byte-code and autoloads)
 	$(info make lisp         - generate byte-code and autoloads)
 	$(info make clean        - remove generated files)
-	$(info make install      - install in $(PREFIX))
 	@printf "\n"
 
 lisp: $(ELCS) loaddefs
@@ -54,13 +51,3 @@ $(PKG)-autoloads.el: $(ELS)
             ((symbol-function 'progress-reporter-done) (lambda (_))))\
     (let ((generated-autoload-file file))\
       (update-directory-autoloads default-directory))))"
-
-CP      ?= install -p -m 644
-MKDIR   ?= install -p -m 755 -d
-LISPDIR ?= $(PREFIX)/share/emacs/site-lisp/git-modes
-
-.PHONY: install
-install: lisp
-	@printf "Installing...\n"
-	@$(MKDIR) $(DESTDIR)$(LISPDIR)
-	@$(CP) $(ELS) $(ELCS) $(DESTDIR)$(LISPDIR)
