@@ -11,7 +11,7 @@
 ;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
 
-;; Package-Version: 1.4.0
+;; Package-Version: 1.4.0.50-git
 ;; Package-Requires: ((emacs "25.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
