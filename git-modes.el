@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 2012-2013 Sebastian Wiesner
 ;; Copyright (C) 2013-2015 Rüdiger Sonderfeld
-;; Copyright (C) 2012-2022 The Magit Project Contributors
+;; Copyright (C) 2012-2023 The Magit Project Contributors
 
 ;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
 ;;         Rüdiger Sonderfeld <ruediger@c-plusplus.net>
