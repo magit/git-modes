@@ -33,3 +33,8 @@ to do with Git, for example:
   (add-to-list 'auto-mode-alist
 	       (cons "/.dockerignore\\'" 'gitignore-mode))
 #+end_src
+
+#+html: <br><br>
+#+html: <a href="https://github.com/magit/git-modes/actions/workflows/compile.yml"><img alt="Compile" src="https://github.com/magit/git-modes/actions/workflows/compile.yml/badge.svg"/></a>
+#+html: <a href="https://stable.melpa.org/#/git-modes"><img alt="MELPA Stable" src="https://stable.melpa.org/packages/git-modes-badge.svg"/></a>
+#+html: <a href="https://melpa.org/#/git-modes"><img alt="MELPA" src="https://melpa.org/packages/git-modes-badge.svg"/></a>
