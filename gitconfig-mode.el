@@ -29,8 +29,9 @@
 
 ;;; Code:
 
-(require 'rx)
+(require 'compat)
 (require 'conf-mode)
+(require 'rx)
 
 (defun gitconfig-line-indented-p ()
   "Return t if the current line is indented correctly."

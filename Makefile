@@ -8,7 +8,7 @@ ELS  += gitconfig-mode.el
 ELS  += gitignore-mode.el
 ELCS  = $(ELS:.el=.elc)
 
-DEPS  =
+DEPS  = compat
 
 EMACS      ?= emacs
 EMACS_ARGS ?=

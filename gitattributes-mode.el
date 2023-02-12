@@ -31,6 +31,7 @@
 
 ;;; Code:
 
+(require 'compat)
 (require 'easymenu)
 (require 'thingatpt)
 

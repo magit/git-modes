@@ -29,6 +29,7 @@
 
 ;;; Code:
 
+(require 'compat)
 (require 'conf-mode)
 
 (defvar gitignore-mode-font-lock-keywords
