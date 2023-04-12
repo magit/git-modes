@@ -31,7 +31,7 @@ to do with Git, for example:
 
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist
-	       (cons "/.dockerignore\\'" 'gitignore-mode))
+               (cons "/.dockerignore\\'" 'gitignore-mode))
 #+end_src
 
 #+html: <br><br>
