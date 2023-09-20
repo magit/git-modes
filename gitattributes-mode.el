@@ -50,8 +50,8 @@ Alternatively add `turn-on-eldoc-mode' to the mode hook."
 
 (defcustom gitattributes-mode-man-function #'man
   "Function to open the gitattributes(5) manpage."
-  :type '(choice (const :tag "Man" #'man)
-                 (const :tag "Woman" #'woman)
+  :type '(choice (const :tag "Man" man)
+                 (const :tag "Woman" woman)
                  (function :tag "Function"))
   :group 'gitattributes-mode)
 
