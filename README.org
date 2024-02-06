@@ -36,6 +36,6 @@ to do with Git, for example:
 
 #+html: <br><br>
 #+html: <a href="https://github.com/magit/git-modes/actions/workflows/compile.yml"><img alt="Compile" src="https://github.com/magit/git-modes/actions/workflows/compile.yml/badge.svg"/></a>
-#+html: <a href="https://elpa.nongnu.org/nongnu/git-modes.html"><img alt="NonGNU ELPA" src="https://elpa.nongnu.org/nongnu/git-modes.svg"/></a>
+#+html: <a href="https://elpa.nongnu.org/nongnu/git-modes.html"><img alt="NonGNU ELPA" src="https://emacsair.me/assets/badges/nongnu-elpa.svg"/></a>
 #+html: <a href="https://stable.melpa.org/#/git-modes"><img alt="MELPA Stable" src="https://stable.melpa.org/packages/git-modes-badge.svg"/></a>
 #+html: <a href="https://melpa.org/#/git-modes"><img alt="MELPA" src="https://melpa.org/packages/git-modes-badge.svg"/></a>
