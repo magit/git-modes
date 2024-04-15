@@ -6,8 +6,8 @@
 
 ;; Author: Sebastian Wiesner <lunaryorn@gmail.com>
 ;;         Rüdiger Sonderfeld <ruediger@c-plusplus.net>
-;;         Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;;         Jonas Bernoulli <emacs.git-modes@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.git-modes@jonas.bernoulli.dev>
 ;; Homepage: https://github.com/magit/git-modes
 ;; Keywords: convenience vc git
 
