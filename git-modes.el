@@ -12,7 +12,7 @@
 ;; Keywords: convenience vc git
 
 ;; Package-Version: 1.4.3
-;; Package-Requires: ((emacs "25.1") (compat "29.1.4.5"))
+;; Package-Requires: ((emacs "25.1") (compat "30.0.0.0"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
